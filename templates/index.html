@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+</head>
+<style>
+</style>
+
+<body>
+  <div id="header">
+    Query Redshift and RDS
+  </div>
+  <br>
+  <div id="queries">
+    <a id="dbhtext">Select database to query:</a><br>
+    <a v-show="show">[[ message ]]</a><br>
+    <button type="submit" value="Submit" id="submit" class="form-inline btn-primary" v-on:click='toggleMessage'>Acknowledge</button>
+    <select id="tabDrop" onchange='queries.updateIndex()'>
+      <option value="0" class="tabOp">Redshift</option>
+      <option value="1" class="tabOp">RDS</option>
+    </select>
+    <br>
+    <br>
+    <b-form-textarea id="txtarea" v-model="query" rows="3" placeholder="Enter SQL Query"></b-form-textarea>
+    <br>
+    <button type="submit" value="Submit" id="submit" class="btn btn-outline-dark" v-on:click='performQuery'>Submit</button>
+    <br>
+  </div>
+  <div id="results" v-show="display">
+    <b-table striped borderless hover dark sticky-header="1000px" id="table" :items="items" :fields="fields">
+    </b-table>
+  </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.21.2/bootstrap-vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+<script>
+  var queries = new Vue({ //controls form input
+    el: '#queries',
+    delimiters : ['[[', ']]'],
+    data: {
+      index: 0, //0 redshift, 1 rds
+      query: "",
+      message: "testing123S",
+      show: true
+    },
+    methods: {
+      updateIndex: function() { //keeps track of which database to query
+        this.index = document.getElementById("tabDrop").selectedIndex;
+      },
+      performQuery: function() {
+        document.getElementById("submit").disabled = true; //stop queries from happening
+        results.clear()
+        var server = "";
+        if(this.index == 0) {
+          server = "redshift";
+        } else {
+          server = "rds";
+        }
+        var url = "/" + server + "?query=" + this.query;
+        axios //executes the query with a promise to get around asynchronous javascript behavior
+          .get(url,{
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+              'Access-Control-Allow-Origin': '*',
+            }
+          })
+          .then(response => {
+            var resp = response.data; //update table with new data
+            results.update(resp['fields'], this.resp['items']);
+          }).catch(error => {
+            if(error.response) {
+              console.log("Error: " + error.message);
+            }
+            document.getElementById("submit").disabled = false; //allow queries to start again
+          });
+        document.getElementById("submit").disabled = false; //allow queries to start again
+      },
+      toggleMessage: function() {
+        this.show = !this.show;
+      }
+    }
+  });
+  var results = new Vue({
+    el: '#results',
+    data: {
+      display: true, //hide or show section
+      items: [],
+      fields: []
+    },
+    methods: {
+      update: function(f,i) {
+        this.fields = f;
+        this.items = i;
+        this.display = true;
+      },
+      clear: function() {
+        this.display = false;
+        this.fields = [];
+        this.items = [];
+      }
+    }
+  });
+</script>
+
+</html>
