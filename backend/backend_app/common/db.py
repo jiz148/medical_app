@@ -6,6 +6,9 @@ Database Operations Class
 class SqliteDBMS:
 
     def __init__(self, db_dir):
+        """
+        SQLite dbms class
+        """
         self.conn = None
         self.cursor = None
         pass
