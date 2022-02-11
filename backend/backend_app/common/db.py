@@ -8,6 +8,7 @@ class SqliteDBMS:
     def __init__(self, db_dir):
         """
         SQLite dbms class
+        @param db_dir: database directory
         """
         self.conn = None
         self.cursor = None
