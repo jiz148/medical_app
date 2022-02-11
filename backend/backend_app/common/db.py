@@ -1,6 +1,7 @@
 """
 Database Operations Class
 """
+import sqlite3
 
 
 class SqliteDBMS:
@@ -10,9 +11,8 @@ class SqliteDBMS:
         SQLite dbms class
         @param db_dir: database directory
         """
-        self.conn = None
-        self.cursor = None
-        pass
+        self.conn = sqlite3.connect(db_dir)
+        self.cursor = self.conn.cursor()
 
     def add(self, table, col_to_val):
         """
@@ -28,10 +28,10 @@ class SqliteDBMS:
             self.cursor.execute(sql)
             self.conn.commit()
             return True
-        except Exception:
+        except Exception as e:
             self.conn.rollback()
             print('error when adding to db')
-            print(Exception)
+            print(e)
             return False
         pass
 
@@ -58,7 +58,9 @@ class SqliteDBMS:
         try:
             self.cursor.execute(query_str)
             return True, self.cursor.fetchall()
-        except:
+        except Exception as e:
+            print('error when querying db')
+            print(e)
             return False, None
         pass
 
@@ -72,3 +74,19 @@ class SqliteDBMS:
         if col_to_val is None:
             col_to_val = {}
         pass
+
+
+if __name__ == '__main__':
+    dbms = SqliteDBMS('../../data/WinNBQ.db3')
+    table = 'User'
+    input_data = {
+        'id': 'asdiefasdf',
+        'username': 'jin',
+        'password': 'pass',
+        'email': 'someemail@someemail.com',
+        'birthday': '05-16-1763',
+        'gender': 'Male',
+    }
+    print(dbms.add(table, input_data))
+    sql_str = """select * from User limit 5"""
+    print(dbms.query(sql_str))
