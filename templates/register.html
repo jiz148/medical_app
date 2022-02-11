@@ -19,6 +19,13 @@
     padding-bottom: 0.6em;
     padding-left: 0.8em;
   }
+  #error {
+    color: rgb(255, 10, 67);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+  }
   #formElements {
     margin-top: 0.3em;
     margin-left: 0.6em;
@@ -33,7 +40,11 @@
     <div id="header">
       AI Internal Medicine
     </div>
-    <div id="error" v-show="showError">[[errorMess]]</div>
+    <div id="error" class="card" v-show="showError">
+      <div class="card-body">
+        [[errorMess]]
+      </div>
+    </div>
     <div id="formElements">
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
