@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+<head>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+</head>
+<style>
+  body {
+    font-weight: bold;
+    font-size: 18px;
+    font-family: "Century Gothic";
+    background-color: rgb(252, 255, 255);
+  }
+  #header {
+    font-size: 24px;
+    color: rgb(134, 146, 146);
+    background-color: rgb(217, 248, 255);
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+    padding-left: 0.8em;
+  }
+  #error {
+    color: rgb(255, 10, 67);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+  }
+  #formElements {
+    margin-top: 0.3em;
+    margin-left: 0.6em;
+  }
+  #submitBut {
+    margin-top: 0.5em;
+  }
+</style>
+
+<body>
+  <div id="register">
+    <div id="header">
+      AI Internal Medicine
+    </div>
+    <div id="error" class="card" v-show="showError">
+      <div class="card-body">
+        [[errorMess]]
+      </div>
+    </div>
+    <div id="formElements">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" v-model="email" placeholder="Enter email">
+      </div>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" v-model="username" placeholder="Enter username">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" v-model="password" placeholder="Enter password">
+        </div>
+        <div class="mb-3">
+          <label for="year" class="form-label">Birth Year</label>
+          <input type="number" class="form-control" id="year" v-model="year" placeholder="Enter the year you were born">
+       </div>
+       <div class="mb-3">
+        <label for="phone" class="form-label">Phone Number (Optional)</label>
+        <input type="text" class="form-control" id="phone" v-model="phone" placeholder="Enter your phone number">
+      </div>
+      <div id="gendergroup">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="male" id="male" value="male" v-model="gender">
+          <label class="form-check-label" for="male">Male</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="female" id="female" value="female" v-model="gender">
+          <label class="form-check-label" for="female">Female</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="other" id="other" value="other" v-model="gender">
+          <label class="form-check-label" for="other">Other</label>
+        </div>
+       </div>
+        <button id="submitBut" class="btn btn-primary" type="submit" v-on:click="register">Register</button>
+    </div>
+  </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.21.2/bootstrap-vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+<script>
+  var register = new Vue({ //controls form input
+    el: '#register',
+    delimiters : ['[[', ']]'],
+    data: {
+      query: "",
+      username: "",
+      password: "",
+      email: "",
+      year: null,
+      gender: "male",
+      phone: null,
+      showError: false,
+      errorMess: "",
+      response: {}
+    },
+    methods: {
+      register: function() { //keeps track of which database to query
+        console.log("registering info");
+        if(this.password == "") { 
+            this.errorMess = "Please input a password.";
+            this.showError = true;
+        } else if(this.username == "") {
+            this.errorMess = "Please input a username.";
+            this.showError = true;
+        } else if(this.email == "") {
+            this.errorMess = "Please input an email.";
+            this.showError = true;
+        } else if(this.year < 1000 || this.year > 9999) {
+            this.errorMess = "Please input a valid year.";
+            this.showError = true;
+        } else { //should also sanitize input for sql injection, but we can worry about that later
+            this.showError = false;
+            if(this.phone != null) {
+              let ind = this.phone.indexof('-');
+              if(this.phone.indexof('-') > -1) {
+                let temp = this.phone.substring(0,ind);
+                let ind2 = this.phone.substring(ind+1, this.phone.length).indexof('-') + ind + 1;
+                temp += this.phone.substring(ind+1, ind2) + this.phone.substring(ind2+1, this.phone.length);
+                this.phone = temp;
+              } 
+            }
+            
+            this.performQuery();
+        }
+      },
+      performQuery: function() {
+        document.getElementById("submit").disabled = true; //stop queries from happening
+        var url = "/register";
+        url += "?email=" + this.email;
+        url += "?username=" + this.username;
+        url += "?password=" + this.password; 
+        url += "?birthday=" + this.year;
+        url += "?gender=" + this.gender;
+        if(phone != null) {
+          url += "?phone=" + this.phone;
+        }
+        axios //executes the query with a promise to get around asynchronous javascript behavior
+          .get(url,{
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+              'Access-Control-Allow-Origin': '*',
+            }
+          })
+          .then(response => {
+            this.response = response.data; //update table with new data
+          }).catch(error => {
+            if(error.response) {
+              console.log("Error: " + error.message);
+            }
+            document.getElementById("submit").disabled = false; //allow queries to start again
+          });
+        document.getElementById("submit").disabled = false; //allow queries to start again
+      }
+    }
+  });
+</script>
+
+</html>
