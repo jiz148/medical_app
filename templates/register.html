@@ -5,12 +5,33 @@
   <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 </head>
 <style>
+  body {
+    font-weight: bold;
+    font-size: 18px;
+    font-family: "Century Gothic";
+    background-color: rgb(252, 255, 255);
+  }
+  #header {
+    font-size: 24px;
+    color: rgb(134, 146, 146);
+    background-color: rgb(217, 248, 255);
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+    padding-left: 0.8em;
+  }
+  #formElements {
+    margin-top: 0.3em;
+    margin-left: 0.6em;
+  }
+  #submitBut {
+    margin-top: 0.5em;
+  }
 </style>
 
 <body>
   <div id="register">
     <div id="header">
-      Telemedicine Health App
+      AI Internal Medicine
     </div>
     <div id="error" v-show="showError">[[errorMess]]</div>
     <div id="formElements">
