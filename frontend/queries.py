@@ -1,5 +1,4 @@
 from flask import Flask, request, render_template
-from connection import connect_rds, connect_redshift
 
 app = Flask(__name__)
 
