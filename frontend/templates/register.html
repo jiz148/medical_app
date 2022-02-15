@@ -59,6 +59,10 @@
             <input type="password" class="form-control" id="password" v-model="password" placeholder="Enter password">
         </div>
         <div class="mb-3">
+          <label for="password2" class="form-label">Confirm Password</label>
+          <input type="password" class="form-control" id="password2" v-model="password2" placeholder="Re-type password">
+        </div>
+        <div class="mb-3">
           <label for="year" class="form-label">Birth Year</label>
           <input type="number" class="form-control" id="year" v-model="year" placeholder="Enter the year you were born">
        </div>
@@ -95,10 +99,11 @@
       query: "",
       username: "",
       password: "",
+      password2: "",
       email: "",
       year: null,
       gender: "male",
-      phone: null,
+      phone: "",
       showError: false,
       errorMess: "",
       response: {}
@@ -120,7 +125,7 @@
             this.showError = true;
         } else { //should also sanitize input for sql injection, but we can worry about that later
             this.showError = false;
-            if(this.phone != null) {
+            /*if(this.phone != null) {
               let ind = this.phone.indexof('-');
               if(this.phone.indexof('-') > -1) {
                 let temp = this.phone.substring(0,ind);
@@ -128,24 +133,27 @@
                 temp += this.phone.substring(ind+1, ind2) + this.phone.substring(ind2+1, this.phone.length);
                 this.phone = temp;
               } 
-            }
+            }*/
             
             this.performQuery();
         }
       },
       performQuery: function() {
-        document.getElementById("submit").disabled = true; //stop queries from happening
-        var url = "/register";
-        url += "?email=" + this.email;
-        url += "?username=" + this.username;
-        url += "?password=" + this.password; 
-        url += "?birthday=" + this.year;
-        url += "?gender=" + this.gender;
+        document.getElementById("submitBut").disabled = true; //stop queries from happening
+        var url = "http://127.0.0.1:5001/users/register";
+        let data = {
+            'email': this.email,
+            'username': this.username,
+            'password': this.password,
+            'birthday': this.year,
+            'gender': this.gender
+          }
         if(phone != null) {
-          url += "?phone=" + this.phone;
+          data['phone'] = this.phone;
         }
         axios //executes the query with a promise to get around asynchronous javascript behavior
-          .get(url,{
+          .post(url, data,
+          {
             headers: {
               'Content-Type': 'application/json;charset=UTF-8',
               'Access-Control-Allow-Origin': '*',
@@ -153,13 +161,24 @@
           })
           .then(response => {
             this.response = response.data; //update table with new data
+            console.log(this.response);
+            if(this.response.success == 0) {
+              this.errorMess = this.response.msg;
+              this.showError = true;
+            } else {
+              console.log(this.response.msg); //switch to main page here
+            }
+            this.username = "";
+            this.password = "";
           }).catch(error => {
             if(error.response) {
               console.log("Error: " + error.message);
             }
-            document.getElementById("submit").disabled = false; //allow queries to start again
+            document.getElementById("submitBut").disabled = false; //allow queries to start again
+            this.username = "";
+            this.password = "";
           });
-        document.getElementById("submit").disabled = false; //allow queries to start again
+        document.getElementById("submitBut").disabled = false; //allow queries to start again
       }
     }
   });

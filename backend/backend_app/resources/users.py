@@ -27,7 +27,7 @@ class UsersRegister(Resource):
 
         if obj1[1] != [] or obj2[1] != []:
             # json conversion required
-            return " Invalid username or email"
+            return {'success': 0, 'msg': 'Invalid username or email'}
 
         table = 'User'
         col_to_val = {
@@ -42,7 +42,7 @@ class UsersRegister(Resource):
         dbms.add(table, col_to_val)
         dbms.close()
 
-        return "hello"
+        return {'success': 1, 'msg': 'Success'}
 
         pass
 
@@ -65,11 +65,11 @@ class UsersLogin(Resource):
 
         if obj[1] == []:
             # error it does not match
-            return "invalid username or  password"
+            return {'success': 0, 'msg': 'Invalid username or password'}
 
         dbms.close()
 
-        return "Welcome"
+        return {'success': 1, 'msg': 'Success'}
 
 
         pass

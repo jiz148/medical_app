@@ -104,26 +104,41 @@
         }
       },
       performQuery: function() {
-        document.getElementById("submit").disabled = true; //stop queries from happening
-        var url = "/login";
-        url += "?username=" + this.username;
-        url += "?password=" + this.password; 
+        document.getElementById("submitBut").disabled = true; //stop queries from happening
+        //var url = "/login";
+        let url = "http://127.0.0.1:5001/users/login";
+        //url += "?username=" + this.username;
+        //url += "?password=" + this.password; 
         axios //executes the query with a promise to get around asynchronous javascript behavior
-          .get(url,{
-            headers: {
+          .post(url,{
+            'username': this.username, 
+            'password': this.password, 
+            }, {
+              headers: {
               'Content-Type': 'application/json;charset=UTF-8',
               'Access-Control-Allow-Origin': '*',
             }
-          })
+            })
           .then(response => {
             this.response = response.data; //update table with new data
+            console.log(this.response);
+            if(this.response.success == 0) {
+              this.errorMess = this.response.msg;
+              this.showError = true;
+            } else {
+              console.log(this.response.msg); //switch to main page here
+            }
+            this.username = "";
+          this.password = "";
           }).catch(error => {
             if(error.response) {
               console.log("Error: " + error.message);
             }
-            document.getElementById("submit").disabled = false; //allow queries to start again
+            document.getElementById("submitBut").disabled = false; //allow queries to start again
+            this.username = "";
+            this.password = "";
           });
-        document.getElementById("submit").disabled = false; //allow queries to start again
+        document.getElementById("submitBut").disabled = false; //allow queries to start again
       },
       toggleMessage: function() {
         this.show = !this.show;

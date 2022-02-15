@@ -1,8 +1,12 @@
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 from backend.backend_app.resources.users import UsersRegister, UsersLogin
 
 app = Flask(__name__)
+
+# CORS
+CORS(app)
 
 api = Api(app)
 
