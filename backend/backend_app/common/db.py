@@ -80,7 +80,6 @@ if __name__ == '__main__':
     dbms = SqliteDBMS('../../data/WinNBQ.db3')
     table = 'User'
     input_data = {
-        'id': 'asdiefasdf',
         'username': 'jin',
         'password': 'pass',
         'email': 'someemail@someemail.com',
@@ -90,3 +89,4 @@ if __name__ == '__main__':
     print(dbms.add(table, input_data))
     sql_str = """select * from User limit 5"""
     print(dbms.query(sql_str))
+    dbms.close()
