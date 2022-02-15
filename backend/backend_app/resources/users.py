@@ -19,6 +19,8 @@ class UsersRegister(Resource):
         email = data["email"]
         birthday = data["birthday"]
         gender = data["gender"]
+        phone = data["phone"]
+
 
         query_str_username = "select * from User where username ='"+username+"'"
         obj1 = dbms.query(query_str_username)
@@ -37,6 +39,7 @@ class UsersRegister(Resource):
             "email": email,
             "birthday": birthday,
             "gender": gender,
+            "phone": phone
         }
 
         dbms.add(table, col_to_val)
