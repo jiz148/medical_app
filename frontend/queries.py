@@ -2,9 +2,13 @@ from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
-@app.route('/login', methods=['GET, POST'])
+@app.route('/main', methods=['POST'])
+def query_main():
+    return render_template('main.html');
+
+@app.route('/login', methods=['POST'])
 def query_login():
-    return {}
+    return render_template('login.html');
 
 @app.route('/disclaimer', methods=['POST'])
 def query_disclaimer():

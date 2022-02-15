@@ -70,6 +70,9 @@
         <form action="/disclaimer" method="post" id="formbtn">
             <button id="registerBut" class="btn btn-danger" type="submit" >Register</button>
         </form>
+        <form action="/main" method="post" id="switchbtn" v-show="switchpage">
+          <button id="switchBut" class="btn btn-danger" type="submit" ></button>
+      </form>
     </div>
   </div>
 </body>
@@ -87,7 +90,8 @@
       password: "",
       showError: false,
       errorMess: "",
-      response: {}
+      response: {},
+      switchpage: false
     },
     methods: {
       loginInfo: function() { //keeps track of which database to query
@@ -103,13 +107,14 @@
             this.performQuery();
         }
       },
-      performQuery: function() {
+      performQuery: async function() {
         document.getElementById("submitBut").disabled = true; //stop queries from happening
         //var url = "/login";
         let url = "http://127.0.0.1:5001/users/login";
         //url += "?username=" + this.username;
         //url += "?password=" + this.password; 
-        axios //executes the query with a promise to get around asynchronous javascript behavior
+        let success = false;
+        await axios //executes the query with a promise to get around asynchronous javascript behavior
           .post(url,{
             'username': this.username, 
             'password': this.password, 
@@ -127,9 +132,8 @@
               this.showError = true;
             } else {
               console.log(this.response.msg); //switch to main page here
+              success = true;
             }
-            this.username = "";
-          this.password = "";
           }).catch(error => {
             if(error.response) {
               console.log("Error: " + error.message);
@@ -139,6 +143,9 @@
             this.password = "";
           });
         document.getElementById("submitBut").disabled = false; //allow queries to start again
+        if(success) {
+          document.getElementById('switchBut').click();
+        }
       },
       toggleMessage: function() {
         this.show = !this.show;

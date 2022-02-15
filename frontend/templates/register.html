@@ -86,6 +86,9 @@
        </div>
         <button id="submitBut" class="btn btn-primary" type="submit" v-on:click="register">Register</button>
     </div>
+    <form action="/login" method="post" id="switchbtn" v-show="switchpage">
+      <button id="switchBut" class="btn btn-danger" type="submit" ></button>
+  </form>
   </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
@@ -106,7 +109,8 @@
       phone: "",
       showError: false,
       errorMess: "",
-      response: {}
+      response: {},
+      switchpage: false
     },
     methods: {
       register: function() { //keeps track of which database to query
@@ -156,7 +160,7 @@
             this.performQuery();
         }
       },
-      performQuery: function() {
+      performQuery: async function() {
         document.getElementById("submitBut").disabled = true; //stop queries from happening
         var url = "http://127.0.0.1:5001/users/register";
         let data = {
@@ -169,7 +173,9 @@
         if(phone != null) {
           data['phone'] = this.phone;
         }
-        axios //executes the query with a promise to get around asynchronous javascript behavior
+        let success = false;
+        console.log(data);
+        await axios //executes the query with a promise to get around asynchronous javascript behavior
           .post(url, data,
           {
             headers: {
@@ -185,9 +191,8 @@
               this.showError = true;
             } else {
               console.log(this.response.msg); //switch to main page here
+              success = true;
             }
-            this.username = "";
-            this.password = "";
           }).catch(error => {
             if(error.response) {
               console.log("Error: " + error.message);
@@ -195,8 +200,16 @@
             document.getElementById("submitBut").disabled = false; //allow queries to start again
             this.username = "";
             this.password = "";
-          });
-        document.getElementById("submitBut").disabled = false; //allow queries to start again
+            this.password2 = "";
+            this.email = "";
+            this.year = null;
+            this.gender = "male";
+            this.phone = "";
+          }); 
+          document.getElementById("submitBut").disabled = false; //allow queries to start again
+          if(success) {
+              document.getElementById('switchBut').click();
+          }
       }
     }
   });
