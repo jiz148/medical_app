@@ -111,14 +111,32 @@
     methods: {
       register: function() { //keeps track of which database to query
         console.log("registering info");
-        if(this.password == "") { 
-            this.errorMess = "Please input a password.";
+        let re =  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        let ph = /^[2-9]\d{2}[2-9]\d{2}\d{4}$/;
+        if(this.phone != "") {
+          this.phone = this.phone.replace(/\D/g, "");
+          if(!ph.test(this.phone)) {
+            this.errorMess = "Invalid phone number.";
+            this.showError = true;
+            return;
+          }
+        }
+        console.log(this.password);
+        console.log(this.password.length);
+        //console.log(this.password.value);
+        if(this.password.length < 8) {
+          console.log("sanity check");
+            this.errorMess = "Please input a password with at least 8 characters.";
+            this.showError = true;
+        } else if(this.password != this.password2) {
+            this.errorMess = "The passwords do not match.";
             this.showError = true;
         } else if(this.username == "") {
             this.errorMess = "Please input a username.";
             this.showError = true;
-        } else if(this.email == "") {
-            this.errorMess = "Please input an email.";
+        //} else if(this.email == "") {
+        } else if(!re.test(this.email)) {
+            this.errorMess = "Please input a valid email.";
             this.showError = true;
         } else if(this.year < 1000 || this.year > 9999) {
             this.errorMess = "Please input a valid year.";
