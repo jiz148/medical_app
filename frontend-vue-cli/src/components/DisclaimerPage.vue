@@ -10,6 +10,7 @@
       </div>
     </div>
     <button id="button" class="btn btn-success" type="submit" @click="goregister" >Acknowledge</button>
+    <button id="buttonclose" class="btn btn-danger" type="submit" @click="closeapp" >Reject</button>
   </div>
 </template>
 
@@ -19,7 +20,10 @@ export default { //controls form input
     props: {},
     methods: {
         goregister() {
-            this.$router.push('/register');
+            this.$router.push('/login');
+        },
+        closeapp() {
+          //should quit the app, to be implemented
         }
     }
 }
@@ -45,5 +49,9 @@ export default { //controls form input
     margin-left: 0.6em;
     margin-top: 0.3em;
     display: inline-block;
+  }
+  #buttonclose {
+    margin-left: 0.2em;
+    margin-top: 0.3em;
   }
 </style>
