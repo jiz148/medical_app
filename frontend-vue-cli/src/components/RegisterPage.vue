@@ -1,48 +1,8 @@
-<!doctype html>
-<html>
-<head>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
-</head>
-<style>
-  body {
-    font-weight: bold;
-    font-size: 18px;
-    font-family: "Century Gothic";
-    background-color: rgb(252, 255, 255);
-  }
-  #header {
-    font-size: 24px;
-    color: rgb(134, 146, 146);
-    background-color: rgb(217, 248, 255);
-    padding-top: 0.6em;
-    padding-bottom: 0.6em;
-    padding-left: 0.8em;
-  }
-  #error {
-    color: rgb(255, 10, 67);
-    margin-top: 0.2em;
-    margin-bottom: 0.2em;
-    margin-left: 0.6em;
-    margin-right: 0.6em;
-  }
-  #formElements {
-    margin-top: 0.3em;
-    margin-left: 0.6em;
-  }
-  #submitBut {
-    margin-top: 0.5em;
-  }
-</style>
-
-<body>
+<template>
   <div id="register">
-    <div id="header">
-      AI Internal Medicine
-    </div>
     <div id="error" class="card" v-show="showError">
       <div class="card-body">
-        [[errorMess]]
+        {{ errorMess }}
       </div>
     </div>
     <div id="formElements">
@@ -84,39 +44,36 @@
           <label class="form-check-label" for="other">Other</label>
         </div>
        </div>
-        <button id="submitBut" class="btn btn-primary" type="submit" v-on:click="register">Register</button>
+        <button id="submitBut" class="btn btn-primary" type="submit" @click="register">Register</button>
     </div>
-    <form action="/login" method="post" id="switchbtn" v-show="switchpage">
-      <button id="switchBut" class="btn btn-danger" type="submit" ></button>
-  </form>
   </div>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.21.2/bootstrap-vue.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+</template>
+
 <script>
-  var register = new Vue({ //controls form input
-    el: '#register',
-    delimiters : ['[[', ']]'],
-    data: {
-      query: "",
-      username: "",
-      password: "",
-      password2: "",
-      email: "",
-      year: null,
-      gender: "male",
-      phone: "",
-      showError: false,
-      errorMess: "",
-      response: {},
-      switchpage: false
+  export default { //controls form input
+    name: "RegisterPage",
+    props: {},
+    data() {
+        return {
+            query: "",
+            username: "",
+            password: "",
+            password2: "",
+            email: "",
+            year: null,
+            gender: "male",
+            phone: "",
+            showError: false,
+            errorMess: "",
+            response: {},
+            switchpage: false
+        }
     },
     methods: {
-      register: function() { //keeps track of which database to query
+      register() { //keeps track of which database to query
         console.log("registering info");
-        let re =  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        let ph = /^[2-9]\d{2}[2-9]\d{2}\d{4}$/;
+        var re =  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
+        var ph = /^[2-9]\d{2}[2-9]\d{2}\d{4}$/; // eslint-disable-line
         if(this.phone != "") {
           this.phone = this.phone.replace(/\D/g, "");
           if(!ph.test(this.phone)) {
@@ -160,7 +117,7 @@
             this.performQuery();
         }
       },
-      performQuery: async function() {
+      async performQuery() {
         document.getElementById("submitBut").disabled = true; //stop queries from happening
         var url = "http://127.0.0.1:5001/users/register";
         let data = {
@@ -175,7 +132,7 @@
         }
         let success = false;
         console.log(data);
-        await axios //executes the query with a promise to get around asynchronous javascript behavior
+        await this.axios //executes the query with a promise to get around asynchronous javascript behavior
           .post(url, data,
           {
             headers: {
@@ -208,11 +165,26 @@
           }); 
           document.getElementById("submitBut").disabled = false; //allow queries to start again
           if(success) {
-              document.getElementById('switchBut').click();
+              this.$router.push('/');
           }
       }
     }
-  });
+  }
 </script>
 
-</html>
+<style>
+  #error {
+    color: rgb(255, 10, 67);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+  }
+  #formElements {
+    margin-top: 0.3em;
+    margin-left: 0.6em;
+  }
+  #submitBut {
+    margin-top: 0.5em;
+  }
+</style>
