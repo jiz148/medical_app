@@ -21,6 +21,8 @@
         </div>
         <button id="submitBut" class="btn btn-primary" type="submit" @click="loginInfo">Login</button>
         <button id="registerBut" class="btn btn-danger" type="submit" @click="godisclaimer" >Register</button>
+        <br>
+        <button id="forgetBut" class="btn btn-outline-primary" type="submit" @click="forgotpass">Forgot Password?</button>
     </div>
   </div>
 </template>
@@ -54,14 +56,13 @@ export default { //controls form input
                 this.performQuery();
             }
         },
-        async performQuery() {
+        performQuery() {
             document.getElementById("submitBut").disabled = true; //stop queries from happening
             //var url = "/login";
             let url = "http://127.0.0.1:5001/users/login";
             //url += "?username=" + this.username;
             //url += "?password=" + this.password; 
-            let success = false;
-            await this.axios //executes the query with a promise to get around asynchronous javascript behavior
+            this.axios //executes the query with a promise to get around asynchronous javascript behavior
                 .post(url,{
                 'username': this.username, 
                 'password': this.password, 
@@ -79,7 +80,7 @@ export default { //controls form input
                     this.showError = true;
                 } else {
                     console.log(this.response.msg); //switch to main page here
-                    success = true;
+                    this.$router.push('/main');
                 }
                 }).catch(error => {
                 if(error.response) {
@@ -90,16 +91,45 @@ export default { //controls form input
                 this.password = "";
                 });
             document.getElementById("submitBut").disabled = false; //allow queries to start again
-            if(success) {
-                this.$router.push('/main');
-            }
         },
         toggleMessage() {
             this.show = !this.show;
         },
         godisclaimer() {
-            this.$router.push('/disclaimer');
+            this.$router.push('/register');
         },
+        async forgotpass() {
+            //should query backend to get password based on username
+            let url = "http://127.0.0.1:5001/users/forgot";
+            let data = { 'username': this.username };
+            let pass = "";
+            let email = "";
+            let success = false;
+            await this.axios
+                .post(url, data, {
+                    headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Access-Control-Allow-Origin': '*',
+                }
+                }).then(response => {
+                    if(response.data.success == 1) {
+                        pass = response.data.password;
+                        email = response.data.email;
+                        success = true;
+                    } else {
+                        this.errorMess = response.data.msg;
+                        this.showError = true;
+                    }
+                }).catch(error => {
+                    if(error.response) {
+                        console.log("Error: " + error.message);
+                    }
+                });
+            if(success) {
+                //send email to user with updated data
+                data = [pass, email];
+            }
+        }
     }
 }
 </script>
@@ -125,9 +155,12 @@ export default { //controls form input
     margin-right: 0.6em;
   }
   #submitBut {
-      margin-right: 0.2em;
+      margin-right: 0.4em;
   }
   #registerBut {
       margin-top: 0.51em;
+  }
+  #forgetBut {
+      margin-top: 0.5em;
   }
 </style>

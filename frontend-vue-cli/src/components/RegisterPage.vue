@@ -117,7 +117,7 @@
             this.performQuery();
         }
       },
-      async performQuery() {
+      performQuery() {
         document.getElementById("submitBut").disabled = true; //stop queries from happening
         var url = "http://127.0.0.1:5001/users/register";
         let data = {
@@ -130,9 +130,8 @@
         if(this.phone != null) {
           data['phone'] = this.phone;
         }
-        let success = false;
         console.log(data);
-        await this.axios //executes the query with a promise to get around asynchronous javascript behavior
+        this.axios //executes the query with a promise to get around asynchronous javascript behavior
           .post(url, data,
           {
             headers: {
@@ -148,7 +147,7 @@
               this.showError = true;
             } else {
               console.log(this.response.msg); //switch to main page here
-              success = true;
+              this.$router.push('/login');
             }
           }).catch(error => {
             if(error.response) {
@@ -164,9 +163,6 @@
             this.phone = "";
           }); 
           document.getElementById("submitBut").disabled = false; //allow queries to start again
-          if(success) {
-              this.$router.push('/');
-          }
       }
     }
   }
