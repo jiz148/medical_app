@@ -90,8 +90,8 @@ class User(Resource):
                        content=email_content,
                        smtp_server=SMTP_SERVER,
                        port=SMTP_PORT)
-            return {'success': 1, 'msg': 'Success'}
+            return {'msg': 'success'}, 200
         except Exception as e:
             print(e)
-            return {'success': 0, 'msg': 'Error when sending email'}
+            return abort(500, msg='Error when sending email')
 
