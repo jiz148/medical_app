@@ -1,4 +1,4 @@
-from backend_sql_alchemy.backend_app.db import db
+from backend_sqlalchemy.backend_app.db import db
 from sqlalchemy.ext.automap import automap_base
 
 base = automap_base()

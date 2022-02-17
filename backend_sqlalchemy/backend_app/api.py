@@ -1,7 +1,7 @@
 from flask_restful import Api
 
-from backend_sql_alchemy.backend_app.resources.user import User
-from backend_sql_alchemy.backend_app.db import create_app
+from backend_sqlalchemy.backend_app.resources.user import User
+from backend_sqlalchemy.backend_app.db import create_app
 
 
 app = create_app()

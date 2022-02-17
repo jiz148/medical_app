@@ -2,11 +2,11 @@ import os
 
 from flask_restful import Resource, reqparse, fields, marshal_with, abort
 
-from backend_sql_alchemy.backend_app.models.user import UserModel
-from backend_sql_alchemy.backend_app.db import db
-from backend_sql_alchemy.backend_app.common.send_email import send_email
+from backend_sqlalchemy.backend_app.models.user import UserModel
+from backend_sqlalchemy.backend_app.db import db
+from backend_sqlalchemy.backend_app.common.send_email import send_email
 
-from backend_sql_alchemy.backend_app.common.contents import FORGET_MY_PASSWORD_SUBJECT, FORGET_MY_PASSWORD_CONTENT
+from backend_sqlalchemy.backend_app.common.contents import FORGET_MY_PASSWORD_SUBJECT, FORGET_MY_PASSWORD_CONTENT
 
 TECHNICAL_EMAIL = 'medical_care_555@outlook.com'
 EMAIL_PASS = os.getenv('MD_EMAIL_PASS')

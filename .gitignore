@@ -133,4 +133,4 @@ dmypy.json
 
 # db
 /backend/data/
-/backend_sql_alchemy/backend_app/data
+/backend_sqlalchemy/backend_app/data
