@@ -94,7 +94,7 @@ class UserForgetPassword(Resource):
             abort(401, msg="Email does not exist")
 
         username = result.username
-        email_content = FORGET_MY_PASSWORD_CONTENT.format(username) + '/' + token
+        email_content = FORGET_MY_PASSWORD_CONTENT.format(username) + '/?token=' + token
 
         try:
             send_email(sender=TECHNICAL_EMAIL,
