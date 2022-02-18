@@ -59,7 +59,7 @@ export default { //controls form input
         performQuery() {
             document.getElementById("submitBut").disabled = true; //stop queries from happening
             //var url = "/login";
-            let url = "http://127.0.0.1:5001/users/login";
+            let url = "http://127.0.0.1:5001/user/login";
             //url += "?username=" + this.username;
             //url += "?password=" + this.password; 
             this.axios //executes the query with a promise to get around asynchronous javascript behavior
@@ -74,17 +74,23 @@ export default { //controls form input
                 })
                 .then(response => {
                 this.response = response.data; //update table with new data
+                var status = response.status;
                 console.log(this.response);
-                if(this.response.success == 0) {
-                    this.errorMess = this.response.msg;
-                    this.showError = true;
-                } else {
+                if(status == 200) {
                     console.log(this.response.msg); //switch to main page here
                     this.$router.push('/main');
+                } else {
+                    this.errorMess = this.response.msg;
+                    this.showError = true;
                 }
                 }).catch(error => {
                 if(error.response) {
                     console.log("Error: " + error.message);
+                    var status = error.response.status;
+                    if(status == 401) {
+                        this.errorMess = error.response.data.msg;
+                        this.showError = true;
+                    }
                 }
                 document.getElementById("submitBut").disabled = false; //allow queries to start again
                 this.username = "";
@@ -100,7 +106,7 @@ export default { //controls form input
         },
         async forgotpass() {
             //should query backend to get password based on username
-            let url = "http://127.0.0.1:5001/users/forgot";
+            let url = "http://127.0.0.1:5001/user/forgot";
             let data = { 'username': this.username };
             let pass = "";
             let email = "";

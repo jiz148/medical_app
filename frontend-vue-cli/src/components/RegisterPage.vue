@@ -119,12 +119,12 @@
       },
       performQuery() {
         document.getElementById("submitBut").disabled = true; //stop queries from happening
-        var url = "http://127.0.0.1:5001/users/register";
+        var url = "http://127.0.0.1:5001/user/register";
         let data = {
             'email': this.email,
             'username': this.username,
             'password': this.password,
-            'birthday': this.year,
+            'birth_year': this.year,
             'gender': this.gender
           }
         if(this.phone != null) {
@@ -141,17 +141,23 @@
           })
           .then(response => {
             this.response = response.data; //update table with new data
-            console.log(this.response);
-            if(this.response.success == 0) {
-              this.errorMess = this.response.msg;
-              this.showError = true;
-            } else {
+            console.log(response);
+            var status = response.status;
+            if(status == 201) {
               console.log(this.response.msg); //switch to main page here
               this.$router.push('/login');
+            } else {
+              this.errorMess = this.response.msg;
+              this.showError = true;
             }
           }).catch(error => {
             if(error.response) {
               console.log("Error: " + error.message);
+              var status = error.response.status;
+              if(status == 409) {
+                this.errorMess = error.response.data.msg;
+                this.showError = true;
+              }
             }
             document.getElementById("submitBut").disabled = false; //allow queries to start again
             this.username = "";
