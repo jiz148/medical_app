@@ -16,7 +16,7 @@
   * [UserModel](#usermodel)
 
 
-<a id="deploy"></a>
+<a id="launch"></a>
 ## Launch Server
 
 <a id="development"></a>
@@ -39,6 +39,7 @@
 6. `$ python run.py`
 
 
+<a id="db"></a>
 ## Database
 > Database for this app contains two main parts, user and algorithm. User part will be mainly for user information and authentication. Algorithm will be mainly for NextBestQuestion and FindDisease algorithm. 
 
