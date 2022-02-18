@@ -90,7 +90,7 @@ CREATE TABLE VisitToFinding
 <a id="endpoints"></a>
 ## Endpoints
 
-<a id="user-endpoints></a>
+<a id="user-endpoints"></a>
 ### User Endpoints
 > [endpoint resource](../backend_app/resources/user.py)
 
