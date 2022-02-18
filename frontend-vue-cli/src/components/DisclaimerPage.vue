@@ -3,6 +3,11 @@
     <div id="dischead">
       Disclaimer
     </div>
+    <div id="error" class="card" v-show="showError">
+      <div class="card-body">
+        {{ errorMess }}
+      </div>
+    </div>
     <div id="message" class="card"> 
       <div class="card-body">
         This application is designed primary as a reminder system for use by qualified physicians and other medical professionals.
@@ -18,12 +23,20 @@
 export default { //controls form input
     name: 'DisclaimerPage',
     props: {},
+    data() {
+      return {
+        showError: false,
+        errorMess: "",
+      }
+    },
     methods: {
         goregister() {
             this.$router.push('/login');
         },
         closeapp() {
           //should quit the app, to be implemented
+          this.errorMess = "You must acknowledge the disclaimer to proceed.";
+          this.showError = true;
         }
     }
 }
@@ -53,5 +66,12 @@ export default { //controls form input
   #buttonclose {
     margin-left: 0.2em;
     margin-top: 0.3em;
+  }
+  #error {
+    color: rgb(255, 10, 67);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    margin-left: 0.6em;
+    margin-right: 0.6em;
   }
 </style>

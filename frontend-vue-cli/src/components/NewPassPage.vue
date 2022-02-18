@@ -12,46 +12,48 @@
     </div>
     <div id="formElements">
         <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" v-model="username" placeholder="Enter username">
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="password" class="form-label">Enter a New Password</label>
             <input type="password" class="form-control" id="password" v-model="password" placeholder="Enter password">
         </div>
-        <button id="submitBut" class="btn btn-primary" type="submit" @click="loginInfo">Login</button>
-        <button id="registerBut" class="btn btn-danger" type="submit" @click="godisclaimer" >Register</button>
-        <br>
-        <button id="forgetBut" class="btn btn-outline-primary" type="submit" @click="forgotpass">Forgot Password?</button>
+        <div class="mb-3">
+          <label for="password2" class="form-label">Confirm Password</label>
+          <input type="password" class="form-control" id="password2" v-model="password2" placeholder="Re-type password">
+        </div>
+        <button id="submitBut" class="btn btn-danger" type="submit" @click="newpass">Change Password</button>
+        <button id="cancelBut" class="btn btn-outline-danger" type="submit" @click="cancel">Cancel</button>
     </div>
   </div>
 </template>
 
 <script>
 export default { //controls form input
-    name: 'LoginPage',
-    props: {},
+    name: 'NewPassPage',
+    props: {
+        token: String
+    },
     data() {
         return {
             query: "",
             message: "AI Interal Medicine searches a large database to diagnose you. To start simply enter your symptoms and answer the questions the app asks you.",
-            username: "",
             password: "",
+            password2: "",
             showError: false,
             errorMess: "",
-            response: {}
+            response: {},
+            tok: ""
         }
     },
     methods: {
-        loginInfo() { //keeps track of which database to query
-            console.log("logging in");
-            if(this.username == "") { 
-                this.errorMess = "Please input a username.";
+        newpass() { //keeps track of which database to query
+            //console.log(this.props.token);
+            this.tok = this.$route.query.token;
+            if(this.password.length < 8) {
+                this.errorMess = "Please input a password with at least 8 characters.";
                 this.showError = true;
-            } else if(this.password == "") {
-                this.errorMess = "Please input a password.";
+            } else if(this.password != this.password2) {
+                this.errorMess = "The passwords do not match.";
                 this.showError = true;
-            } else { //should also sanitize input for sql injection, but we can worry about that later
+            } else {//should also sanitize input for sql injection, but we can worry about that later
                 this.showError = false;
                 this.performQuery();
             }
@@ -59,13 +61,13 @@ export default { //controls form input
         performQuery() {
             document.getElementById("submitBut").disabled = true; //stop queries from happening
             //var url = "/login";
-            let url = "http://127.0.0.1:5001/user/login";
+            let url = "http://127.0.0.1:5001/user/change_password";
             //url += "?username=" + this.username;
             //url += "?password=" + this.password; 
             this.axios //executes the query with a promise to get around asynchronous javascript behavior
-                .post(url,{
-                'username': this.username, 
-                'password': this.password, 
+                .put(url,{
+                'token': this.tok,
+                'new_password': this.password
                 }, {
                     headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
@@ -78,7 +80,7 @@ export default { //controls form input
                 console.log(this.response);
                 if(status == 200) {
                     console.log(this.response.msg); //switch to main page here
-                    this.$router.push('/main');
+                    this.$router.push('/login');
                 } else {
                     this.errorMess = this.response.msg;
                     this.showError = true;
@@ -87,25 +89,18 @@ export default { //controls form input
                 if(error.response) {
                     console.log("Error: " + error.message);
                     var status = error.response.status;
-                    if(status == 401) {
+                    if(status == 404) {
                         this.errorMess = error.response.data.msg;
                         this.showError = true;
                     }
                 }
                 document.getElementById("submitBut").disabled = false; //allow queries to start again
-                this.username = "";
                 this.password = "";
                 });
-            document.getElementById("submitBut").disabled = false; //allow queries to start again
+            //document.getElementById("submitBut").disabled = false; //allow queries to start again
         },
-        toggleMessage() {
-            this.show = !this.show;
-        },
-        godisclaimer() {
-            this.$router.push('/register');
-        },
-        forgotpass() {
-            this.$router.push('/forget');
+        cancel() {
+            this.$router.push('/login');
         }
     }
 }
@@ -139,5 +134,8 @@ export default { //controls form input
   }
   #forgetBut {
       margin-top: 0.5em;
+  }
+  #cancelBut {
+      margin-top: 0.51em;
   }
 </style>

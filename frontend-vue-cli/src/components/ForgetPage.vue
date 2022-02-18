@@ -5,6 +5,11 @@
         {{ message }} 
       </div>
     </div>
+    <div id="alertinfo" class="card" v-show="showAlert"> 
+      <div class="card-body">
+        {{ alert }} 
+      </div>
+    </div>
     <div id="error" class="card" v-show="showError">
       <div class="card-body">
         {{ errorMess }}
@@ -12,60 +17,42 @@
     </div>
     <div id="formElements">
         <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" v-model="username" placeholder="Enter username">
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" v-model="password" placeholder="Enter password">
-        </div>
-        <button id="submitBut" class="btn btn-primary" type="submit" @click="loginInfo">Login</button>
-        <button id="registerBut" class="btn btn-danger" type="submit" @click="godisclaimer" >Register</button>
-        <br>
-        <button id="forgetBut" class="btn btn-outline-primary" type="submit" @click="forgotpass">Forgot Password?</button>
+          <label for="email" class="form-label">Enter Your Email</label>
+          <input type="email" class="form-control" id="email" v-model="email" placeholder="Enter your email">
+      </div>
+        <button id="submitBut" class="btn btn-success" type="submit" @click="forgetquery">Confirm</button>
     </div>
   </div>
 </template>
 
 <script>
 export default { //controls form input
-    name: 'LoginPage',
+    name: 'ForgetPage',
     props: {},
     data() {
         return {
             query: "",
             message: "AI Interal Medicine searches a large database to diagnose you. To start simply enter your symptoms and answer the questions the app asks you.",
-            username: "",
-            password: "",
+            email: "",
             showError: false,
             errorMess: "",
-            response: {}
+            response: {},
+            alert: "",
+            showAlert: false
         }
     },
     methods: {
-        loginInfo() { //keeps track of which database to query
-            console.log("logging in");
-            if(this.username == "") { 
-                this.errorMess = "Please input a username.";
-                this.showError = true;
-            } else if(this.password == "") {
-                this.errorMess = "Please input a password.";
-                this.showError = true;
-            } else { //should also sanitize input for sql injection, but we can worry about that later
-                this.showError = false;
-                this.performQuery();
-            }
-        },
-        performQuery() {
+        forgetquery() {
             document.getElementById("submitBut").disabled = true; //stop queries from happening
             //var url = "/login";
-            let url = "http://127.0.0.1:5001/user/login";
+            let url = "http://127.0.0.1:5001/user/forget_password";
             //url += "?username=" + this.username;
             //url += "?password=" + this.password; 
+            this.showAlert = false;
+            this.showError = false;
             this.axios //executes the query with a promise to get around asynchronous javascript behavior
                 .post(url,{
-                'username': this.username, 
-                'password': this.password, 
+                'email': this.email
                 }, {
                     headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
@@ -78,7 +65,9 @@ export default { //controls form input
                 console.log(this.response);
                 if(status == 200) {
                     console.log(this.response.msg); //switch to main page here
-                    this.$router.push('/main');
+                    //this.$router.push('/login');
+                   this. alert = "An email with a password reset link has been sent to " + this.email + ".";
+                    this.showAlert = true;
                 } else {
                     this.errorMess = this.response.msg;
                     this.showError = true;
@@ -87,25 +76,14 @@ export default { //controls form input
                 if(error.response) {
                     console.log("Error: " + error.message);
                     var status = error.response.status;
-                    if(status == 401) {
+                    if(status == 401 || status == 500) {
                         this.errorMess = error.response.data.msg;
                         this.showError = true;
                     }
                 }
                 document.getElementById("submitBut").disabled = false; //allow queries to start again
-                this.username = "";
-                this.password = "";
                 });
             document.getElementById("submitBut").disabled = false; //allow queries to start again
-        },
-        toggleMessage() {
-            this.show = !this.show;
-        },
-        godisclaimer() {
-            this.$router.push('/register');
-        },
-        forgotpass() {
-            this.$router.push('/forget');
         }
     }
 }
