@@ -42,7 +42,7 @@ resource_field = {
 }
 
 # defining a custom hash function to be used for encrypting the password
-custom_hash = pbkdf2_sha256.using(salt=b'cs555jkknms').using(rounds=10000).hash
+custom_hash = pbkdf2_sha256.using(salt=bytes(app.secret_key, 'utf-8')).using(rounds=10000).hash
 
 
 class UserRegister(Resource):
