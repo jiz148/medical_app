@@ -61,7 +61,7 @@
             password2: "",
             email: "",
             year: null,
-            gender: "male",
+            gender: null,
             phone: "",
             showError: false,
             errorMess: "",
@@ -93,7 +93,7 @@
         } else if(this.password != this.password2) {
             this.errorMess = "The passwords do not match.";
             this.showError = true;
-        }  else if(this.year < 1900 || this.year > yyyy) {
+        }  else if(this.year < yyyy-120 || this.year > yyyy) {
             this.errorMess = "Please input a valid year.";
             this.showError = true;
         } else if(this.phone != "") {
@@ -103,6 +103,9 @@
             this.showError = true;
             return;
           }
+        } else if(this.gender == null) {
+            this.errorMess = "Please select your gender.";
+            this.showError = true;
         } else { //should also sanitize input for sql injection, but we can worry about that later
             this.showError = false;
             /*if(this.phone != null) {

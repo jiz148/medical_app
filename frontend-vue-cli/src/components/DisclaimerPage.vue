@@ -10,8 +10,8 @@
     </div>
     <div id="message" class="card"> 
       <div class="card-body">
-        This application is designed primary as a reminder system for use by qualified physicians and other medical professionals.
-        ... Didn't copy the rest, but it should be somewhere in the code the professor shared with us.
+        This application is designed primarily as a reminder system for use by qualified physicians and other medical professionals. By using this site you understand and accept that this application shall not be used as a diagnostic decision-making system and must not be used to make a clinical diagnosis or replace or overrule a licensed health care professional's judgment or clinical diagnosis.
+TO THE FULL EXTENT PERMISSIBLE UNDER THE APPLICABLE LAW, ISMARTSOFT INC SHALL NOT BE LIABLE FOR ANY DAMAGES OR EXPENSES OF ANY KIND, LOSS OF DATA, LOST REVENUE, LOSS OF USE, DIRECT, INDIRECT, INCIDENTAL, PUNITIVE LOSSES, SPECIAL OR CONSEQUENTIAL DAMAGES RESULTING FROM THE USE OR INABILITY TO USE THE SOFTWARE OR WHETHER ARISING IN TORT (INCLUDING NEGLIGENCE), CONTRACT OR ANY OTHER LEGAL THEORY, EVEN IF A PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
       </div>
     </div>
     <button id="button" class="btn btn-success" type="submit" @click="goregister" >Acknowledge</button>
