@@ -1,7 +1,7 @@
 import os
 
 from flask_restful import Resource, reqparse, fields, marshal_with, abort
-from itsdangerous import URLSafeSerializer, BadData
+from itsdangerous import URLSafeTimedSerializer, BadData
 
 from backend_sqlalchemy.backend_app.models.user import UserModel
 from backend_sqlalchemy.backend_app.db import db
@@ -10,6 +10,7 @@ from backend_sqlalchemy.backend_app.common.send_email import send_email
 
 from backend_sqlalchemy.backend_app.common.contents import FORGET_MY_PASSWORD_SUBJECT, FORGET_MY_PASSWORD_CONTENT
 
+TOKEN_EXP_TIME = 900
 TECHNICAL_EMAIL = 'medical_care_555@outlook.com'
 EMAIL_PASS = os.getenv('MD_EMAIL_PASS')
 SMTP_SERVER = 'smtp.office365.com'
@@ -87,14 +88,14 @@ class UserForgetPassword(Resource):
         """
         args = user_forget_password_post_args.parse_args()
         user_email = args['email']
-        s = URLSafeSerializer(app.secret_key, salt='change_my_password')
+        s = URLSafeTimedSerializer(app.secret_key, salt='change_my_password')
         token = s.dumps(user_email)
         result = db.session.query(UserModel).filter(UserModel.email == user_email).first()
         if not result:
             abort(401, msg="Email does not exist")
 
         username = result.username
-        email_content = FORGET_MY_PASSWORD_CONTENT.format(username) + '/?token=' + token
+        email_content = FORGET_MY_PASSWORD_CONTENT.format(user=username, token=token, minutes=int(TOKEN_EXP_TIME / 60))
 
         try:
             send_email(sender=TECHNICAL_EMAIL,
@@ -116,10 +117,10 @@ class UserChangePassword(Resource):
         args = user_change_password_put_args.parse_args()
         token = args["token"]
         new_password = args["new_password"]
-        s = URLSafeSerializer(app.secret_key, salt='change_my_password')
+        s = URLSafeTimedSerializer(app.secret_key, salt='change_my_password')
         email = ''
         try:
-            email = s.loads(token)
+            email = s.loads(token, max_age=TOKEN_EXP_TIME)
         except BadData:
             abort(404, msg='Email token is broken')
 
