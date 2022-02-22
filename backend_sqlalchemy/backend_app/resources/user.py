@@ -1,5 +1,6 @@
 import os
 
+from flask import session
 from flask_restful import Resource, reqparse, fields, marshal_with, abort
 from itsdangerous import URLSafeTimedSerializer, BadData
 from passlib.hash import pbkdf2_sha256
@@ -86,7 +87,17 @@ class UserLogin(Resource):
             abort(401, msg="Invalid username or password")
         elif not pbkdf2_sha256.verify(password, result.password):
             abort(401, msg="Invalid username or password")
+        session['user'] = result
         return {'msg': 'success'}, 200
+
+
+class UserData(Resource):
+
+    def get(self):
+        """
+        @return: user data in session
+        """
+        return session['user']
 
 
 class UserForgetPassword(Resource):
