@@ -17,6 +17,38 @@
   export default { //controls form input
     name: "MainPage",
     props: {},
+    beforeCreate: function () {
+      let url = "http://127.0.0.1:5001/user/authenicate"
+      this.axios //executes the query with a promise to get around asynchronous javascript behavior
+        .get(url, {
+            credentials: "include",
+          }, {
+            headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Access-Control-Allow-Origin': '*',
+            "X-CSRFToken": csrf
+        },
+        })
+        .then(response => {
+          this.response = response.data; //update table with new data
+          var status = response.status;
+          console.log(this.response);
+          if(status == 200) {
+              console.log(this.response.msg); //switch to main page here
+              //this.$router.push('/main');
+          } else {
+              this.$router.push('/');
+          }
+        }).catch(error => {
+        if(error.response) {
+            console.log("Error: " + error.message);
+            var status = error.response.status;
+            if(status == 401) {
+                this.$router.push('/');
+            }
+        }
+        });
+    },
     data() {
         return {
             query: "",

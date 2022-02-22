@@ -69,7 +69,7 @@ export default { //controls form input
                 }, {
                     headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Origin': '*'
                 }
                 })
                 .then(response => {
