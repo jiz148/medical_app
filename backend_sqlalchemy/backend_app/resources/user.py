@@ -2,6 +2,7 @@ import os
 
 from flask_restful import Resource, reqparse, fields, marshal_with, abort
 from itsdangerous import URLSafeTimedSerializer, BadData
+from passlib.hash import pbkdf2_sha256
 
 from backend_sqlalchemy.backend_app.models.user import UserModel
 from backend_sqlalchemy.backend_app.db import db
@@ -40,6 +41,9 @@ resource_field = {
     'username': fields.String,
 }
 
+# defining a custom hash function to be used for encrypting the password
+custom_hash = pbkdf2_sha256.using(salt=b'cs555jkknms').using(rounds=10000).hash
+
 
 class UserRegister(Resource):
 
@@ -52,8 +56,12 @@ class UserRegister(Resource):
             abort(409, msg='Username already exists')
         if db.session.query(UserModel).filter(UserModel.email == args['email']).all():
             abort(409, msg='Email already exists')
+
+        # encrypting password before saving to database
+        encrypted_password = custom_hash(args['password'])
+
         user = UserModel(username=args['username'],
-                         password=args['password'],
+                         password=encrypted_password,
                          email=args['email'],
                          birth_year=args['birth_year'],
                          gender=args['gender'],
@@ -73,10 +81,11 @@ class UserLogin(Resource):
         username = args["username"]
         password = args["password"]
         result = db.session.query(UserModel).\
-            filter(UserModel.username == username, UserModel.password == password).all()
+            filter(UserModel.username == username).first()
         if not result:
             abort(401, msg="Invalid username or password")
-
+        elif not pbkdf2_sha256.verify(password, result.password):
+            abort(401, msg="Invalid username or password")
         return {'msg': 'success'}, 200
 
 
@@ -125,6 +134,8 @@ class UserChangePassword(Resource):
             abort(404, msg='Email token is broken')
 
         user = db.session.query(UserModel).filter(UserModel.email == email).first()
-        user.password = new_password
+        # encrypting password before saving to database
+        encrypted_password = custom_hash(new_password)
+        user.password = encrypted_password
         db.session.commit()
         return {'msg': 'success'}, 200
