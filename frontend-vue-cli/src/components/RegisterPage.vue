@@ -22,15 +22,12 @@
           <label for="password2" class="form-label">Confirm Password</label>
           <input type="password" class="form-control" id="password2" v-model="password2" placeholder="Re-type password">
         </div>
-        <div class="mb-3">
+        <div class="mb-3" id="yeardiv">
           <label for="year" class="form-label">Birth Year</label>
           <input type="number" class="form-control" id="year" v-model="year" placeholder="Enter the year you were born">
        </div>
-       <div class="mb-3">
-        <label for="phone" class="form-label">Phone Number (Optional)</label>
-        <input type="text" class="form-control" id="phone" v-model="phone" placeholder="Enter your phone number">
-      </div>
-      <div id="gendergroup">
+       <label class="form-check-label" id="genderlabel" for="gendergroup">Gender</label>
+       <div id="gendergroup">
         <div class="form-check form-check-inline">
           <input class="form-check-input" type="radio" name="male" id="male" value="male" v-model="gender">
           <label class="form-check-label" for="male">Male</label>
@@ -44,7 +41,12 @@
           <label class="form-check-label" for="other">Other</label>
         </div>
        </div>
+       <div class="mb-3">
+        <label for="phone" class="form-label">Phone Number (Optional)</label>
+        <input type="text" class="form-control" id="phone" v-model="phone" placeholder="Enter your phone number">
+      </div>
         <button id="submitBut" class="btn btn-primary" type="submit" @click="register">Register</button>
+        <button id="backBut" class="btn btn-secondary" type="submit" @click="$router.go(-1)">Cancel</button>
     </div>
   </div>
 </template>
@@ -93,7 +95,7 @@
         //} else if(this.email == "") {
         } else if(this.password.length < 8) {
           console.log("sanity check");
-            this.errorMess = "Please input a password with at least 8 characters.";
+            this.errorMess = "Your password must have a minimum of 8 characters.";
             this.showError = true;
         } else if(this.password != this.password2) {
             this.errorMess = "The passwords do not match.";
@@ -101,12 +103,15 @@
         }  else if(this.year < yyyy-120 || this.year > yyyy) {
             this.errorMess = "Please input a valid year.";
             this.showError = true;
-        } else if(this.phone != "" && !phtest) {
-          this.errorMess = "Invalid phone number.";
-          this.showError = true;
+        } else if(yyyy - this.year < 16) {
+            this.errorMess = "You must be at least 16 years old to register.";
+            this.showError = true;
         } else if(this.gender == null) {
             this.errorMess = "Please select your gender.";
             this.showError = true;
+        } else if(this.phone != "" && !phtest) {
+          this.errorMess = "Invalid phone number.";
+          this.showError = true;
         } else { //should also sanitize input for sql injection, but we can worry about that later
             this.showError = false;
             /*if(this.phone != null) {
@@ -193,5 +198,15 @@
   }
   #submitBut {
     margin-top: 0.5em;
+  }
+  #gendergroup {
+    margin-bottom:0.6em;
+    margin-left: 0.2em;
+  }
+  #year {
+    margin-bottom: -0.2em;
+  }
+  #backBut {
+    margin-top: 0.3em;
   }
 </style>
