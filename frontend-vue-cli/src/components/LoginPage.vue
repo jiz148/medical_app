@@ -24,10 +24,11 @@
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" v-model="password" placeholder="Enter password">
         </div>
-        <button id="submitBut" class="btn btn-primary" type="submit" @click="loginInfo">Login</button>
-        <button id="registerBut" class="btn btn-danger" type="submit" @click="godisclaimer" >Register</button>
+        <button id="submitBut" class="btn btn-primary btn-lg" type="submit" @click="loginInfo">Login</button>
         <br>
-        <button id="forgetBut" class="btn btn-outline-primary" type="submit" @click="forgotpass">Forgot Password?</button>
+        <button id="registerBut" class="btn btn-outline-primary" type="submit" @click="godisclaimer" >Register</button>
+        <br>
+        <button id="forgetBut" class="btn btn-link btn-sm" type="submit" @click="forgotpass">Forgot Password?</button>
     </div>
   </div>
 </template>
@@ -162,11 +163,12 @@ export default { //controls form input
   }
   #submitBut {
       margin-right: 0.4em;
+      margin-bottom: 0.2em
   }
   #registerBut {
-      margin-top: 0.51em;
+      margin-top: 2em;
   }
   #forgetBut {
-      margin-top: 0.5em;
+      margin-left: -0.6em;
   }
 </style>
