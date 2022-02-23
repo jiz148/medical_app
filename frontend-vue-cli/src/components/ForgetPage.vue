@@ -66,7 +66,7 @@ export default { //controls form input
                 if(status == 200) {
                     console.log(this.response.msg); //switch to main page here
                     //this.$router.push('/login');
-                   this. alert = "An email with a password reset link has been sent to " + this.email + ".";
+                   this. alert = "An email with a password reset link has been sent to " + this.email + ". If you do not see the email check you spam folder as well.";
                     this.showAlert = true;
                 } else {
                     this.errorMess = this.response.msg;
