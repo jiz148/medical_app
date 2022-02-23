@@ -72,12 +72,17 @@
     methods: {
       register() { //keeps track of which database to query
         console.log("registering info");
+        this.showError = false;
         var re =  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
         var ph = /^[2-9]\d{2}[2-9]\d{2}\d{4}$/; // eslint-disable-line
         var today = new Date();
         var yyyy = today.getFullYear();
         console.log(this.password);
         console.log(this.password.length);
+        let phtest = true
+        if(this.phone != "") {
+          phtest = ph.test(this.phone.replace(/\D/g, ""))
+        }
         //console.log(this.password.value);
         if(!re.test(this.email)) {
             this.errorMess = "Please input a valid email.";
@@ -96,13 +101,9 @@
         }  else if(this.year < yyyy-120 || this.year > yyyy) {
             this.errorMess = "Please input a valid year.";
             this.showError = true;
-        } else if(this.phone != "") {
-          this.phone = this.phone.replace(/\D/g, "");
-          if(!ph.test(this.phone)) {
-            this.errorMess = "Invalid phone number.";
-            this.showError = true;
-            return;
-          }
+        } else if(this.phone != "" && !phtest) {
+          this.errorMess = "Invalid phone number.";
+          this.showError = true;
         } else if(this.gender == null) {
             this.errorMess = "Please select your gender.";
             this.showError = true;
