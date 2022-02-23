@@ -80,7 +80,7 @@ export default { //controls form input
                 console.log(this.response);
                 if(status == 200) {
                     console.log(this.response.msg); //switch to main page here
-                    this.$router.push('/login');
+                    this.$router.push('/login?msg=Password successfully changed.');
                 } else {
                     this.errorMess = this.response.msg;
                     this.showError = true;

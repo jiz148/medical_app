@@ -5,6 +5,11 @@
         {{ message }} 
       </div>
     </div>
+    <div id="alert" class="card" v-show="showAlert">
+      <div class="card-body">
+        {{ alertMess }}
+      </div>
+    </div>
     <div id="error" class="card" v-show="showError">
       <div class="card-body">
         {{ errorMess }}
@@ -30,7 +35,9 @@
 <script>
 export default { //controls form input
     name: 'LoginPage',
-    props: {},
+    props: {
+        msg: String
+    },
     data() {
         return {
             query: "",
@@ -39,12 +46,22 @@ export default { //controls form input
             password: "",
             showError: false,
             errorMess: "",
-            response: {}
+            response: {},
+            alertMess: "",
+            showAlert: false
+        }
+    },
+    created: function() {
+        this.alertMess = this.$route.query.msg;
+        if(this.alertMess) {
+            this.showAlert = true;
         }
     },
     methods: {
         loginInfo() { //keeps track of which database to query
             console.log("logging in");
+            this.showError = false;
+            this.showAlert = false;
             if(this.username == "") { 
                 this.errorMess = "Please input a username.";
                 this.showError = true;
@@ -127,6 +144,13 @@ export default { //controls form input
   }
   #error {
     color: rgb(255, 10, 67);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+  }
+  #alert {
+    color: rgb(40, 190, 90);
     margin-top: 0.2em;
     margin-bottom: 0.2em;
     margin-left: 0.6em;
