@@ -4,6 +4,7 @@ from flask import session
 from flask_restful import Resource, reqparse, fields, marshal_with, abort
 from itsdangerous import URLSafeTimedSerializer, BadData
 from passlib.hash import pbkdf2_sha256
+from flask_cors import cross_origin
 
 from backend_sqlalchemy.backend_app.models.user import UserModel
 from backend_sqlalchemy.backend_app.db import db
@@ -73,7 +74,7 @@ class UserRegister(Resource):
 
 
 class UserLogin(Resource):
-
+    @cross_origin(supports_credentials=True)
     def post(self):
         """
         For User Login
@@ -87,17 +88,20 @@ class UserLogin(Resource):
             abort(401, msg="Invalid username or password")
         elif not pbkdf2_sha256.verify(password, result.password):
             abort(401, msg="Invalid username or password")
-        session['user'] = result
-        return {'msg': 'success'}, 200
+        session.permanent = True
+        session['username'] = result.username
+        print(session['username'])
+        #print(result)
+        return {'msg': session.sid}, 200
 
 
 class UserData(Resource):
-
+    @cross_origin(supports_credentials=True)
     def get(self):
         """
         @return: user data in session
         """
-        return session['user']
+        return {'msg': session.sid}, 200
 
 
 class UserForgetPassword(Resource):

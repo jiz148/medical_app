@@ -16,11 +16,19 @@
 <script>
   export default { //controls form input
     name: "MainPage",
-    props: {},
+    props: {
+      sid: String
+    },
     beforeCreate: function () {
-      let url = "http://127.0.0.1:5001/user/authenicate"
+      let url = "http://127.0.0.1:5001/user/sessiondata"
+      console.log("mainpage sid: " + this.$route.query.sid);
+      document.cookie = 'session='+this.$route.query.sid;
+      //document.cookie['session'] = this.$route.query.sid;
+      let csrf = document.getElementsByName("csrf-token")[0].content;
+      console.log(document.cookie);
+      console.log("csrf" + csrf);
       this.axios //executes the query with a promise to get around asynchronous javascript behavior
-        .get(url, {
+        .get(url, { withCredentials: true }, {
             credentials: "include",
           }, {
             headers: {
@@ -42,9 +50,13 @@
         }).catch(error => {
         if(error.response) {
             console.log("Error: " + error.message);
+            console.log(this.response);
             var status = error.response.status;
-            if(status == 401) {
-                this.$router.push('/');
+            if(status == 200) {
+              console.log(this.response.msg); //switch to main page here
+              //this.$router.push('/main');
+            } else {
+              this.$router.push('/');
             }
         }
         });
@@ -55,7 +67,8 @@
             message: "AI Interal Medicine searches a large database to diagnose you. To start simply enter your symptoms and answer the questions the app asks you.",
             showError: false,
             errorMess: "",
-            response: {}
+            response: {},
+            csrf: document.getElementsByName("csrf-token")[0].content
         }
     },
     methods: {

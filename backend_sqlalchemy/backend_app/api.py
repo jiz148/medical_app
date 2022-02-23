@@ -16,7 +16,7 @@ api.add_resource(UserRegister, '/user/register')
 api.add_resource(UserLogin, '/user/login')
 api.add_resource(UserForgetPassword, '/user/forget_password')
 api.add_resource(UserChangePassword, '/user/change_password')
-api.add_resource(UserLogin, '/user/data')
+api.add_resource(UserData, '/user/sessiondata')
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

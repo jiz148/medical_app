@@ -62,14 +62,19 @@ export default { //controls form input
             let url = "http://127.0.0.1:5001/user/login";
             //url += "?username=" + this.username;
             //url += "?password=" + this.password; 
+            let csrf = document.getElementsByName("csrf-token")[0].content;
+            console.log("csrf" + csrf);
             this.axios //executes the query with a promise to get around asynchronous javascript behavior
                 .post(url,{
                 'username': this.username, 
                 'password': this.password, 
+                }, { withCredentials: true }, {
+                    credentials: "include",
                 }, {
                     headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    'Access-Control-Allow-Origin': '*'
+                    'Access-Control-Allow-Origin': '*',
+                    "X-CSRFToken": csrf
                 }
                 })
                 .then(response => {
@@ -78,7 +83,7 @@ export default { //controls form input
                 console.log(this.response);
                 if(status == 200) {
                     console.log(this.response.msg); //switch to main page here
-                    this.$router.push('/main');
+                    this.$router.push('/main?sid='+this.response.msg);
                 } else {
                     this.errorMess = this.response.msg;
                     this.showError = true;
