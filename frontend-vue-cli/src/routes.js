@@ -4,6 +4,7 @@ import RegisterPage from './components/RegisterPage.vue';
 import MainPage from './components/MainPage';
 import ForgetPage from './components/ForgetPage';
 import NewPassPage from './components/NewPassPage';
+import TestPage from './components/TestPage';
 
 const routes = [
     {path: '/login', component: LoginPage, props: true},
@@ -11,7 +12,8 @@ const routes = [
     {path: '/register', component: RegisterPage},
     {path: '/main', component: MainPage, props: true},
     {path: '/forget', component: ForgetPage},
-    {path: '/newpass', component: NewPassPage, props: true}
+    {path: '/newpass', component: NewPassPage, props: true},
+    {path: '/test', component: TestPage}
 ];
 
 export default routes;

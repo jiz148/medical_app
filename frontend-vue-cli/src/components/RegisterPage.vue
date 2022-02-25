@@ -71,6 +71,11 @@
             switchpage: false
         }
     },
+    beforeCreate: function() {
+        if(!this.$cookies.get('accepted')) {
+            this.$router.push('/');
+        }
+    },
     methods: {
       register() { //keeps track of which database to query
         console.log("registering info");

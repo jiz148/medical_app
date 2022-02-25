@@ -1,6 +1,6 @@
 import os
 
-from flask import session
+from flask import session, make_response, jsonify
 from flask_restful import Resource, reqparse, fields, marshal_with, abort
 from itsdangerous import URLSafeTimedSerializer, BadData
 from passlib.hash import pbkdf2_sha256
@@ -88,11 +88,13 @@ class UserLogin(Resource):
             abort(401, msg="Invalid username or password")
         elif not pbkdf2_sha256.verify(password, result.password):
             abort(401, msg="Invalid username or password")
+        resp = make_response(jsonify({"msg": 'success'}), 200)
+        resp.set_cookie('session', session.sid, samesite='None', secure=True)
         session.permanent = True
-        session['username'] = result.username
-        print(session['username'])
+        session['uid'] = result.uid
+        return resp
         #print(result)
-        return {'msg': session.sid}, 200
+        return {'msg': 'success', 'sid': session.sid}, 200
 
 
 class UserData(Resource):
@@ -101,7 +103,29 @@ class UserData(Resource):
         """
         @return: user data in session
         """
-        return {'msg': session.sid}, 200
+        return {'uid': session.get('uid'), 'accepted': session.get('accepted')}, 200
+
+class UserLogout(Resource):
+    @cross_origin(supports_credentials=True)
+    def get(self):
+        """
+        @return: user data in session
+        """
+        session['uid'] = None
+        session['accepted'] = None
+        return {'msg': 'success'}, 200
+
+class UserDisclaimer(Resource):
+    @cross_origin(supports_credentials=True)
+    def get(self):
+        """
+        @return: user data in session
+        """
+        resp = make_response(jsonify({"msg": 'success'}), 200)
+        resp.set_cookie('session', session.sid, samesite='None', secure=True)
+        session.permanent = True
+        session['accepted'] = True
+        return resp
 
 
 class UserForgetPassword(Resource):
