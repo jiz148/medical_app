@@ -39,55 +39,84 @@ export default { //controls form input
             errorMess: "",
             response: {},
             alert: "",
-            showAlert: false
+            showAlert: false,
+            status: 0
         }
     },
     beforeCreate: function() {
-        if(!this.$cookies.get('accepted')) {
-            this.$router.push('/');
+        let url = "http://127.0.0.1:5001/user/sessiondata";
+        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+        method: 'get',
+        credentials: "include",
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+            'Access-Control-Allow-Origin': '127.0.0.1:5001',
+            'Access-Control-Allow-Credentials': true,
+        }})
+        .then((response) => { 
+            this.status = response.status;
+            return response.json() 
+        })
+        .then(data => {
+          this.response = data; //update table with new data
+          if(this.status == 200) {
+              if(this.response.accepted == null) {
+                  this.$router.push('/');
+              }
+          }
+        }).catch(error => {
+        if(error.response) {
+            if(this.status == 200) {
+              console.log(this.response.msg); //switch to main page here
+            } else {
+              this.$router.push('/');
+            }
         }
+        });
     },
     methods: {
         forgetquery() {
             document.getElementById("submitBut").disabled = true; //stop queries from happening
-            //var url = "/login";
             let url = "http://127.0.0.1:5001/user/forget_password";
-            //url += "?username=" + this.username;
-            //url += "?password=" + this.password; 
             this.showAlert = false;
             this.showError = false;
-            this.axios //executes the query with a promise to get around asynchronous javascript behavior
-                .post(url,{
-                'email': this.email
-                }, {
-                    headers: {
+            fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    'Access-Control-Allow-Origin': '*',
-                }
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body:  JSON.stringify({
+                  'email': this.email
                 })
-                .then(response => {
-                this.response = response.data; //update table with new data
-                var status = response.status;
-                console.log(this.response);
-                if(status == 200) {
-                    console.log(this.response.msg); //switch to main page here
-                    //this.$router.push('/login');
-                   this. alert = "An email with a password reset link has been sent to " + this.email + ". If you do not see the email check you spam folder as well.";
-                    this.showAlert = true;
-                } else {
-                    this.errorMess = this.response.msg;
-                    this.showError = true;
-                }
-                }).catch(error => {
-                if(error.response) {
-                    console.log("Error: " + error.message);
-                    var status = error.response.status;
-                    if(status == 401 || status == 500) {
-                        this.errorMess = error.response.data.msg;
-                        this.showError = true;
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.status == 200) {
+                      this.alert = "An email with a password reset link has been sent to " + this.email + ". If you do not see the email check you spam folder as well.";
+                      this.showAlert = true;
+                    } else {
+                      this.errorMess = this.response.msg;
+                      this.showError = true;
                     }
-                }
-                document.getElementById("submitBut").disabled = false; //allow queries to start again
+                    }).catch(error => {
+                    if(error.response) {
+                        if(this.status == 401 || this.status == 500) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                        }
+                    }
+                    document.getElementById("submitBut").disabled = false; //allow queries to start again
                 });
             document.getElementById("submitBut").disabled = false; //allow queries to start again
         }

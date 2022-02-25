@@ -68,36 +68,59 @@
             showError: false,
             errorMess: "",
             response: {},
-            switchpage: false
+            switchpage: false,
+            status: 0
         }
     },
     beforeCreate: function() {
-        if(!this.$cookies.get('accepted')) {
-            this.$router.push('/');
+        let url = "http://127.0.0.1:5001/user/sessiondata";
+        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+        method: 'get',
+        credentials: "include",
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+            'Access-Control-Allow-Origin': '127.0.0.1:5001',
+            'Access-Control-Allow-Credentials': true,
+        }})
+        .then((response) => { 
+            return response.json() 
+        })
+        .then(data => {
+          this.response = data; //update table with new data
+          if(this.status == 200) {
+              if(this.response.accepted == null) {
+                  this.$router.push('/');
+              }
+          }
+        }).catch(error => {
+        if(error.response) {
+            if(this.status == 200) {
+              console.log(this.response.msg); //switch to main page here
+            } else {
+              this.$router.push('/');
+            }
         }
+        });
     },
     methods: {
       register() { //keeps track of which database to query
-        console.log("registering info");
         this.showError = false;
         var re =  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
         var ph = /^[2-9]\d{2}[2-9]\d{2}\d{4}$/; // eslint-disable-line
         var today = new Date();
         var yyyy = today.getFullYear();
-        console.log(this.password);
-        console.log(this.password.length);
         let phtest = true
         if(this.phone != "") {
           phtest = ph.test(this.phone.replace(/\D/g, ""))
         }
-        //console.log(this.password.value);
         if(!re.test(this.email)) {
             this.errorMess = "Please input a valid email.";
             this.showError = true;
         } else if(this.username == "") {
             this.errorMess = "Please input a username.";
             this.showError = true;
-        //} else if(this.email == "") {
         } else if(this.password.length < 8) {
           console.log("sanity check");
             this.errorMess = "Your password must have a minimum of 8 characters.";
@@ -119,16 +142,6 @@
           this.showError = true;
         } else { //should also sanitize input for sql injection, but we can worry about that later
             this.showError = false;
-            /*if(this.phone != null) {
-              let ind = this.phone.indexof('-');
-              if(this.phone.indexof('-') > -1) {
-                let temp = this.phone.substring(0,ind);
-                let ind2 = this.phone.substring(ind+1, this.phone.length).indexof('-') + ind + 1;
-                temp += this.phone.substring(ind+1, ind2) + this.phone.substring(ind2+1, this.phone.length);
-                this.phone = temp;
-              } 
-            }*/
-            
             this.performQuery();
         }
       },
@@ -145,44 +158,46 @@
         if(this.phone != null) {
           data['phone'] = this.phone;
         }
-        console.log(data);
-        this.axios //executes the query with a promise to get around asynchronous javascript behavior
-          .post(url, data,
-          {
-            headers: {
-              'Content-Type': 'application/json;charset=UTF-8',
-              'Access-Control-Allow-Origin': '*',
-            }
-          })
-          .then(response => {
-            this.response = response.data; //update table with new data
-            console.log(response);
-            var status = response.status;
-            if(status == 201) {
-              console.log(this.response.msg); //switch to main page here
-              this.$router.push('/login');
-            } else {
-              this.errorMess = this.response.msg;
-              this.showError = true;
-            }
-          }).catch(error => {
-            if(error.response) {
-              console.log("Error: " + error.message);
-              var status = error.response.status;
-              if(status == 409) {
-                this.errorMess = error.response.data.msg;
-                this.showError = true;
-              }
-            }
-            document.getElementById("submitBut").disabled = false; //allow queries to start again
-            this.username = "";
-            this.password = "";
-            this.password2 = "";
-            this.email = "";
-            this.year = null;
-            this.gender = "male";
-            this.phone = "";
-          }); 
+        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body:  JSON.stringify(data)
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.status == 201) {
+                      this.$router.push('/login');
+                    } else {
+                      this.errorMess = this.response.msg;
+                      this.showError = true;
+                    }
+                    }).catch(error => {
+                    if(error.response) {
+                      if(this.status == 409) {
+                        this.errorMess = error.response.data.msg;
+                        this.showError = true;
+                      }
+                    }
+                    document.getElementById("submitBut").disabled = false; //allow queries to start again
+                    this.username = "";
+                    this.password = "";
+                    this.password2 = "";
+                    this.email = "";
+                    this.year = null;
+                    this.gender = "male";
+                    this.phone = "";
+                });
           document.getElementById("submitBut").disabled = false; //allow queries to start again
       }
     }
