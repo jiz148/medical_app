@@ -42,6 +42,11 @@ export default { //controls form input
             showAlert: false
         }
     },
+    beforeCreate: function() {
+        if(!this.$cookies.get('accepted')) {
+            this.$router.push('/');
+        }
+    },
     methods: {
         forgetquery() {
             document.getElementById("submitBut").disabled = true; //stop queries from happening

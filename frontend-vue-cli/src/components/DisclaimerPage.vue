@@ -29,8 +29,46 @@ export default { //controls form input
         errorMess: "",
       }
     },
+    beforeCreate: function() {
+        let url = "http://127.0.0.1:5001/disclaimer";
+        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+        method: 'get',
+        credentials: "include",
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+            'Access-Control-Allow-Origin': '127.0.0.1:5001',
+            'Access-Control-Allow-Credentials': true,
+        }})
+        .then((response) => { 
+            //console.log('test');
+            this.status = response.status;
+            return response.json() 
+        })
+        .then(data => {
+          console.log(this.status);
+          this.response = data; //update table with new data
+          if(this.status == 200) {
+              console.log(this.response); //switch to main page here
+          }
+        }).catch(error => {
+        if(error.response) {
+            console.log("Error: " + error.message);
+            console.log(this.response);
+            if(this.status == 200) {
+              console.log(this.response.msg); //switch to main page here
+              //this.$router.push('/main');
+            } else {
+              this.$router.push('/');
+            }
+        }
+        });
+    },
     methods: {
         goregister() {
+            this.$cookies.set("accepted", true);
+            //console.log(this.$cookies.get('accepted'));
             this.$router.push('/login');
         },
         closeapp() {

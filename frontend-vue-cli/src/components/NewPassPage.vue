@@ -43,6 +43,11 @@ export default { //controls form input
             tok: ""
         }
     },
+    beforeCreate: function() {
+        if(!this.$cookies.get('accepted')) {
+            this.$router.push('/');
+        }
+    },
     methods: {
         newpass() { //keeps track of which database to query
             //console.log(this.props.token);
