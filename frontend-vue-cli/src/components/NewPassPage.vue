@@ -40,17 +40,45 @@ export default { //controls form input
             showError: false,
             errorMess: "",
             response: {},
-            tok: ""
+            tok: "",
+            status: 0
         }
     },
     beforeCreate: function() {
-        if(!this.$cookies.get('accepted')) {
-            this.$router.push('/');
+        let url = "http://127.0.0.1:5001/user/sessiondata";
+        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+        method: 'get',
+        credentials: "include",
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+            'Access-Control-Allow-Origin': '127.0.0.1:5001',
+            'Access-Control-Allow-Credentials': true,
+        }})
+        .then((response) => { 
+            this.status = response.status;
+            return response.json() 
+        })
+        .then(data => {
+          this.response = data; //update table with new data
+          if(this.status == 200) {
+              if(this.response.accepted == null) {
+                  this.$router.push('/');
+              }
+          }
+        }).catch(error => {
+        if(error.response) {
+            if(this.status == 200) {
+              console.log(this.response.msg); //switch to main page here
+            } else {
+              this.$router.push('/');
+            }
         }
+        });
     },
     methods: {
         newpass() { //keeps track of which database to query
-            //console.log(this.props.token);
             this.tok = this.$route.query.token;
             if(this.password.length < 8) {
                 this.errorMess = "Please input a password with at least 8 characters.";
@@ -65,44 +93,45 @@ export default { //controls form input
         },
         performQuery() {
             document.getElementById("submitBut").disabled = true; //stop queries from happening
-            //var url = "/login";
             let url = "http://127.0.0.1:5001/user/change_password";
-            //url += "?username=" + this.username;
-            //url += "?password=" + this.password; 
-            this.axios //executes the query with a promise to get around asynchronous javascript behavior
-                .put(url,{
-                'token': this.tok,
-                'new_password': this.password
-                }, {
-                    headers: {
+            fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'PUT',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    'Access-Control-Allow-Origin': '*',
-                }
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body:  JSON.stringify({
+                    'token': this.tok,
+                    'new_password': this.password
                 })
-                .then(response => {
-                this.response = response.data; //update table with new data
-                var status = response.status;
-                console.log(this.response);
-                if(status == 200) {
-                    console.log(this.response.msg); //switch to main page here
-                    this.$router.push('/login?msg=Password successfully changed.');
-                } else {
-                    this.errorMess = this.response.msg;
-                    this.showError = true;
-                }
-                }).catch(error => {
-                if(error.response) {
-                    console.log("Error: " + error.message);
-                    var status = error.response.status;
-                    if(status == 404) {
-                        this.errorMess = error.response.data.msg;
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.status == 200) {
+                        this.$router.push('/login?msg=Password successfully changed.');
+                    } else {
+                        this.errorMess = this.response.msg;
                         this.showError = true;
                     }
-                }
-                document.getElementById("submitBut").disabled = false; //allow queries to start again
-                this.password = "";
+                    }).catch(error => {
+                    if(error.response) {
+                        var status = error.response.status;
+                        if(status == 404) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                        }
+                    }
+                    document.getElementById("submitBut").disabled = false; //allow queries to start again
+                    this.password = "";
                 });
-            //document.getElementById("submitBut").disabled = false; //allow queries to start again
         },
         cancel() {
             this.$router.push('/login');
