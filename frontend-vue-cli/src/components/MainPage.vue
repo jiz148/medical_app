@@ -1,39 +1,61 @@
 <template>
   <div id="login">
-    <div id="appinfo" class="card"> 
-      <div class="card-body">
-        {{ message }} 
+    <div id="top">
+      <div id="error" class="card" v-show="showError">
+        <div class="card-body">
+          {{ errorMess }}
+        </div>
       </div>
-    </div>
-    <div id="error" class="card" v-show="showError">
-      <div class="card-body">
-        {{ errorMess }}
-      </div>
-    </div>
-    <button id="logoutBut" class="btn btn-secondary" type="submit" @click="logout">Logout</button>
-    
-    <select id="visitSelect" v-model="curVisit" class="btn btn-outline-primary dropdown-toggle" @change="loadVisit">
-      <option class="visitItem" v-for="item in visitList" :value="item" :key="item.id">{{item.val}}</option>
-    </select>
+      
+      <button id="infoBut" class="btn btn-outline-secondary" @click="this.showInfo=!this.showInfo">Info</button>
+      
+      <div id="ralTop">
+        <select id="visitSelect" v-model="curVisit" class="btn btn-outline-primary dropdown-toggle" @change="loadVisit">
+          <option class="visitItem" v-for="item in visitList" :value="item" :key="item.id">{{item.val}}</option>
+        </select>
 
-    <div id="visitModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Create a New Visit</h5>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-                <label for="vistnanme" class="form-label">Visit Name</label>
-                <input type="text" class="form-control" id="visitname" v-model="visitname" placeholder="Enter a name for the visit">
+        <div id="settingsDrop" class="btn-group">
+          <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><button class="dropdown-item" type="button">Profile</button></li>
+            <li><button class="dropdown-item" type="button">Edit</button></li>
+            <li><button class="dropdown-item" type="button" @click="logout">Logout</button></li>
+            <li><button class="dropdown-item" type="button">Contact Us</button></li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="visitModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Create a New Visit</h5>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" @click="createVisit">Create Visit</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeVisit">Cancel</button>
+            <div class="modal-body">
+              <div class="mb-3">
+                  <label for="vistnanme" class="form-label">Visit Name</label>
+                  <input type="text" class="form-control" id="visitname" v-model="visitname" placeholder="Enter a name for the visit">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" @click="createVisit">Create Visit</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeVisit">Cancel</button>
+            </div>
           </div>
         </div>
       </div>
+
+      <div id="appinfo" class="card" v-show="showInfo"> 
+        <div class="card-body">
+          {{ message }} 
+        </div>
+      </div>
+    </div>
+    <div id="middle">
+    </div>
+    <div id="bot">
     </div>
   </div>
 </template>
@@ -86,6 +108,7 @@
         return {
             query: "",
             message: "AI Interal Medicine searches a large database to diagnose you. To start simply enter your symptoms and answer the questions the app asks you.",
+            showInfo: false,
             showError: false,
             errorMess: "",
             response: {},
@@ -191,6 +214,17 @@
     margin-left: 0.6em;
     margin-right: 0.6em;
   }
+  #top {
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+  }
+  #ralTop {
+    float: right;
+    display: inline;
+  }
+  #infoBut {
+    margin-left: 0.6em;
+  }
   #logoutBut {
     margin-left: 0.6em;
   }
@@ -201,16 +235,23 @@
     background-color: #f7f7f7;
     color: #0275d8;
   }
+  .dropdown {
+    display: block;
+    float:left;
+  }
   .modal-header {
     background-color: rgb(250, 251, 252);
   }
   .modal-footer {
      background-color: rgb(250, 251, 252);
   }
+  #settingsDrop {
+    margin-right: 0.8em;
+  }
   #visitSelect {
-    float: right;
     margin-right: 0.6em;
     height: 2.4em;
+    display: inline;
   }
   .visitItem {
     height: 2.0em;
