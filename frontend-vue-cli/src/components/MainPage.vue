@@ -125,14 +125,11 @@
                     this.response = data; 
                     if(this.status == 200) {
                         let li = this.response.result;
-                        console.log(this.response.result);
                         for(let i=0;i<li.length;i++) {
                           if(li[i].visit_id > 0) {
                             this.visitList.push(li[i]);
                           }
                         }
-                        console.log(this.visitList);
-                        console.log(this.curVisit);
                     } else {
                         this.errorMess = this.response.msg;
                         this.showError = true;
@@ -150,13 +147,13 @@
     data() {
         return {
             query: "",
-            message: "AI Interal Medicine searches a large database to diagnose you. To start simply enter your symptoms and answer the questions the app asks you.",
+            message: "AI Interal Medicine searches a large database to diagnose you. To start simply select a visit and enter your symptoms.",
             showInfo: false,
             showError: false,
             errorMess: "",
             response: {},
             status: 0,
-            visitList: [
+            visitList: [ //should hide all inputs when an actual visit isnt selected
               {'note': 'Select a Visit', 'visit_id': -1, 'datetime': ""}, 
               {'note': 'New Visit', 'visit_id': 0, 'datetime': ""}],
             curVisit: {'note': 'Select a Visit', 'visit_id': -1, 'datetime': ""},
@@ -214,17 +211,7 @@
         /*eslint-enable */
       },
       createVisit: function() {
-        //probably need to query the backend here and on page load to store visit data
-        /*let ln = this.visitList.length - 1;
-        ln = this.visitList[ln].visit_id + 1;
-        if(!this.visitInit) { //remove initial select option
-            this.visitList.splice(0,1);
-            this.visitInit = true;
-        }*/
-        //let el = {'note': this.visitname, 'visit_id': ln, 'datetime': new Date().toLocaleString()}
-        //this.visitList.push(el);
-        //this.curVisit = el;
-        let url = "http://127.0.0.1:5001/visit/set";
+        let url = "http://127.0.0.1:5001/visit";
             fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'POST',
                 credentials: "include",
@@ -248,7 +235,7 @@
                     if(this.status == 200) {
                         console.log(this.response.msg);
                         let li = this.response.result;
-                        li.unshift({'note': 'Select a Visit', 'visit_id': -1, 'datetime': ""});
+                        li.unshift({'note': 'New Visit', 'visit_id': 0, 'datetime': ""});
                         this.visitList = li;
                         this.curVisit = this.visitList[this.response.index+1];
                         this.closeVisit();

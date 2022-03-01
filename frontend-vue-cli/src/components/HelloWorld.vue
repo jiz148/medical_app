@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-      AI Internal Medicine
+      Medisis
     </div>
 </template>
 
