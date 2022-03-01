@@ -11,7 +11,7 @@
       
       <div id="ralTop">
         <select id="visitSelect" v-model="curVisit" class="btn btn-outline-primary dropdown-toggle" @change="loadVisit">
-          <option class="visitItem" v-for="item in visitList" :value="note" :key="item.visit_id">{{item.note}}</option>
+          <option class="visitItem" v-for="item in visitList" :value="item" :key="item.visit_id">{{item.note}}</option>
         </select>
 
         <div id="settingsDrop" class="btn-group">
@@ -107,7 +107,7 @@
         });
         url = "http://127.0.0.1:5001/visit";
             fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
-                method: 'POST',
+                method: 'GET',
                 credentials: "include",
                 mode: 'cors',
                 headers: {
@@ -115,9 +115,7 @@
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
                     'Access-Control-Allow-Origin': '127.0.0.1:5001',
                     'Access-Control-Allow-Credentials': true,
-                },
-                body:  JSON.stringify({
-                })
+                }
                 })
                 .then((response) => { 
                     this.status = response.status;
@@ -127,11 +125,14 @@
                     this.response = data; 
                     if(this.status == 200) {
                         let li = this.response.result;
+                        console.log(this.response.result);
                         for(let i=0;i<li.length;i++) {
-                          if(li[i].visit_id > 1) {
+                          if(li[i].visit_id > 0) {
                             this.visitList.push(li[i]);
                           }
                         }
+                        console.log(this.visitList);
+                        console.log(this.curVisit);
                     } else {
                         this.errorMess = this.response.msg;
                         this.showError = true;
@@ -155,10 +156,10 @@
             errorMess: "",
             response: {},
             status: 0,
-            curVisit: {'note': 'Select a Visit', 'visit_id': 0, 'datetime': new Date().toLocaleString()},
             visitList: [
-              {'note': 'Select a Visit', 'visit_id': 0, 'datetime': new Date().toLocaleString()}, 
-              {'note': 'New Visit', 'visit_id': 1, 'datetime': new Date().toLocaleString()}],
+              {'note': 'Select a Visit', 'visit_id': -1, 'datetime': ""}, 
+              {'note': 'New Visit', 'visit_id': 0, 'datetime': ""}],
+            curVisit: {'note': 'Select a Visit', 'visit_id': -1, 'datetime': ""},
             visitname: "",
             visitInit: false
         }
@@ -197,9 +198,9 @@
       },
       loadVisit: function() {
         let item = this.curVisit;
-        if(item.visit_id == 1) { //new visit
+        if(item.visit_id == 0) { //new visit
           this.launch();
-        } else if(item.visit_id > 1) {
+        } else if(item.visit_id > 0) {
           if(item.visit_id !== 0 && !this.visitInit) { //remove initial select option
             this.visitList.splice(0,1);
             this.visitInit = true;
@@ -214,17 +215,15 @@
       },
       createVisit: function() {
         //probably need to query the backend here and on page load to store visit data
-        let ln = this.visitList.length - 1;
+        /*let ln = this.visitList.length - 1;
         ln = this.visitList[ln].visit_id + 1;
         if(!this.visitInit) { //remove initial select option
             this.visitList.splice(0,1);
             this.visitInit = true;
-        }
-        let el = {'note': this.visitname, 'visit_id': ln, 'datetime': new Date().toLocaleString()}
-        this.visitList.push(el);
-        this.curVisit = el;
-        let payload = this.visitList;
-        payload.splice(0);
+        }*/
+        //let el = {'note': this.visitname, 'visit_id': ln, 'datetime': new Date().toLocaleString()}
+        //this.visitList.push(el);
+        //this.curVisit = el;
         let url = "http://127.0.0.1:5001/visit/set";
             fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'POST',
@@ -237,7 +236,7 @@
                     'Access-Control-Allow-Credentials': true,
                 },
                 body:  JSON.stringify({
-                  payload
+                  'note': this.visitname
                 })
                 })
                 .then((response) => { 
@@ -248,6 +247,10 @@
                     this.response = data; 
                     if(this.status == 200) {
                         console.log(this.response.msg);
+                        let li = this.response.result;
+                        li.unshift({'note': 'Select a Visit', 'visit_id': -1, 'datetime': ""});
+                        this.visitList = li;
+                        this.curVisit = this.visitList[this.response.index+1];
                         this.closeVisit();
                     } else {
                         this.errorMess = this.response.msg;
