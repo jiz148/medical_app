@@ -43,9 +43,6 @@ resource_field = {
     'username': fields.String,
 }
 
-# defining a custom hash function to be used for encrypting the password
-custom_hash = pbkdf2_sha256.using(salt=bytes(app.secret_key, 'utf-8')).using(rounds=10000).hash
-
 
 class UserRegister(Resource):
 
@@ -59,15 +56,13 @@ class UserRegister(Resource):
         if db.session.query(UserModel).filter(UserModel.email == args['email']).all():
             abort(409, msg='Email already exists')
 
-        # encrypting password before saving to database
-        encrypted_password = custom_hash(args['password'])
-
         user = UserModel(username=args['username'],
-                         password=encrypted_password,
+                         password=args['password'],
                          email=args['email'],
                          birth_year=args['birth_year'],
                          gender=args['gender'],
                          phone=args['phone'])
+        user.encrypt_password()
         db.session.add(user)
         db.session.commit()
         return {"msg": "success"}, 201
@@ -173,8 +168,6 @@ class UserChangePassword(Resource):
             abort(404, msg='Email token is broken')
 
         user = db.session.query(UserModel).filter(UserModel.email == email).first()
-        # encrypting password before saving to database
-        encrypted_password = custom_hash(new_password)
-        user.password = encrypted_password
+        user.new_password_encrypted(new_password)
         db.session.commit()
         return {'msg': 'success'}, 200
