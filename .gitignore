@@ -136,4 +136,6 @@ dmypy.json
 /backend_sqlalchemy/backend_app/data
 
 # sessiondata
-/backend_sqlalchemy/flask_session
+/backend_sqlalchemy/backend_app/flask_session/
+/backend_sqlalchemy/flask_session/
+/backend_sqlalchemy/backend_app/resources/flask_session/

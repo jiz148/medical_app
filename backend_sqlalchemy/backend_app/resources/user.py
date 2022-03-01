@@ -88,8 +88,6 @@ class UserLogin(Resource):
         session.permanent = True
         session['uid'] = result.uid
         return resp
-        #print(result)
-        return {'msg': 'success', 'sid': session.sid}, 200
 
 
 class UserData(Resource):
@@ -100,6 +98,7 @@ class UserData(Resource):
         """
         return {'uid': session.get('uid'), 'accepted': session.get('accepted')}, 200
 
+
 class UserLogout(Resource):
     @cross_origin(supports_credentials=True)
     def get(self):
@@ -109,6 +108,7 @@ class UserLogout(Resource):
         session['uid'] = None
         session['accepted'] = None
         return {'msg': 'success'}, 200
+
 
 class UserDisclaimer(Resource):
     @cross_origin(supports_credentials=True)
