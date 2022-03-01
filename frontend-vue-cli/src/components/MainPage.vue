@@ -1,5 +1,5 @@
 <template>
-  <div id="login">
+  <div id="main">
     <div id="top">
       <div id="error" class="card" v-show="showError">
         <div class="card-body">
@@ -15,7 +15,7 @@
         </select>
 
         <div id="settingsDrop" class="btn-group">
-          <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+          <button type="button" class="btn btn-outline-secondary dropdown-toggle caret-off" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-three-dots-vertical"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
@@ -54,8 +54,10 @@
       </div>
     </div>
     <div id="middle">
+
     </div>
     <div id="bot">
+      
     </div>
   </div>
 </template>
@@ -214,9 +216,20 @@
     margin-left: 0.6em;
     margin-right: 0.6em;
   }
+  #main {
+    display: flex;
+    flex-direction: column;
+  }
   #top {
     margin-top: 0.4em;
     margin-bottom: 0.4em;
+  }
+  #middle {
+    background-color: rgb(248, 249, 250);
+    height: 30em;
+  }
+  #bot {
+    
   }
   #ralTop {
     float: right;
@@ -238,6 +251,12 @@
   .dropdown {
     display: block;
     float:left;
+  }
+  .caret-off::before {
+    display: none;
+  }
+  .caret-off::after {
+    display: none;
   }
   .modal-header {
     background-color: rgb(250, 251, 252);
