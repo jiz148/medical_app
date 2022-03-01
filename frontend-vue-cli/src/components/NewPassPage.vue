@@ -19,8 +19,8 @@
           <label for="password2" class="form-label">Confirm Password</label>
           <input type="password" class="form-control" id="password2" v-model="password2" placeholder="Re-type password">
         </div>
-        <button id="submitBut" class="btn btn-danger" type="submit" @click="newpass">Change Password</button>
-        <button id="cancelBut" class="btn btn-outline-danger" type="submit" @click="cancel">Cancel</button>
+        <button id="submitBut" class="btn btn-primary" type="submit" @click="newpass">Change Password</button>
+        <button id="cancelBut" class="btn btn-secondary" type="submit" @click="cancel">Cancel</button>
     </div>
   </div>
 </template>
