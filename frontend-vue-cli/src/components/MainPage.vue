@@ -11,7 +11,7 @@
       
       <div id="ralTop">
         <select id="visitSelect" v-model="curVisit" class="btn btn-outline-primary dropdown-toggle" @change="loadVisit">
-          <option class="visitItem" v-for="item in visitList" :value="item" :key="item.id">{{item.val}}</option>
+          <option class="visitItem" v-for="item in visitList" :value="note" :key="item.visit_id">{{item.note}}</option>
         </select>
 
         <div id="settingsDrop" class="btn-group">
@@ -21,8 +21,8 @@
           <ul class="dropdown-menu dropdown-menu-end">
             <li><button class="dropdown-item" type="button">Profile</button></li>
             <li><button class="dropdown-item" type="button">Edit</button></li>
-            <li><button class="dropdown-item" type="button" @click="logout">Logout</button></li>
             <li><button class="dropdown-item" type="button">Contact Us</button></li>
+            <li><button class="dropdown-item" type="button" @click="logout">Logout</button></li>
           </ul>
         </div>
       </div>
@@ -67,9 +67,9 @@
     name: "MainPage",
     props: {
     },
-    beforeCreate: function () {
+    beforeCreate: async function () {
       let url = "http://127.0.0.1:5001/user/sessiondata";
-      fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+      await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
         method: 'get',
         credentials: "include",
         mode: 'cors',
@@ -105,6 +105,46 @@
             }
         }
         });
+        url = "http://127.0.0.1:5001/visit";
+            fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body:  JSON.stringify({
+                })
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.status == 200) {
+                        let li = this.response.result;
+                        for(let i=0;i<li.length;i++) {
+                          if(li[i].visit_id > 1) {
+                            this.visitList.push(li[i]);
+                          }
+                        }
+                    } else {
+                        this.errorMess = this.response.msg;
+                        this.showError = true;
+                    }
+                    }).catch(error => {
+                    if(error.response) {
+                        console.log("Error: " + error.message);
+                        if(this.status == 401) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                        }
+                    }
+                });
     },
     data() {
         return {
@@ -115,10 +155,10 @@
             errorMess: "",
             response: {},
             status: 0,
-            curVisit: {'val': 'Select a Visit', 'id': 0},
+            curVisit: {'note': 'Select a Visit', 'visit_id': 0, 'datetime': new Date().toLocaleString()},
             visitList: [
-              {'val': 'Select a Visit', 'id': 0}, 
-              {'val': 'New Visit', 'id': 1}],
+              {'note': 'Select a Visit', 'visit_id': 0, 'datetime': new Date().toLocaleString()}, 
+              {'note': 'New Visit', 'visit_id': 1, 'datetime': new Date().toLocaleString()}],
             visitname: "",
             visitInit: false
         }
@@ -157,10 +197,10 @@
       },
       loadVisit: function() {
         let item = this.curVisit;
-        if(item.id == 1) { //new visit
+        if(item.visit_id == 1) { //new visit
           this.launch();
-        } else if(item.id > 1) {
-          if(item.id !== 0 && !this.visitInit) { //remove initial select option
+        } else if(item.visit_id > 1) {
+          if(item.visit_id !== 0 && !this.visitInit) { //remove initial select option
             this.visitList.splice(0,1);
             this.visitInit = true;
           }
@@ -175,16 +215,55 @@
       createVisit: function() {
         //probably need to query the backend here and on page load to store visit data
         let ln = this.visitList.length - 1;
-        ln = this.visitList[ln].id + 1;
+        ln = this.visitList[ln].visit_id + 1;
         if(!this.visitInit) { //remove initial select option
             this.visitList.splice(0,1);
             this.visitInit = true;
         }
-        let el = {'val': this.visitname, 'id': ln}
+        let el = {'note': this.visitname, 'visit_id': ln, 'datetime': new Date().toLocaleString()}
         this.visitList.push(el);
         this.curVisit = el;
-
-        this.closeVisit();
+        let payload = this.visitList;
+        payload.splice(0);
+        let url = "http://127.0.0.1:5001/visit/set";
+            fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body:  JSON.stringify({
+                  payload
+                })
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.status == 200) {
+                        console.log(this.response.msg);
+                        this.closeVisit();
+                    } else {
+                        this.errorMess = this.response.msg;
+                        this.showError = true;
+                        this.closeVisit();
+                    }
+                    }).catch(error => {
+                    if(error.response) {
+                        console.log("Error: " + error.message);
+                        if(this.status == 401) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                            this.closeVisit();
+                        }
+                    }
+                });
       },
       closeVisit: function() {
         this.visitname = "";
