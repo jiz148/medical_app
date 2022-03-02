@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-      Medisis
+      Medisys
     </div>
 </template>
 

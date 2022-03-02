@@ -10,8 +10,9 @@
       <button id="infoBut" class="btn btn-outline-secondary" @click="this.showInfo=!this.showInfo">Info</button>
       
       <div id="ralTop">
+        <button id="newVisitBut" class="btn btn-primary" type="submit" @click="launch">New Visit</button>
         <select id="visitSelect" v-model="curVisit" class="btn btn-outline-primary dropdown-toggle" @change="loadVisit">
-          <option class="visitItem" v-for="item in visitList" :value="item" :key="item.visit_id">{{item.note}}</option>
+          <option class="visitItem" v-for="item in visitList" :value="item" :key="item.visit_id">{{item.note + " " + item.datetime}}</option>
         </select>
 
         <div id="settingsDrop" class="btn-group">
@@ -21,7 +22,7 @@
           <ul class="dropdown-menu dropdown-menu-end">
             <li><button class="dropdown-item" type="button">Profile</button></li>
             <li><button class="dropdown-item" type="button">Edit</button></li>
-            <li><button class="dropdown-item" type="button">Contact Us</button></li>
+            <li><button class="dropdown-item" type="button" @click="contact">Contact Us</button></li>
             <li><button class="dropdown-item" type="button" @click="logout">Logout</button></li>
           </ul>
         </div>
@@ -42,6 +43,24 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-success" @click="createVisit">Create Visit</button>
               <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeVisit">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="contactModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="contactModalLabel">Contact Us</h5>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                You can email us at (enter email here), or call us at (enter phone number here).
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" @click="closeContact">Close</button>
             </div>
           </div>
         </div>
@@ -154,9 +173,8 @@
             response: {},
             status: 0,
             visitList: [ //should hide all inputs when an actual visit isnt selected
-              {'note': 'Select a Visit', 'visit_id': -1, 'datetime': ""}, 
-              {'note': 'New Visit', 'visit_id': 0, 'datetime': ""}],
-            curVisit: {'note': 'Select a Visit', 'visit_id': -1, 'datetime': ""},
+              {'note': 'Select a Visit', 'visit_id': 0, 'datetime': ""}], 
+            curVisit: {'note': 'Select a Visit', 'visit_id': 0, 'datetime': ""},
             visitname: "",
             visitInit: false
         }
@@ -195,9 +213,7 @@
       },
       loadVisit: function() {
         let item = this.curVisit;
-        if(item.visit_id == 0) { //new visit
-          this.launch();
-        } else if(item.visit_id > 0) {
+        if(item.visit_id > 0) {
           if(item.visit_id !== 0 && !this.visitInit) { //remove initial select option
             this.visitList.splice(0,1);
             this.visitInit = true;
@@ -208,6 +224,18 @@
         /*eslint-disable */
         //suppress all warnings between comments
         $('#visitModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      contact: function() {
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#contactModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      closeContact: function() {
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#contactModal').modal('hide'); //need to do this disable because eslint doesnt understand jquery for some reason
         /*eslint-enable */
       },
       createVisit: function() {
@@ -233,11 +261,8 @@
                 .then(data => {
                     this.response = data; 
                     if(this.status == 200) {
-                        console.log(this.response.msg);
-                        let li = this.response.result;
-                        li.unshift({'note': 'New Visit', 'visit_id': 0, 'datetime': ""});
-                        this.visitList = li;
-                        this.curVisit = this.visitList[this.response.index+1];
+                        this.visitList = this.response.result;
+                        this.curVisit = this.visitList[this.response.index];
                         this.closeVisit();
                     } else {
                         this.errorMess = this.response.msg;
@@ -312,6 +337,9 @@
   }
   #formbtn {
     display: inline;
+  }
+  #newVisitBut {
+    margin-right: 0.6em;
   }
   .visitItem {
     background-color: #f7f7f7;
