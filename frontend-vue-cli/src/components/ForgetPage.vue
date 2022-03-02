@@ -20,7 +20,7 @@
           <label for="email" class="form-label">Enter Your Email</label>
           <input type="email" class="form-control" id="email" v-model="email" placeholder="Enter your email">
       </div>
-        <button id="submitBut" class="btn btn-success" type="submit" @click="forgetquery">Confirm</button>
+        <button id="submitBut" class="btn btn-primary" type="submit" @click="forgetquery">Confirm</button>
         <button id="backBut" class="btn btn-secondary" type="submit" @click="$router.go(-1)">Cancel</button>
     </div>
   </div>

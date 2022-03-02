@@ -85,11 +85,13 @@
             'Access-Control-Allow-Credentials': true,
         }})
         .then((response) => { 
+            this.status = response.status;
             return response.json() 
         })
         .then(data => {
           this.response = data; //update table with new data
           if(this.status == 200) {
+              console.log(this.response);
               if(this.response.accepted == null) {
                   this.$router.push('/');
               }
