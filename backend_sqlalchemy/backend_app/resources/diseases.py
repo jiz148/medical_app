@@ -1,5 +1,16 @@
+from flask_restful import Resource
+
 from backend_sqlalchemy.backend_app.models.diseases import DiseasesModel
 from backend_sqlalchemy.backend_app.db import db
+
+
+class TopDiseases(Resource):
+    """
+    TODO
+    """
+
+    def get(self):
+        pass
 
 
 def get_all_diseases():
