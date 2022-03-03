@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <div id="contactModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel1" aria-hidden="true">
+      <div id="contactModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -73,11 +73,122 @@
       </div>
     </div>
     <div id="middle">
+      <div id="findingsDiv">
+        <div id="findHead">
+        <label for="findings" id="findingsTitle" class="form-label">Findings</label>
+        <input type="text" class="form-control" id="findSearch" v-model="findSearch" @input="searchFindings" placeholder="Search findings">
+        </div>
+        <table id="findings" class="table table-striped table-hover align-middle table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Question</th>
+              <th scope="col">Response</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in searchedFindings" :key="item.id">
+              <td>{{item.name}}</td>
+              <td>{{item.resp}}</td>
+              <td><button type="button" class="btn btn-link" @click="createEditFind(item)">Edit</button></td>
+              <td><input class="form-check-input" type="checkbox" v-model="item.checked"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
+      <label for="matches" id="matchesTitle" class="form-label">Best Matches</label>
+      <table id="matches" class="table table-striped table-hover align-middle table-sm">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Ailment</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in matchesList" :key="item.id">
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td><a :href="item.link" class="button btn btn-link">Info</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div id="editFindModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="editFindLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editFindLabel">Edit Finding</h5>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <a v-if="editFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">{{
+                  editFindQuestion.name
+                }}</a>
+                <br>
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="yes" v-model="editFindResp">
+                <label class="form-check-label" for="findEditYes">
+                  Yes
+                </label>
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="no" v-model="editFindResp">
+                <label class="form-check-label" for="findEditNo">
+                  No
+                </label>
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="maybe" v-model="editFindResp">
+                <label class="form-check-label" for="findEditMaybe">
+                  Not Sure
+                </label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" @click="makeEditFind">Update</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeEditFind">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div id="bot">
-      
-    </div>
+      <div id="botButs">
+        <button id="nbqBut" class="btn btn-success" type="submit" @click="getNbq">Next Best Question</button>
+      </div>
+
+      <div id="nbqModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="nbqLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="nbqLabel">Next Best Question</h5>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <a v-if="nextBestQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">{{
+                    nextBestQuestion.name
+                  }}</a>
+                  <br>
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqYes" value="yes" v-model="nbqResp">
+                  <label class="form-check-label" for="findEditYes">
+                    Yes
+                  </label>
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqNo" value="no" v-model="nbqResp">
+                  <label class="form-check-label" for="findEditNo">
+                    No
+                  </label>
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqMaybe" value="maybe" v-model="nbqResp">
+                  <label class="form-check-label" for="findEditMaybe">
+                    Not Sure
+                  </label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-success" @click="confirmNbq">Update</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeNbq">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -176,7 +287,23 @@
               {'note': 'Select a Visit', 'visit_id': 0, 'datetime': ""}], 
             curVisit: {'note': 'Select a Visit', 'visit_id': 0, 'datetime': ""},
             visitname: "",
-            visitInit: false
+            visitInit: false,
+            findingsList: [
+              {'name': 'Gender is Male?', 'id': 0, 'resp': 'yes', 'checked': true},
+              {'name': 'Age is between 16 and 50?', 'id': 1, 'resp': 'yes', 'checked': true},
+            ],
+            searchedFindings: [
+              {'name': 'Gender is Male?', 'id': 0, 'resp': 'yes', 'checked': true},
+              {'name': 'Age is between 16 and 50?', 'id': 1, 'resp': 'yes', 'checked': true},
+            ],
+            matchesList: [
+              {'name': "test1", 'id': 1, 'link': 'https://www.google.com'}
+            ],
+            findSearch: "",
+            editFindQuestion: null,
+            editFindResp: null,
+            nextBestQuestion: null,
+            nbqResp: null
         }
     },
     methods: {
@@ -287,6 +414,71 @@
         $('#visitModal').modal('hide'); //need to do this disable because eslint doesnt understand jquery for some reason
         /*eslint-enable */
       },
+      createEditFind: function(item) {
+        this.editFindQuestion = item;
+        this.editFindResp = item.resp;
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#editFindModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      closeEditFind: function() {
+        this.editFindQuestion = null;
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#editFindModal').modal('hide'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      makeEditFind: function() {
+        for(let i=0;i<this.findingsList.length;i++) {
+          if(this.findingsList[i].id == this.editFindQuestion.id) {
+            if(this.findingsList[i].resp == this.editFindResp) {
+              break;
+            }
+            this.findingsList[i].resp = this.editFindResp;
+            this.searchFindings();
+            this.closeEditFind();
+            break;
+          }
+        }
+        this.closeEditFind();
+      },
+      getNbq: function() {
+        //send request to get next best question
+        this.nextBestQuestion = {'name': 'Do you have a fever?', 'id': 2, 'resp': 'no', 'checked': true} //for testing
+        this.nbqResp = null;
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#nbqModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      confirmNbq: function() {
+        if(this.nbqResp != null) {
+          //send request
+          //get back request and update table
+          this.nextBestQuestion.resp = this.nbqResp;
+          this.findingsList.push(this.nextBestQuestion);
+          this.searchFindings();
+          this.closeNbq();
+        }
+      },
+      closeNbq: function() {
+        this.nextBestQuestion = null;
+        this.nbqResp = null;
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#nbqModal').modal('hide'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      searchFindings: function() {
+        let na = [];
+        for(let i=0;i<this.findingsList.length;i++) {
+          if(this.findingsList[i].name.toLowerCase().includes(this.findSearch.toLowerCase())) {
+            na.push(this.findingsList[i])
+          }
+        }
+        this.searchedFindings = na;
+      },
       toggleMessage: function() {
         this.show = !this.show;
       }
@@ -319,11 +511,14 @@
     margin-bottom: 0.4em;
   }
   #middle {
-    background-color: rgb(248, 249, 250);
+    background-color: rgb(235,236,237);
     height: 30em;
+    font-weight: normal;
+    font-size: 14px;
   }
   #bot {
-    
+    font-weight: normal;
+    font-size: 14px;
   }
   #ralTop {
     float: right;
@@ -376,5 +571,57 @@
   option{
      text-align-last: center;
      padding:5px 0;
+   }
+   #findings {
+     margin-left: 0.6em;
+     margin-right: 0.6em;
+     width: 99%;
+     max-height: 30%;
+     overflow: scroll;
+   }
+   #findingsTitle {
+     font-weight: bold;
+     font-size: 18px;
+     margin-left: 0.6em;
+     margin-top: 0.4em;
+   }
+   #matches {
+     margin-left: 0.6em;
+     margin-right: 0.6em;
+     width: 99%;
+     max-height: 30%;
+     overflow: scroll;
+   }
+   #matchesTitle {
+     font-weight: bold;
+     font-size: 18px;
+     margin-left: 0.6em;
+     margin-top: 0.4em;
+   }
+   #findingsDiv {
+     background-color: rgb(248, 249, 250);
+   }
+   #findHead {
+     display: inline;
+   }
+   #findSearch {
+     max-width: 40%;
+     float: right;
+     margin-right:1em;
+     height: 2.5em;
+     margin-top:0.5em;
+   }
+   #findEditYes, #findEditNo, #findEditMaybe {
+     margin-right:0.5em;
+     margin-left:0.5em;
+   }
+   #botButs {
+     margin-top:0.5em;
+     margin-left:0.5em;
+     margin-right:0.5em;
+   }
+   #nbqYes, #nbqNo, #nbqMaybe {
+     margin-right:0.5em;
+     margin-left:0.5em;
    }
 </style>
