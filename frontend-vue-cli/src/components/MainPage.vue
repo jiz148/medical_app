@@ -73,48 +73,98 @@
       </div>
     </div>
     <div id="middle">
-      <div id="findingsDiv">
-        <div id="findHead">
-        <label for="findings" id="findingsTitle" class="form-label">Findings</label>
-        <input type="text" class="form-control" id="findSearch" v-model="findSearch" @input="searchFindings" placeholder="Search findings">
+      <div class="accordion accordion-flush" id="tableAccordion">
+        <div id="findingsDiv" class="accordion-item">
+          <div id="findHead" class="accordion-header">
+            <button id="findingsTitle" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#findingsBody" aria-expanded="true" aria-controls="findingsBody">
+              Top Findings
+            </button>
+          </div>
+          <div id="findingsBody" class="accordion-collapse collapse show" aria-labelledby="findHead" data-bs-parent="#tableAccordion">
+            <div class="accordion-body">
+              <input type="text" class="form-control" id="findSearch" v-model="findSearch" @input="searchFindings" placeholder="Search top findings">
+              <table id="findings" class="table table-striped table-hover align-middle table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Question</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in searchedFindings" :key="item.id" @click="createNewFind(item)">
+                    <td>{{item.id}}</td>
+                    <td>{{item.name}}</td>
+                    <td><a :href="item.link" class="button btn btn-link">Info</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <table id="findings" class="table table-striped table-hover align-middle table-sm">
-          <thead>
-            <tr>
-              <th scope="col">Question</th>
-              <th scope="col">Response</th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in searchedFindings" :key="item.id">
-              <td>{{item.name}}</td>
-              <td>{{item.resp}}</td>
-              <td><button type="button" class="btn btn-link" @click="createEditFind(item)">Edit</button></td>
-              <td><input class="form-check-input" type="checkbox" v-model="item.checked"></td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
-      <label for="matches" id="matchesTitle" class="form-label">Best Matches</label>
-      <table id="matches" class="table table-striped table-hover align-middle table-sm">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Ailment</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in matchesList" :key="item.id">
-            <td>{{item.id}}</td>
-            <td>{{item.name}}</td>
-            <td><a :href="item.link" class="button btn btn-link">Info</a></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="accordion accordion-flush" id="tableAccordion1">
+        <div id="currentFindDiv" class="accordion-item">
+          <div id="currentFindHead" class="accordion-header">
+            <button id="currentFindTitle" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#currentFindBody" aria-expanded="true" aria-controls="currentFindBody">
+              Current Findings For {{curVisit.note}}
+            </button>
+          </div>
+          <div id="currentFindBody" class="accordion-collapse collapse show" aria-labelledby="currentFindHead" data-bs-parent="#tableAccordion1">
+            <div class="accordion-body">
+              <table id="currentFind" class="table table-striped table-hover align-middle table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Question</th>
+                      <th scope="col">Response</th>
+                      <th scope="col"></th>
+                      <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in currentFindings" :key="item.id">
+                      <td>{{item.name}}</td>
+                      <td>{{item.resp}}</td>
+                      <td><button type="button" class="btn btn-link" @click="createEditFind(item)">Edit</button></td>
+                      <td><input class="form-check-input" type="checkbox" v-model="item.checked"></td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion accordion-flush" id="tableAccordion2">
+        <div id="matchesDiv" class="accordion-item">
+          <div id="matchesHead" class="accordion-header">
+            <button id="matchesTitle" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#matchesBody" aria-expanded="true" aria-controls="matchesBody">
+              Best Matches
+            </button>
+          </div>
+          <div id="matchesBody" class="accordion-collapse collapse show" aria-labelledby="matchesHead" data-bs-parent="#tableAccordion2">
+            <div class="accordion-body">
+              <table id="matches" class="table table-striped table-hover align-middle table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Ailment</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in matchesList" :key="item.id">
+                    <td>{{item.id}}</td>
+                    <td>{{item.name}}</td>
+                    <td><a :href="item.link" class="button btn btn-link">Info</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div id="editFindModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="editFindLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -149,7 +199,42 @@
           </div>
         </div>
       </div>
+
+      <div id="newFindModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="newFindLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="newFindLabel">New Finding</h5>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <a v-if="newFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">{{
+                  newFindQuestion.name
+                }}</a>
+                <br>
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="yes" v-model="newFindResp">
+                <label class="form-check-label" for="findEditYes">
+                  Yes
+                </label>
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="no" v-model="newFindResp">
+                <label class="form-check-label" for="findEditNo">
+                  No
+                </label>
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="maybe" v-model="newFindResp">
+                <label class="form-check-label" for="findEditMaybe">
+                  Not Sure
+                </label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" @click="makeNewFind">Confirm</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeNewFind">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    <br>
     <div id="bot">
       <div id="botButs">
         <button id="nbqBut" class="btn btn-success" type="submit" @click="getNbq">Next Best Question</button>
@@ -289,10 +374,14 @@
             visitname: "",
             visitInit: false,
             findingsList: [
-              {'name': 'Gender is Male?', 'id': 0, 'resp': 'yes', 'checked': true},
-              {'name': 'Age is between 16 and 50?', 'id': 1, 'resp': 'yes', 'checked': true},
+              {'name': 'Gender is Male?', 'id': 1, 'link': 'https://www.google.com'},
+              {'name': 'Age is between 16 and 50?', 'id': 2, 'link': 'https://www.google.com'},
             ],
             searchedFindings: [
+              {'name': 'Gender is Male?', 'id': 1, 'link': 'https://www.google.com'},
+              {'name': 'Age is between 16 and 50?', 'id': 2, 'link': 'https://www.google.com'},
+            ],
+            currentFindings: [
               {'name': 'Gender is Male?', 'id': 0, 'resp': 'yes', 'checked': true},
               {'name': 'Age is between 16 and 50?', 'id': 1, 'resp': 'yes', 'checked': true},
             ],
@@ -302,6 +391,8 @@
             findSearch: "",
             editFindQuestion: null,
             editFindResp: null,
+            newFindQuestion: null,
+            newFindResp: null,
             nextBestQuestion: null,
             nbqResp: null
         }
@@ -431,17 +522,40 @@
       },
       makeEditFind: function() {
         for(let i=0;i<this.findingsList.length;i++) {
-          if(this.findingsList[i].id == this.editFindQuestion.id) {
-            if(this.findingsList[i].resp == this.editFindResp) {
+          if(this.currentFindings[i].id == this.editFindQuestion.id) {
+            if(this.currentFindings[i].resp == this.editFindResp) {
               break;
             }
-            this.findingsList[i].resp = this.editFindResp;
-            this.searchFindings();
+            this.currentFindings[i].resp = this.editFindResp;
             this.closeEditFind();
             break;
           }
         }
         this.closeEditFind();
+      },
+      createNewFind: function(item) {
+        this.newFindQuestion = item;
+        this.newFindResp = item.resp;
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#newFindModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      closeNewFind: function() {
+        this.newFindQuestion = null;
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#newFindModal').modal('hide'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      makeNewFind: function() {
+        let ob = {}
+        ob['id'] = this.currentFindings[this.currentFindings.length-1].id + 1;
+        ob['resp'] = this.newFindResp;
+        ob['name'] = this.newFindQuestion.name; 
+        ob['checked'] = true
+        this.currentFindings.push(ob);
+        this.closeNewFind();
       },
       getNbq: function() {
         //send request to get next best question
@@ -457,8 +571,7 @@
           //send request
           //get back request and update table
           this.nextBestQuestion.resp = this.nbqResp;
-          this.findingsList.push(this.nextBestQuestion);
-          this.searchFindings();
+          this.currentFindings.push(this.nextBestQuestion);
           this.closeNbq();
         }
       },
@@ -512,9 +625,10 @@
   }
   #middle {
     background-color: rgb(235,236,237);
-    height: 30em;
+    height: 37em;
     font-weight: normal;
     font-size: 14px;
+    overflow-y: scroll;
   }
   #bot {
     font-weight: normal;
@@ -582,8 +696,19 @@
    #findingsTitle {
      font-weight: bold;
      font-size: 18px;
-     margin-left: 0.6em;
      margin-top: 0.4em;
+   }
+   #currentFindTitle {
+     font-weight: bold;
+     font-size: 18px;
+     margin-top: 0.4em;
+   }
+   #currentFind {
+     margin-left: 0.6em;
+     margin-right: 0.6em;
+     width: 99%;
+     max-height: 30%;
+     overflow: scroll;
    }
    #matches {
      margin-left: 0.6em;
@@ -595,10 +720,12 @@
    #matchesTitle {
      font-weight: bold;
      font-size: 18px;
-     margin-left: 0.6em;
      margin-top: 0.4em;
    }
    #findingsDiv {
+     background-color: rgb(248, 249, 250);
+   }
+   #matchesDiv {
      background-color: rgb(248, 249, 250);
    }
    #findHead {
@@ -616,12 +743,20 @@
      margin-left:0.5em;
    }
    #botButs {
-     margin-top:0.5em;
      margin-left:0.5em;
      margin-right:0.5em;
    }
    #nbqYes, #nbqNo, #nbqMaybe {
      margin-right:0.5em;
      margin-left:0.5em;
+   }
+   .accordion {
+     width: 99%
+   }
+   .accordion-item {
+     margin-left:1em;
+   }
+   .accordion-body {
+     background-color: rgb(248, 249, 250);
    }
 </style>
