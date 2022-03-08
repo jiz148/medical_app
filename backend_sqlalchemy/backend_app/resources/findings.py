@@ -113,21 +113,22 @@ class TopFindings(Resource):
 
     def get(self):
         all_findings = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.Title).all()
-        findings_hash = {}
-        for finding in all_findings:
-            findings_hash[finding.Name] = finding.FID
+        findings_hash = get_all_findings()
         finding_names = list(findings_hash.keys())
+        top_findings = {}
+        selected_i = []
+        print(finding_names)
+        j = 0
+        while j < 10:
+            i = random.randint(0, len(finding_names))
+            print(i)
+            if i in selected_i:
+                continue
+            selected_i.append(i)
+            top_findings[finding_names[i]] = findings_hash[finding_names[i]]
+            j += 1
 
-        i = random.randint(0, len(finding_names))
-        finding_name = finding_names[i]
-        finding = dict()
-        finding["Name"] = finding_names[i]
-        finding["FID"] = findings_hash[finding_names[i]]
-
-        return {'msg': "success", 'data': finding}
-
-
-        pass
+        return {'msg': "success", 'data': top_findings}
 
 
 def get_all_findings():
