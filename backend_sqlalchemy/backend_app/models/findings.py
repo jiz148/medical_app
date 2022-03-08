@@ -1,3 +1,5 @@
+from backend_sqlalchemy.backend_app.common.serializer import json_serial
+
 from backend_sqlalchemy.backend_app.db import db
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import relationship
@@ -27,6 +29,8 @@ class FindingsModel(base):
 
     def __repr__(self):
         return "<FindingsObject:FID="+str(self.FID)+" Name="+self.Name+">"
+    def as_dict(self):
+        return {c.name: json_serial(getattr(self, c.name)) for c in self.__table__.columns}
 
 
 base.prepare(db.engine, reflect=True)

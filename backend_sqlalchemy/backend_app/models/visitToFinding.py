@@ -13,8 +13,9 @@ base = automap_base()
 class VisitToFindingModel(base):
     __tablename__ = 'VisitToFinding'
 
-    visit = relationship(VisitModel, backref=backref("VisitToFinding", cascade="all, delete-orphan"))
-    finding = relationship(FindingsModel, backref=backref("VisitToFinding", cascade="all, delete-orphan"))
+    # visit = relationship(VisitModel, backref=backref("VisitToFinding", cascade="all, delete-orphan"))
+    # finding = relationship(FindingsModel, backref=backref("VisitToFinding", cascade="all, delete-orphan"))
 
 
 base.prepare(db.engine, reflect=True)
+

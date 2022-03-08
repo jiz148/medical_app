@@ -14,4 +14,4 @@ def get_stats():
     print(g_stats)
 
 
-get_stats()
+

@@ -31,8 +31,8 @@ api.add_resource(UserDisclaimer, '/disclaimer')
 api.add_resource(Visit, '/visit')
 api.add_resource(Finding, '/finding')
 api.add_resource(NextBestQuestion, '/finding/nbq')
-api.add_resource(TopFindings, 'finding/top_findings')
-api.add_resource(TopDiseases, 'disease/top_diseases')
+api.add_resource(TopFindings, '/finding/top_findings')
+api.add_resource(TopDiseases, '/disease/top_diseases')
 
 
 if __name__ == "__main__":

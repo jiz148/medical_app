@@ -13,8 +13,8 @@ base = automap_base()
 class StatsModel(base):
     __tablename__ = 'Stats'
 
-    disease = relationship(DiseasesModel, backref=backref("Stats", cascade="all, delete-orphan"), viewonly=True)
-    finding = relationship(FindingsModel, backref=backref("Stats", cascade="all, delete-orphan"),viewonly=True)
+    # disease = relationship(DiseasesModel, backref=backref("Stats", cascade="all, delete-orphan"), viewonly=True)
+    # finding = relationship(FindingsModel, backref=backref("Stats", cascade="all, delete-orphan"),viewonly=True)
 
 
 base.prepare(db.engine, reflect=True)

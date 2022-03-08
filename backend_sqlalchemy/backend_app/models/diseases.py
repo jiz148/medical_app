@@ -7,7 +7,7 @@ base = automap_base()
 class DiseasesModel(base):
     __tablename__ = 'Diseases'
 
-    findings = relationship('Findings', secondary='Stats',viewonly=True)
+    findings = relationship('Findings', secondary='Stats', viewonly=True)
 
 
 base.prepare(db.engine, reflect=True)
