@@ -42,7 +42,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-success" @click="createVisit">Create Visit</button>
-              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeVisit">Cancel</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeVisit">Cancel</button>
             </div>
           </div>
         </div>
@@ -92,10 +92,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in searchedFindings" :key="item.id" @click="createNewFind(item)">
-                    <td>{{item.id}}</td>
-                    <td>{{item.name}}</td>
-                    <td><a :href="item.link" class="button btn btn-link">Info</a></td>
+                  <tr v-for="item in searchedFindings" :key="item.FID" @click="createNewFind(item)">
+                    <td>{{item.FID}}</td>
+                    <td>{{item.Name}}</td>
+                    <td><a :href="item.URL" class="button btn btn-link">Info</a></td>
                   </tr>
                 </tbody>
               </table>
@@ -123,9 +123,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in currentFindings" :key="item.id">
-                      <td>{{item.name}}</td>
-                      <td>{{item.resp}}</td>
+                  <tr v-for="item in currentFindings" :key="item.FID">
+                      <td>{{item.Name}}</td>
+                      <td>{{item.answer}}</td>
                       <td><button type="button" class="btn btn-link" @click="createEditFind(item)">Edit</button></td>
                       <td><input class="form-check-input" type="checkbox" v-model="item.checked"></td>
                     </tr>
@@ -140,7 +140,7 @@
         <div id="matchesDiv" class="accordion-item">
           <div id="matchesHead" class="accordion-header">
             <button id="matchesTitle" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#matchesBody" aria-expanded="true" aria-controls="matchesBody">
-              Best Matches
+              Top Diseases
             </button>
           </div>
           <div id="matchesBody" class="accordion-collapse collapse show" aria-labelledby="matchesHead" data-bs-parent="#tableAccordion2">
@@ -149,14 +149,14 @@
                 <thead>
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Ailment</th>
+                    <th scope="col">Disease</th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in matchesList" :key="item.id">
-                    <td>{{item.id}}</td>
-                    <td>{{item.name}}</td>
+                  <tr v-for="item in matchesList" :key="item.DID">
+                    <td>{{item.DID}}</td>
+                    <td>{{item.Name}}</td>
                     <td><a :href="item.link" class="button btn btn-link">Info</a></td>
                   </tr>
                 </tbody>
@@ -175,7 +175,7 @@
             <div class="modal-body">
               <div class="mb-3">
                 <a v-if="editFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">{{
-                  editFindQuestion.name
+                  editFindQuestion.Name
                 }}</a>
                 <br>
                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="yes" v-model="editFindResp">
@@ -209,7 +209,7 @@
             <div class="modal-body">
               <div class="mb-3">
                 <a v-if="newFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">{{
-                  newFindQuestion.name
+                  newFindQuestion.Name
                 }}</a>
                 <br>
                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="yes" v-model="newFindResp">
@@ -268,7 +268,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-success" @click="confirmNbq">Update</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeNbq">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeNbq">Cancel</button>
               </div>
             </div>
           </div>
@@ -321,7 +321,7 @@
         }
         });
         url = "http://127.0.0.1:5001/visit";
-            fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'GET',
                 credentials: "include",
                 mode: 'cors',
@@ -374,19 +374,18 @@
             visitname: "",
             visitInit: false,
             findingsList: [
-              {'name': 'Gender is Male?', 'id': 1, 'link': 'https://www.google.com'},
-              {'name': 'Age is between 16 and 50?', 'id': 2, 'link': 'https://www.google.com'},
+              {'Name': 'Gender is Male?', 'FID': 1, 'URL': 'https://www.google.com'},
+              {'Name': 'Age is between 16 and 50?', 'FID': 2, 'URL': 'https://www.google.com'},
             ],
             searchedFindings: [
-              {'name': 'Gender is Male?', 'id': 1, 'link': 'https://www.google.com'},
-              {'name': 'Age is between 16 and 50?', 'id': 2, 'link': 'https://www.google.com'},
+              {'Name': 'Gender is Male?', 'FID': 1, 'URL': 'https://www.google.com'},
+              {'Name': 'Age is between 16 and 50?', 'FID': 2, 'URL': 'https://www.google.com'},
             ],
             currentFindings: [
-              {'name': 'Gender is Male?', 'id': 0, 'resp': 'yes', 'checked': true},
-              {'name': 'Age is between 16 and 50?', 'id': 1, 'resp': 'yes', 'checked': true},
+              
             ],
             matchesList: [
-              {'name': "test1", 'id': 1, 'link': 'https://www.google.com'}
+              {'Name': "test1", 'DID': 1, 'link': 'https://www.google.com'}
             ],
             findSearch: "",
             editFindQuestion: null,
@@ -429,14 +428,17 @@
           }
           });
       },
-      loadVisit: function() {
+      loadVisit: async function() {
         let item = this.curVisit;
-        if(item.visit_id > 0) {
+        if(item.visit_id > 0 && this.visitList[0].visit_id < 1) {
           if(item.visit_id !== 0 && !this.visitInit) { //remove initial select option
             this.visitList.splice(0,1);
             this.visitInit = true;
           }
         }
+        //await this.getDiseases();
+        await this.getCurrentFindings();
+        this.getDiseases();
       },
       launch: function() {
         /*eslint-disable */
@@ -507,7 +509,7 @@
       },
       createEditFind: function(item) {
         this.editFindQuestion = item;
-        this.editFindResp = item.resp;
+        this.editFindResp = item.answer;
         /*eslint-disable */
         //suppress all warnings between comments
         $('#editFindModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
@@ -522,11 +524,11 @@
       },
       makeEditFind: function() {
         for(let i=0;i<this.findingsList.length;i++) {
-          if(this.currentFindings[i].id == this.editFindQuestion.id) {
-            if(this.currentFindings[i].resp == this.editFindResp) {
+          if(this.currentFindings[i].FID == this.editFindQuestion.FID) {
+            if(this.currentFindings[i].answer == this.editFindResp) {
               break;
             }
-            this.currentFindings[i].resp = this.editFindResp;
+            this.currentFindings[i].answer = this.editFindResp;
             this.closeEditFind();
             break;
           }
@@ -535,7 +537,7 @@
       },
       createNewFind: function(item) {
         this.newFindQuestion = item;
-        this.newFindResp = item.resp;
+        this.newFindResp = item.answer;
         /*eslint-disable */
         //suppress all warnings between comments
         $('#newFindModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
@@ -550,16 +552,16 @@
       },
       makeNewFind: function() {
         let ob = {}
-        ob['id'] = this.currentFindings[this.currentFindings.length-1].id + 1;
-        ob['resp'] = this.newFindResp;
-        ob['name'] = this.newFindQuestion.name; 
+        ob['FID'] = this.currentFindings[this.currentFindings.length-1].FID + 1;
+        ob['answer'] = this.newFindResp;
+        ob['Name'] = this.newFindQuestion.Name; 
         ob['checked'] = true
         this.currentFindings.push(ob);
         this.closeNewFind();
       },
       getNbq: function() {
         //send request to get next best question
-        this.nextBestQuestion = {'name': 'Do you have a fever?', 'id': 2, 'resp': 'no', 'checked': true} //for testing
+        this.nextBestQuestion = {'Name': 'Do you have a fever?', 'FID': 2, 'answer': 'no', 'checked': true} //for testing
         this.nbqResp = null;
         /*eslint-disable */
         //suppress all warnings between comments
@@ -570,7 +572,7 @@
         if(this.nbqResp != null) {
           //send request
           //get back request and update table
-          this.nextBestQuestion.resp = this.nbqResp;
+          this.nextBestQuestion.answer = this.nbqResp;
           this.currentFindings.push(this.nextBestQuestion);
           this.closeNbq();
         }
@@ -586,7 +588,7 @@
       searchFindings: function() {
         let na = [];
         for(let i=0;i<this.findingsList.length;i++) {
-          if(this.findingsList[i].name.toLowerCase().includes(this.findSearch.toLowerCase())) {
+          if(this.findingsList[i].Name.toLowerCase().includes(this.findSearch.toLowerCase())) {
             na.push(this.findingsList[i])
           }
         }
@@ -594,6 +596,94 @@
       },
       toggleMessage: function() {
         this.show = !this.show;
+      },
+      getDiseases: function() {
+        let url = "http://127.0.0.1:5001/disease/top_diseases";
+            fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'GET',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                }
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.response.msg == 'success') {
+                        let arr = [];
+                        let id = 1;
+                        for (const c of Object.entries(data.data)) {
+                          let ob = {'Name': c[0], 'Frq': c[1], 'DID': id};
+                          id += 1;
+                          arr.push(ob);
+                        }
+                        this.matchesList = arr;
+                    } else {
+                        this.errorMess = this.response.msg;
+                        this.showError = true;
+                    }
+                    }).catch(error => {
+                    if(error.response) {
+                        console.log("Error: " + error.message);
+                        if(this.status == 401) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                        }
+                    }
+                });
+              return;
+      },
+      getCurrentFindings: function() {
+        let url = "http://127.0.0.1:5001/finding";
+            fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body: JSON.stringify({
+                    'visit_id': 8
+                })
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    console.log(response);
+                    return response.json();
+                })
+                .then(data => {
+                    this.response = data; 
+                    console.log(data);
+                    if(this.status == 200) {
+                        for(let i=0;i<data.data.length;i++) {
+                          if(!data.data['checked']) {
+                            data.data['checked'] = true
+                          }
+                        }
+                        this.currentFindings = data.data;
+                    } else {
+                        this.errorMess = this.response.msg;
+                        this.showError = true;
+                    }
+                    }).catch(error => {
+                    if(error.response) {
+                        console.log("Error: " + error.message);
+                        if(this.status == 401) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                        }
+                    }
+                });
       }
     }
   }

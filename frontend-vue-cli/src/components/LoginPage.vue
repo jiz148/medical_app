@@ -26,8 +26,7 @@
         </div>
         <button id="submitBut" class="btn btn-primary btn-lg" type="submit" @click="loginInfo">Login</button>
         <br>
-        <button id="registerBut" class="btn btn-outline-primary" type="submit" @click="godisclaimer" >Register</button>
-        <br>
+        <button id="registerBut" class="btn btn-link btn-sm" type="submit" @click="godisclaimer" >Create Account</button>
         <button id="forgetBut" class="btn btn-link btn-sm" type="submit" @click="forgotpass">Forgot Password?</button>
     </div>
   </div>
@@ -114,7 +113,7 @@ export default { //controls form input
             document.getElementById("submitBut").disabled = true; //stop queries from happening
             let url = "http://127.0.0.1:5001/user/login";
             fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
-                method: 'POST',
+                method: 'PUT',
                 credentials: "include",
                 mode: 'cors',
                 headers: {
@@ -200,6 +199,8 @@ export default { //controls form input
   }
   #registerBut {
       margin-top: 2em;
+      margin-left: -0.6em;
+      margin-right: 0.4em;
   }
   #forgetBut {
       margin-left: -0.6em;

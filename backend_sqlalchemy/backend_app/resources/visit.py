@@ -1,8 +1,11 @@
 import datetime
 
 from flask import session
+from backend_sqlalchemy.backend_app.models.user import UserModel
 from flask_restful import Resource, abort, reqparse
 from backend_sqlalchemy.backend_app.models.visit import VisitModel
+from backend_sqlalchemy.backend_app.models.findings import FindingsModel
+from backend_sqlalchemy.backend_app.models.visitToFinding import VisitToFindingModel
 from backend_sqlalchemy.backend_app.db import db
 
 visit_post_args = reqparse.RequestParser()
@@ -34,13 +37,41 @@ class Visit(Resource):
             uid = session['uid']
         except KeyError:
             abort(401, msg="uid in session does not exist")
+        print(uid)
         datetime_now = datetime.datetime.now()
         visit = VisitModel(datetime=datetime_now,
                        note=note,
                        uid=uid)
+        user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
+        gender = user.gender
+        birthyear = user.birth_year
+        curyear = datetime.datetime.now().year
+        
+        visit_id = visit.visit_id
+        if curyear - birthyear <= 25:
+            year_fid = 3735
+            #year_finding = db.session.query(FindingsModel).filter(FindingsModel.FID == 3735).first()
+        elif curyear - birthyear > 55:
+            year_fid = 3736
+            #year_finding = db.session.query(FindingsModel).filter(FindingsModel.FID == 3736).first()
+        else:
+            year_fid = 3731
+            #year_finding = db.session.query(FindingsModel).filter(FindingsModel.FID == 3731).first()
+
+        if gender == 'male':
+            gender_fid = 3732
+            #gender_finding = db.session.query(FindingsModel).filter(FindingsModel.FID == 3732).first()
+        else:
+            gender_fid = 3738
+            #gender_finding = db.session.query(FindingsModel).filter(FindingsModel.FID == 3738).first()
+        
         db.session.add(visit)
         db.session.commit()
-        visit_id = visit.visit_id
+        visit_to_finding_year = VisitToFindingModel(position=1, answer='yes', visit_id=visit.visit_id, FID= year_fid)
+        visit_to_finding_gender = VisitToFindingModel(position=2, answer='yes', visit_id=visit.visit_id, FID= gender_fid)
+        db.session.add(visit_to_finding_year)
+        db.session.add(visit_to_finding_gender)
+        db.session.commit()
 
         # return the whole list of visit again
         result = db.session.query(VisitModel). \

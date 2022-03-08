@@ -8,9 +8,11 @@ from flask import session
 from flask_restful import Resource, reqparse, fields, marshal_with, abort
 
 from backend_sqlalchemy.backend_app.models.visit import VisitModel
-visit_to_finding_args = reqparse.RequestParser()
-visit_to_finding_args.add_argument("visit_id", type=str, required=True)
-visit_to_finding_args.add_argument("Name", type=str, required=True)
+visit_to_finding_get_args = reqparse.RequestParser()
+visit_to_finding_get_args.add_argument("visit_id", type=str, required=True)
+visit_to_finding_post_args = reqparse.RequestParser()
+visit_to_finding_post_args.add_argument("visit_id", type=str, required=True)
+visit_to_finding_post_args.add_argument("Name", type=str, required=True)
 
 #visit_to_finding_args.add_argument("", type=str, required=True)
 
@@ -19,17 +21,18 @@ class Finding(Resource):
     TODO
     """
 
-    def get(self):
+    def post(self):
         """
         get findings
         """
-        args = visit_to_finding_args.parse_args()
+        args = visit_to_finding_get_args.parse_args()
         try:
             uid = session['uid']
         except KeyError:
             abort(401, msg="uid in session does not exist")
-        visit_id = args['visit_id']
-        user_visits = db.session.query(UserModel).filter(UserModel.uid == uid).all().visits
+        visit_id = int(args['visit_id'])
+        user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
+        user_visits = user.visits
         visit_id_lists = [v.visit_id for v in user_visits]
         if visit_id not in visit_id_lists:
             abort(401, msg="visit does not belong to user")
@@ -43,12 +46,12 @@ class Finding(Resource):
         return {"msg": "success", "data": answer_name_url}, 200
 
 
-    def post(self):
+    def put(self):
         """
         add findings
         """
-        visit_to_finding_args.add_argument("answer", type=str, required=True)
-        args = visit_to_finding_args.parse_args()
+        visit_to_finding_post_args.add_argument("answer", type=str, required=True)
+        args = visit_to_finding_post_args.parse_args()
         try:
             uid = session['uid']
         except KeyError:
