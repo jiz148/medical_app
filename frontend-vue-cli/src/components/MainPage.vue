@@ -249,7 +249,7 @@
               <div class="modal-body">
                 <div class="mb-3">
                   <a v-if="nextBestQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">{{
-                    nextBestQuestion.name
+                    nextBestQuestion.Name
                   }}</a>
                   <br>
                   <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqYes" value="yes" v-model="nbqResp">
