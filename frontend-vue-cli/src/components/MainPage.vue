@@ -657,7 +657,7 @@
                     'Access-Control-Allow-Credentials': true,
                 },
                 body: JSON.stringify({
-                    'visit_id': 8
+                    'visit_id': this.curVisit.visit_id
                 })
                 })
                 .then((response) => { 
