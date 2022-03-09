@@ -58,7 +58,7 @@ class Finding(Resource):
             abort(401, msg="uid in session does not exist")
 
         #findings_from_user = db.session.query(VisitToFindingModel, FindingsModel).filter(VisitToFindingModel.visit_id == args["visit_id"], FindingsModel.FID == VisitToFindingModel.FID).all()
-        FID_from_user= db.session.query(FindingsModel).filter(FindingsModel.Name == args["Name"]).first()
+        FID_from_user = db.session.query(FindingsModel).filter(FindingsModel.Name == args["Name"]).first()
         position_in_table = db.session.query(VisitToFindingModel).filter(VisitToFindingModel.visit_id == args["visit_id"]).count()
         visit_to_finding = VisitToFindingModel(position=position_in_table+1, answer=args["answer"], visit_id=args["visit_id"], FID= FID_from_user.FID)
         db.session.add(visit_to_finding)
