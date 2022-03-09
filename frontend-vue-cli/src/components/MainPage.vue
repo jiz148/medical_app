@@ -552,7 +552,11 @@
       },
       makeNewFind: function() {
         let ob = {}
-        ob['FID'] = this.currentFindings[this.currentFindings.length-1].FID + 1;
+        let id = 1
+        if(this.currentFindings.length > 0) {
+          id =  this.currentFindings[this.currentFindings.length-1].FID + 1;
+        }
+        ob['FID'] = id;
         ob['answer'] = this.newFindResp;
         ob['Name'] = this.newFindQuestion.Name; 
         ob['checked'] = true
