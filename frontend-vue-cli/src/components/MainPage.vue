@@ -670,8 +670,8 @@
                     console.log(data);
                     if(this.status == 200) {
                         for(let i=0;i<data.data.length;i++) {
-                          if(!data.data['checked']) {
-                            data.data['checked'] = true
+                          if(!data.data[i]['checked']) {
+                            data.data[i]['checked'] = true
                           }
                         }
                         this.currentFindings = data.data;
