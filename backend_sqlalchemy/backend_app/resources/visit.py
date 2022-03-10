@@ -37,7 +37,7 @@ class Visit(Resource):
             uid = session['uid']
         except KeyError:
             abort(401, msg="uid in session does not exist")
-        print(uid)
+        # TODO
         datetime_now = datetime.datetime.now()
         visit = VisitModel(datetime=datetime_now,
                        note=note,
@@ -48,6 +48,7 @@ class Visit(Resource):
         curyear = datetime.datetime.now().year
         
         visit_id = visit.visit_id
+        # TODO
         if curyear - birthyear <= 25:
             year_fid = 3735
             #year_finding = db.session.query(FindingsModel).filter(FindingsModel.FID == 3735).first()
@@ -87,6 +88,12 @@ class Visit(Resource):
                 index = i
 
         return {'msg': 'success', 'result': result_json, 'index': index}
+
+    def put(self):
+        """
+        TODO
+        """
+        pass
 
 
 if __name__ == '__main__':

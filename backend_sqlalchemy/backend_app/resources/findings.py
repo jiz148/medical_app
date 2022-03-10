@@ -14,7 +14,9 @@ visit_to_finding_post_args = reqparse.RequestParser()
 visit_to_finding_post_args.add_argument("visit_id", type=str, required=True)
 visit_to_finding_post_args.add_argument("Name", type=str, required=True)
 
-#visit_to_finding_args.add_argument("", type=str, required=True)
+
+# visit_to_finding_args.add_argument("", type=str, required=True)
+
 
 class Finding(Resource):
     """
@@ -45,10 +47,10 @@ class Finding(Resource):
             answer_name_url.append({"answer": findings[0].answer, "Name": findings[1].Name, "URL": findings[1].URL, "FID": findings[1].FID})
         return {"msg": "success", "data": answer_name_url}, 200
 
-
     def put(self):
         """
         add findings
+        Not needed for now
         """
         visit_to_finding_post_args.add_argument("answer", type=str, required=True)
         args = visit_to_finding_post_args.parse_args()
@@ -72,6 +74,7 @@ class Finding(Resource):
         """
         delete findings
         """
+        # TODO
         args = visit_to_finding_args.parse_args()
         try:
             uid = session['uid']
@@ -86,9 +89,19 @@ class Finding(Resource):
         pass
 
 
+class FindingsSearch(Resource):
+    """
+    TODO
+    """
+
+    def post(self):
+        pass
+
+
 class NextBestQuestion(Resource):
     """
     TODO
+    The get method needs a input
     """
 
     def get(self):
@@ -111,7 +124,7 @@ class NextBestQuestion(Resource):
 
 class TopFindings(Resource):
     """
-    TODO
+    Not Needed
     """
 
     def get(self):

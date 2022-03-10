@@ -11,24 +11,21 @@ g_diseases_prev = {}
 class TopDiseases(Resource):
     """
     TODO
+    input: current findings
+    1. needs input
+    2. output: 5 randoms disease
     """
 
     def get(self):
         get_top_10_disease = get_all_diseases()
-        name_of_dis_stats={}
-        k=0
+        name_of_dis_stats = {}
+        k = 0
         for i in get_top_10_disease.keys():
             k += 1
             name_of_dis_stats[i] = get_top_10_disease[i]
             if k == 10:
                 break
         return {'msg': "success", 'data': name_of_dis_stats}
-
-
-
-
-
-        pass
 
 
 def get_all_diseases():
