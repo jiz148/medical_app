@@ -75,7 +75,7 @@ export default { //controls form input
               if(this.response.accepted == null) {
                   this.$router.push('/');
               } else if(this.response.uid != null) {
-                  this.$router.push('/main');
+                  this.$router.push('/visit');
               }
           }
         }).catch(error => {
@@ -134,7 +134,7 @@ export default { //controls form input
                 .then(data => {
                     this.response = data; 
                     if(this.status == 200) {
-                        this.$router.push('/main');
+                        this.$router.push('/visit');
                     } else {
                         this.errorMess = this.response.msg;
                         this.showError = true;
