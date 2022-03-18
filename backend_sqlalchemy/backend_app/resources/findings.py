@@ -17,6 +17,12 @@ visit_to_finding_post_args.add_argument("Name", type=str, required=True)
 
 # visit_to_finding_args.add_argument("", type=str, required=True)
 
+finding_search_get_args = reqparse.RequestParser()
+finding_search_get_args.add_argument("keyword", type=str, required=True)
+
+nbq_diseases_get_args = reqparse.RequestParser()
+nbq_diseases_get_args.add_argument("top_diseases", type=list, required=True, location='json')
+nbq_diseases_get_args.add_argument("findings", type=list, required=True, location='json')
 
 class Finding(Resource):
     """
@@ -75,6 +81,7 @@ class Finding(Resource):
         delete findings
         """
         # TODO
+        '''
         args = visit_to_finding_args.parse_args()
         try:
             uid = session['uid']
@@ -86,7 +93,7 @@ class Finding(Resource):
         db.session.query(VisitToFindingModel).filter(answer_from_user.FID == VisitToFindingModel.FID, visit_id_from_user == VisitToFindingModel.visit_id).delete()
         db.session.commit()
         return {"msg": "deleted!"}, 200
-        pass
+        '''
 
 
 class FindingsSearch(Resource):
@@ -95,31 +102,48 @@ class FindingsSearch(Resource):
     """
 
     def post(self):
-        pass
+        try:
+            uid = session['uid']
+        except KeyError:
+            abort(401, msg="uid in session does not exist")
+        args = finding_search_get_args.parse_args()
+        findings = db.session.query(FindingsModel.FID, FindingsModel.Name).filter(FindingsModel.Name.like('%'+args["keyword"]+'%')).all()
+        search_result = list()
+        for finding in findings:
+            search_result.append(finding.Name)
+        return {'msg': "success", 'data': search_result}
 
 
 class NextBestQuestion(Resource):
     """
     TODO
     The get method needs a input
+    input - top diseases and selected findings list, output- next best finding(random for now)
     """
 
-    def get(self):
+    def post(self):
+        try:
+            uid = session['uid']
+        except KeyError:
+            abort(401, msg="uid in session does not exist")
+        args = nbq_diseases_get_args.parse_args()
         all_findings = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.Title).all()
         findings_hash = {}
         for finding in all_findings:
             findings_hash[finding.Name] = finding.FID
         finding_names = list(findings_hash.keys())
-
-        i = random.randint(0, len(finding_names))
-        finding_name = finding_names[i]
+        while 1:
+            i = random.randint(0, len(finding_names))
+            finding_name = finding_names[i]
+            if findings_hash[finding_name] in args["findings"]:
+                continue
+            else:
+                break
         finding = dict()
         finding["Name"] = finding_names[i]
         finding["FID"] = findings_hash[finding_names[i]]
 
         return {'msg': "success", 'data': finding}
-
-        pass
 
 
 class TopFindings(Resource):
