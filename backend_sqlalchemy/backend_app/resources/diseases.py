@@ -40,4 +40,3 @@ def get_all_diseases():
         g_diseases_freq[disease.DID] = disease.Frq
         g_diseases_prev[disease.DID] = disease.Frq/total_freq
     return dict(sorted([(g_diseases[i[0]], i[1]) for i in g_diseases_prev.items()], key=lambda x: -x[1]))
-
