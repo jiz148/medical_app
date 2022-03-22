@@ -13,11 +13,11 @@
       </div>
       
       <div id="buttonSection">
-        <button type="submit" class="btn btn-primary" id="confirmBut" @click='loadVisit'>Confirm</button>
         <select id="visitSelect" v-model="curVisit" class="btn btn-outline-primary dropdown-toggle">
           <option class="visitItem" v-for="item in visitList" :value="item" :key="item.visit_id">{{item.note + " " + item.datetime}}</option>
         </select>
         <br>
+        <button type="submit" class="btn btn-primary" id="confirmBut" @click='loadVisit'>Confirm</button>
         <button id="newVisitBut" class="btn btn-secondary" type="submit" @click="createVisit">New Visit</button>
       </div>
     </div>
@@ -229,6 +229,7 @@
     margin-right: 0.6em;
     height: 2.4em;
     display: inline;
+    max-width: 11.8em;
   }
   .visitItem {
     height: 2.0em;
@@ -239,6 +240,7 @@
      padding:5px 0;
    }
    #confirmBut {
+       margin-top: 0.5em;
        margin-right: 0.4em;
    }
    #newVisitBut {

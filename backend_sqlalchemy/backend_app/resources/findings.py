@@ -19,6 +19,7 @@ visit_to_finding_post_args.add_argument("Name", type=str, required=True)
 
 finding_search_get_args = reqparse.RequestParser()
 finding_search_get_args.add_argument("keyword", type=str, required=True)
+finding_search_get_args.add_argument("current_findings", type=int, action="append", required=True)
 
 nbq_diseases_get_args = reqparse.RequestParser()
 nbq_diseases_get_args.add_argument("top_disease_id", type=int, required=True, location='json')
@@ -107,10 +108,16 @@ class FindingsSearch(Resource):
         except KeyError:
             abort(401, msg="uid in session does not exist")
         args = finding_search_get_args.parse_args()
+        #print(args["current_findings"])
         findings = db.session.query(FindingsModel.FID, FindingsModel.Name).filter(FindingsModel.Name.like('%'+args["keyword"]+'%')).all()
         search_result = list()
         for finding in findings:
-            search_result.append(finding.Name)
+            f = {}
+            f['FID'] = finding.FID
+            f['Name'] = finding.Name
+            search_result.append(f)
+        max_length = 25 #dummy value
+        search_result = search_result[:max_length]
         return {'msg': "success", 'data': search_result}
 
 

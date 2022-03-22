@@ -62,6 +62,7 @@
           </div>
           <div id="currentFindBody" class="accordion-collapse collapse show" aria-labelledby="currentFindHead" data-bs-parent="#tableAccordion1">
             <div class="accordion-body">
+              <div class="findingsBBody">
               <table id="currentFind" class="table table-striped align-middle table-sm">
                 <thead>
                   <tr>
@@ -80,6 +81,7 @@
                     </tr>
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         </div>
@@ -96,6 +98,7 @@
             <div class="accordion-body">
               <button id="nbqBut" class="btn btn-primary" type="submit" @click="getNbq">Next Best Question</button>
               <input type="text" class="form-control" id="findSearch" v-model="findSearch" @input="searchFindings" placeholder="Search top findings">
+              <div class="findingsBBody">
               <table id="findings" class="table table-striped table-hover align-middle table-sm">
                 <thead>
                   <tr>
@@ -105,13 +108,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in searchedFindings" :key="item.FID" @click="createNewFind(item)">
-                    <td>{{item.FID}}</td>
+                  <tr v-for="item in searchedFindings" :key="item.id" @click="createNewFind(item)">
+                    <td>{{item.id}}</td>
                     <td>{{item.Name}}</td>
+                    <td><button type="button" class="btn btn-link" @click="createNewFind(item)">Select</button></td>
                     <td><a :href="item.URL" class="button btn btn-link">Info</a></td>
                   </tr>
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         </div>
@@ -126,6 +131,7 @@
           </div>
           <div id="matchesBody" class="accordion-collapse collapse show" aria-labelledby="matchesHead" data-bs-parent="#tableAccordion2">
             <div class="accordion-body">
+              <div class="findingsBBody">
               <table id="matches" class="table table-striped align-middle table-sm">
                 <thead>
                   <tr>
@@ -142,6 +148,7 @@
                   </tr>
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         </div>
@@ -253,12 +260,13 @@
     <div id="bot">
       <div id="botButs">
         <div id="lalBot">
-          <button id="saveBut" class="btn btn-primary" type="submit" @click="save">Save</button>
-          <button id="editNameBut" class="btn btn-outline-primary" type="submit" @click="createEditNote">Rename</button>
+          <button id="saveBut" class="btn btn-primary btn-sm" type="submit" @click="save">Save</button>
+          <button id="editNameBut" class="btn btn-outline-primary btn-sm" type="submit" @click="createEditNote">Rename</button>
         </div>
         <div id="ralBot">
-          <button id="resetBut" class="btn btn-outline-secondary" type="submit" @click="reset">Reset</button>
-          <button id="backBut" class="btn btn-secondary" type="submit" @click="$router.go(-1)">Back</button>
+          <button id="revertBut" class="btn btn-outline-danger btn-sm" type="submit" @click="getCurrentFindings">Revert</button>
+          <button id="resetBut" class="btn btn-outline-secondary btn-sm" type="submit" @click="reset">Reset</button>
+          <button id="backBut" class="btn btn-secondary btn-sm" type="submit" @click="$router.go(-1)">Back</button>
         </div>
       </div>
 
@@ -393,18 +401,16 @@
             status: 0,
             curVisit: {'note': 'New Visit', 'visit_id': 0, 'datetime': ""},
             findingsList: [
-              {'Name': 'Gender is Male?', 'FID': 1, 'URL': 'https://www.google.com'},
-              {'Name': 'Age is between 16 and 50?', 'FID': 2, 'URL': 'https://www.google.com'},
+              
             ],
             searchedFindings: [
-              {'Name': 'Gender is Male?', 'FID': 1, 'URL': 'https://www.google.com'},
-              {'Name': 'Age is between 16 and 50?', 'FID': 2, 'URL': 'https://www.google.com'},
+              
             ],
             currentFindings: [
               
             ],
             matchesList: [
-              {'Name': "test1", 'DID': 1, 'link': 'https://www.google.com'}
+              
             ],
             findSearch: "",
             editFindQuestion: null,
@@ -505,14 +511,30 @@
         //suppress all warnings between comments
         $('#newFindModal').modal('hide'); //need to do this disable because eslint doesnt understand jquery for some reason
         /*eslint-enable */
+        this.getDiseases();
       },
       makeNewFind: function() {
-        let ob = {}
-        let id = 1
-        if(this.currentFindings.length > 0) {
-          id =  this.currentFindings[this.currentFindings.length-1].FID + 1;
+        let ob = {};
+        let id = 1;
+        for(let i=0; i<this.searchedFindings.length; i++) {
+          if(this.searchedFindings[i].FID == this.newFindQuestion.FID) {
+            this.searchedFindings.splice(i, 1);
+          }
         }
-        ob['FID'] = id;
+        console.log(this.newFindQuestion);
+        for(let i=0;i<this.currentFindings.length;i++) {
+          console.log(this.currentFindings[i]);
+          if(this.currentFindings[i].FID == this.newFindQuestion.FID) {
+            this.currentFindings[i].answer = this.newFindResp;
+            this.closeNewFind();
+            return;
+          }
+        }
+        if(this.currentFindings.length > 0) {
+          id =  this.currentFindings[this.currentFindings.length-1].id + 1;
+        }
+        ob['id'] = id
+        ob['FID'] = this.newFindQuestion.FID;
         ob['answer'] = this.newFindResp;
         ob['Name'] = this.newFindQuestion.Name; 
         ob['checked'] = true
@@ -592,13 +614,67 @@
         /*eslint-enable */
       },
       searchFindings: function() {
-        let na = [];
+        let url = "http://127.0.0.1:5001/finding/finding_search";
+        let fidlist = []
+        //console.log(this.currentFindings[0]);
+        for(let i=0;i<this.currentFindings.length;i++) {
+          if(this.currentFindings[i].checked) {
+            //console.log(this.currentFindings[i]);
+            fidlist.push(this.currentFindings[i].FID);
+          }
+        }
+        if(fidlist.length < 1) {
+          fidlist = [{}];
+        }
+        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body: JSON.stringify({
+                    "keyword": this.findSearch,
+                    "current_findings": fidlist
+                })
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.response.msg == 'success') {
+                        //console.log(data.data.length);
+                        let id = 1;
+                        this.searchedFindings = data.data;
+                        for(let i=0;i<this.searchedFindings.length;i++) {
+                          this.searchedFindings[i]['id'] = id;
+                          id += 1;
+                        }
+                    } else {
+                        this.errorMess = this.response.msg;
+                        this.showError = true;
+                    }
+                    }).catch(error => {
+                    if(error.response) {
+                        console.log("Error: " + error.message);
+                        if(this.status == 401) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                        }
+                    }
+                });
+        /*let na = [];
         for(let i=0;i<this.findingsList.length;i++) {
           if(this.findingsList[i].Name.toLowerCase().includes(this.findSearch.toLowerCase())) {
             na.push(this.findingsList[i])
           }
         }
-        this.searchedFindings = na;
+        this.searchedFindings = na;*/
       },
       toggleMessage: function() {
         this.show = !this.show;
@@ -950,6 +1026,12 @@ option{
     max-height: 30%;
     overflow: scroll;
   }
+  .findingsBBody {
+    overflow-y: scroll; 
+    overflow-x: hidden;
+    max-height: 20em;
+    width: 100%;
+  }
   #findingsTitle {
     font-weight: bold;
     font-size: 18px;
@@ -965,7 +1047,7 @@ option{
     margin-right: 0.6em;
     width: 99%;
     max-height: 30%;
-    overflow: scroll;
+    overflow-y: scroll;
   }
   #matches {
     margin-left: 0.6em;
@@ -1031,6 +1113,10 @@ option{
   }
   #saveBut {
     margin-right: 0.5em;
+  }
+  #revertBut {
+    margin-right: 0.5em;
+    margin-top: 0.4em;
   }
   #editNameBut {
 
