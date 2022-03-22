@@ -132,7 +132,42 @@
         }
       },
       createVisit: function() {
-        this.$router.push('/main?visit=0');
+        let url = "http://127.0.0.1:5001/visit";
+        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body:  JSON.stringify({
+                    'note': 'New Visit'
+                })
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.status == 200) {
+                        this.$router.push('/main?visit='+data.visit_id);
+                    } else {
+                        this.errorMess = this.response.msg;
+                        this.showError = true;
+                    }
+                    }).catch(error => {
+                    if(error.response) {
+                        console.log("Error: " + error.message);
+                        if(this.status == 401) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                        }
+                    }
+                });
       }
     }
   }
