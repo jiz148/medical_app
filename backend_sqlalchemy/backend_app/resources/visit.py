@@ -73,7 +73,8 @@ class Visit(Resource):
             if result_json[i]['visit_id'] == visit_id:
                 index = i
 
-        return {'msg': 'success', 'result': result_json, 'index': index}
+        return {'msg': 'success', 'visit_id': visit_id}
+        #return {'msg': 'success', 'result': result_json, 'index': index}
 
     def put(self):
         args = visit_put_args.parse_args()

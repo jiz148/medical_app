@@ -76,7 +76,7 @@
                       <td>{{item.Name}}</td>
                       <td>{{item.answer}}</td>
                       <td><button type="button" class="btn btn-link" @click="createEditFind(item)">Edit</button></td>
-                      <td><input class="form-check-input" type="checkbox" v-model="item.checked"></td>
+                      <td><input class="form-check-input" type="checkbox" v-model="item.checked" @change="getDiseases"></td>
                     </tr>
                 </tbody>
               </table>
@@ -136,7 +136,7 @@
                 </thead>
                 <tbody>
                   <tr v-for="item in matchesList" :key="item.DID">
-                    <td>{{item.DID}}</td>
+                    <td>{{item.id}}</td>
                     <td>{{item.Name}}</td>
                     <td><a :href="item.link" class="button btn btn-link">Info</a></td>
                   </tr>
@@ -449,8 +449,9 @@
           });
       },
       loadVisit: async function() {
-        await this.getCurrentFindings();
-        this.getDiseases();
+        console.log("start")
+        this.getCurrentFindings();
+        return 0;
       },
       contact: function() {
         /*eslint-disable */
@@ -478,13 +479,11 @@
         //suppress all warnings between comments
         $('#editFindModal').modal('hide'); //need to do this disable because eslint doesnt understand jquery for some reason
         /*eslint-enable */
+        this.getDiseases();
       },
       makeEditFind: function() {
-        for(let i=0;i<this.findingsList.length;i++) {
+        for(let i=0;i<this.currentFindings.length;i++) {
           if(this.currentFindings[i].FID == this.editFindQuestion.FID) {
-            if(this.currentFindings[i].answer == this.editFindResp) {
-              break;
-            }
             this.currentFindings[i].answer = this.editFindResp;
             this.closeEditFind();
             break;
@@ -521,21 +520,67 @@
         this.closeNewFind();
       },
       getNbq: function() {
+        let url = "http://127.0.0.1:5001/finding/nbq";
+        let fidlist = []
+        console.log(this.currentFindings[0]);
+        for(let i=0;i<this.currentFindings.length;i++) {
+          if(this.currentFindings[i].checked) {
+            fidlist.push(this.currentFindings[i].FID);
+          }
+        }
+            fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body: JSON.stringify({
+                    "top_disease_id": this.matchesList[0].DID,
+                    "current_findings": fidlist
+                })
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.response.msg == 'success') {
+                        this.nextBestQuestion = data.data //for testing
+                        this.nbqResp = null;
+                        /*eslint-disable */
+                        //suppress all warnings between comments
+                        $('#nbqModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
+                        /*eslint-enable */
+                    } else {
+                        this.errorMess = this.response.msg;
+                        this.showError = true;
+                    }
+                    }).catch(error => {
+                    if(error.response) {
+                        console.log("Error: " + error.message);
+                        if(this.status == 401) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                        }
+                    }
+                });
         //send request to get next best question
-        this.nextBestQuestion = {'Name': 'Do you have a fever?', 'FID': 2, 'answer': 'no', 'checked': true} //for testing
-        this.nbqResp = null;
-        /*eslint-disable */
-        //suppress all warnings between comments
-        $('#nbqModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
-        /*eslint-enable */
       },
       confirmNbq: function() {
         if(this.nbqResp != null) {
           //send request
           //get back request and update table
           this.nextBestQuestion.answer = this.nbqResp;
+          this.nextBestQuestion.checked = true;
           this.currentFindings.push(this.nextBestQuestion);
+          //console.log(this.currentFindings);
           this.closeNbq();
+          this.getDiseases();
         }
       },
       closeNbq: function() {
@@ -558,10 +603,22 @@
       toggleMessage: function() {
         this.show = !this.show;
       },
-      getDiseases: function() {
+      getDiseases: async function() {
         let url = "http://127.0.0.1:5001/disease/top_diseases";
-            fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
-                method: 'GET',
+        let fidlist = []
+        //console.log(this.currentFindings[0]);
+        for(let i=0;i<this.currentFindings.length;i++) {
+          if(this.currentFindings[i].checked) {
+            //console.log(this.currentFindings[i]);
+            fidlist.push(this.currentFindings[i]);
+          }
+        }
+        if(fidlist.length < 1) {
+          fidlist = [{}];
+        }
+        //console.log(fidlist);
+        await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
                 credentials: "include",
                 mode: 'cors',
                 headers: {
@@ -569,7 +626,10 @@
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
                     'Access-Control-Allow-Origin': '127.0.0.1:5001',
                     'Access-Control-Allow-Credentials': true,
-                }
+                },
+                body: JSON.stringify({
+                    "current_findings": fidlist
+                })
                 })
                 .then((response) => { 
                     this.status = response.status;
@@ -580,8 +640,9 @@
                     if(this.response.msg == 'success') {
                         let arr = [];
                         let id = 1;
-                        for (const c of Object.entries(data.data)) {
-                          let ob = {'Name': c[0], 'Frq': c[1], 'DID': id};
+                        for(let i=0;i<data.data.length;i++) {
+                          let ob = data.data[i];
+                          ob['id'] = id;
                           id += 1;
                           arr.push(ob);
                         }
@@ -632,6 +693,7 @@
                           }
                         }
                         this.currentFindings = data.data;
+                        this.getDiseases();
                     } else {
                         this.errorMess = this.response.msg;
                         this.showError = true;
@@ -651,10 +713,10 @@
         this.searchedFindings = [];
         this.currentFindings = [];
         this.matchesList = [];
-        let vid = this.curVisit.visit_id;
-        this.curVisit.visit_id = 0;
+        /*let vid = this.curVisit.visit_id;
+        //this.curVisit.visit_id = 0;
         await this.loadVisit();
-        this.curVisit.visit_id = vid;
+        this.curVisit.visit_id = vid;*/
       },
       save: async function() {
         this.showAlert = false;
@@ -701,7 +763,52 @@
                 }
             });
         } else { //update visit
-          suc = true; //placeholder
+          let chfindings = [];
+          for(let i=0;i<this.currentFindings.length;i++) {
+            if(this.currentFindings[i].checked) {
+              chfindings.push(this.currentFindings[i]);
+            }
+          } 
+          let url = "http://127.0.0.1:5001/visit";
+          await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+            method: 'PUT',
+            credentials: "include",
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                'Access-Control-Allow-Credentials': true,
+            },
+            body:  JSON.stringify({
+                'visit_id': this.curVisit.visit_id,
+                'note': this.curVisit.note,
+                'current_findings': chfindings
+            })
+            })
+            .then((response) => { 
+                this.status = response.status;
+                return response.json() 
+            })
+            .then(data => {
+                this.response = data; 
+                if(this.status == 200) {
+                    console.log(this.response); //seems like the query isnt passing back the right visit
+                    //this.curVisit = this.response.result[this.response.index];
+                    suc = true;
+                } else {
+                    this.errorMess = this.response.msg;
+                    this.showError = true;
+                }
+                }).catch(error => {
+                if(error.response) {
+                    console.log("Error: " + error.message);
+                    if(this.status == 401) {
+                        this.errorMess = error.response.data.msg;
+                        this.showError = true;
+                    }
+                }
+            });
         }
         //on success perform the followings
         if(suc) {

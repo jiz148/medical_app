@@ -21,8 +21,8 @@ finding_search_get_args = reqparse.RequestParser()
 finding_search_get_args.add_argument("keyword", type=str, required=True)
 
 nbq_diseases_get_args = reqparse.RequestParser()
-nbq_diseases_get_args.add_argument("top_diseases", type=list, required=True, location='json')
-nbq_diseases_get_args.add_argument("findings", type=list, required=True, location='json')
+nbq_diseases_get_args.add_argument("top_disease_id", type=int, required=True, location='json')
+nbq_diseases_get_args.add_argument("current_findings", type=list, required=True, location='json')
 
 class Finding(Resource):
     """
@@ -127,6 +127,7 @@ class NextBestQuestion(Resource):
         except KeyError:
             abort(401, msg="uid in session does not exist")
         args = nbq_diseases_get_args.parse_args()
+        disease_id = args["top_disease_id"]
         all_findings = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.Title).all()
         findings_hash = {}
         for finding in all_findings:
@@ -135,7 +136,7 @@ class NextBestQuestion(Resource):
         while 1:
             i = random.randint(0, len(finding_names))
             finding_name = finding_names[i]
-            if findings_hash[finding_name] in args["findings"]:
+            if findings_hash[finding_name] in args["current_findings"]:
                 continue
             else:
                 break
