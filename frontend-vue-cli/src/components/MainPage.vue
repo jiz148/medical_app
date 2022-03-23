@@ -76,7 +76,8 @@
                   <tr v-for="item in currentFindings" :key="item.FID">
                       <td>{{item.Name}}</td>
                       <td>{{item.answer}}</td>
-                      <td><button type="button" class="btn btn-link" @click="createEditFind(item)">Edit</button></td>
+                      <td><button type="button" class="btn btn-link" @click="createEditFind(item)"><i class="bi bi-pencil-square"></i></button></td>
+                      <td><button type="button" class="btn btn-link" @click="deleteFind(item)"><i class="bi bi-x-square"></i></button></td>
                       <td><input class="form-check-input" type="checkbox" v-model="item.checked" @change="getDiseases"></td>
                     </tr>
                 </tbody>
@@ -111,8 +112,8 @@
                   <tr v-for="item in searchedFindings" :key="item.id" @click="createNewFind(item)">
                     <td>{{item.id}}</td>
                     <td>{{item.Name}}</td>
-                    <td><button type="button" class="btn btn-link" @click="createNewFind(item)">Select</button></td>
-                    <td><a :href="item.URL" class="button btn btn-link">Info</a></td>
+                    <td><button type="button" class="btn btn-link" @click="createNewFind(item)"><i class="bi bi-arrows-angle-expand"></i></button></td>
+                    <td><a :href="item.URL" class="button btn btn-link"><i class="bi bi-info-square"></i></a></td>
                   </tr>
                 </tbody>
               </table>
@@ -144,7 +145,7 @@
                   <tr v-for="item in matchesList" :key="item.DID">
                     <td>{{item.id}}</td>
                     <td>{{item.Name}}</td>
-                    <td><a :href="item.link" class="button btn btn-link">Info</a></td>
+                    <td><a :href="item.link" class="button btn btn-link"><i class="bi bi-info-square"></i></a></td>
                   </tr>
                 </tbody>
               </table>
@@ -166,18 +167,46 @@
                   editFindQuestion.Name
                 }}</a>
                 <br>
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="yes" v-model="editFindResp">
-                <label class="form-check-label" for="findEditYes">
-                  Yes
-                </label>
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="no" v-model="editFindResp">
-                <label class="form-check-label" for="findEditNo">
-                  No
-                </label>
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="maybe" v-model="editFindResp">
-                <label class="form-check-label" for="findEditMaybe">
-                  Not Sure
-                </label>
+                <div v-if="editFindQuestion!=null">
+                  <div v-if="this.editFindQuestion.FID==3732">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="Male" v-model="editFindResp">
+                    <label class="form-check-label" for="findEditYes">
+                      Male
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="Female" v-model="editFindResp">
+                    <label class="form-check-label" for="findEditNo">
+                      Female
+                    </label>
+                  </div>
+                  <div v-else-if="this.editFindQuestion.FID==3735">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="16 to 25" v-model="editFindResp">
+                    <label class="form-check-label" for="findEditYes">
+                      16 to 25
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="26 to 55" v-model="editFindResp">
+                    <label class="form-check-label" for="findEditNo">
+                      26 to 55
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="56+" v-model="editFindResp">
+                    <label class="form-check-label" for="findEditMaybe">
+                      56+
+                    </label>
+                  </div>
+                  <div v-else>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="yes" v-model="editFindResp">
+                    <label class="form-check-label" for="findEditYes">
+                      Yes
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="no" v-model="editFindResp">
+                    <label class="form-check-label" for="findEditNo">
+                      No
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="unknown" v-model="editFindResp">
+                    <label class="form-check-label" for="findEditMaybe">
+                      Not Sure
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -200,18 +229,46 @@
                     nextBestQuestion.Name
                   }}</a>
                   <br>
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqYes" value="yes" v-model="nbqResp">
-                  <label class="form-check-label" for="findEditYes">
-                    Yes
-                  </label>
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqNo" value="no" v-model="nbqResp">
-                  <label class="form-check-label" for="findEditNo">
-                    No
-                  </label>
-                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqMaybe" value="maybe" v-model="nbqResp">
-                  <label class="form-check-label" for="findEditMaybe">
-                    Not Sure
-                  </label>
+                  <div v-if="nextBestQuestion!=null">
+                    <div v-if="this.nextBestQuestion.FID==3732">
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqYes" value="Male" v-model="nbqResp">
+                      <label class="form-check-label" for="findEditYes">
+                        Male
+                      </label>
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqNo" value="Female" v-model="nbqResp">
+                      <label class="form-check-label" for="findEditNo">
+                        Female
+                      </label>
+                    </div>
+                    <div v-else-if="this.nextBestQuestion.FID==3735">
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqYes" value="16 to 25" v-model="nbqResp">
+                      <label class="form-check-label" for="findEditYes">
+                        16 to 25
+                      </label>
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqNo" value="26 to 55" v-model="nbqResp">
+                      <label class="form-check-label" for="findEditNo">
+                        26 to 55
+                      </label>
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqMaybe" value="56+" v-model="nbqResp">
+                      <label class="form-check-label" for="findEditMaybe">
+                        56+
+                      </label>
+                    </div>
+                    <div v-else>
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqYes" value="yes" v-model="nbqResp">
+                      <label class="form-check-label" for="findEditYes">
+                        Yes
+                      </label>
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqNo" value="no" v-model="nbqResp">
+                      <label class="form-check-label" for="findEditNo">
+                        No
+                      </label>
+                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqMaybe" value="unknown" v-model="nbqResp">
+                      <label class="form-check-label" for="findEditMaybe">
+                        Not Sure
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="modal-footer">
@@ -234,18 +291,46 @@
                   newFindQuestion.Name
                 }}</a>
                 <br>
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="yes" v-model="newFindResp">
-                <label class="form-check-label" for="findEditYes">
-                  Yes
-                </label>
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="no" v-model="newFindResp">
-                <label class="form-check-label" for="findEditNo">
-                  No
-                </label>
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="maybe" v-model="newFindResp">
-                <label class="form-check-label" for="findEditMaybe">
-                  Not Sure
-                </label>
+                <div v-if="newFindQuestion!=null">
+                  <div v-if="this.newFindQuestion.FID==3732">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="Male" v-model="newFindResp">
+                    <label class="form-check-label" for="findEditYes">
+                      Male
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="Female" v-model="newFindResp">
+                    <label class="form-check-label" for="findEditNo">
+                      Female
+                    </label>
+                  </div>
+                  <div v-else-if="this.newFindQuestion.FID==3735">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="16 to 25" v-model="newFindResp">
+                    <label class="form-check-label" for="findEditYes">
+                      16 to 25
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="26 to 55" v-model="newFindResp">
+                    <label class="form-check-label" for="findEditNo">
+                      26 to 55
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="56+" v-model="newFindResp">
+                    <label class="form-check-label" for="findEditMaybe">
+                      56+
+                    </label>
+                  </div>
+                  <div v-else>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="yes" v-model="newFindResp">
+                    <label class="form-check-label" for="findEditYes">
+                      Yes
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditNo" value="no" v-model="newFindResp">
+                    <label class="form-check-label" for="findEditNo">
+                      No
+                    </label>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="unknown" v-model="newFindResp">
+                    <label class="form-check-label" for="findEditMaybe">
+                      Not Sure
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -546,6 +631,13 @@
         this.closeNewFind();
         }
       },
+      deleteFind: function(item) {
+        for(let i=0;i<this.currentFindings.length;i++) {
+          if(this.currentFindings[i].FID == item.FID) {
+            this.currentFindings.splice(i,1);
+          }
+        }
+      },
       getNbq: function() {
         let url = "http://127.0.0.1:5001/finding/nbq";
         let fidlist = []
@@ -724,6 +816,7 @@
                         for(let i=0;i<data.data.length;i++) {
                           let ob = data.data[i];
                           ob['id'] = id;
+                          //ob['link'] = "https://www.google.com";
                           id += 1;
                           arr.push(ob);
                         }
@@ -774,6 +867,7 @@
                           }
                         }
                         this.currentFindings = data.data;
+                        //console.log(this.currentFindings);
                         this.getDiseases();
                     } else {
                         this.errorMess = this.response.msg;
@@ -903,7 +997,7 @@
         }
       },
       createEditNote: function() {
-        this.newNodeVal = ""; //this.curVisit.note;
+        this.newNodeVal = this.curVisit.note;
         /*eslint-disable */
         //suppress all warnings between comments
         $('#editNoteModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason

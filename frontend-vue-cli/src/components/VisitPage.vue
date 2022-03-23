@@ -12,13 +12,45 @@
         </div>
       </div>
       
+      <div id="ralTop">
+        <div id="settingsDrop" class="btn-group">
+          <button type="button" class="btn btn-outline-secondary dropdown-toggle caret-off" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><button class="dropdown-item" type="button">Profile</button></li>
+            <li><button class="dropdown-item" type="button">Edit</button></li>
+            <li><button class="dropdown-item" type="button" @click="contact">Contact Us</button></li>
+            <li><button class="dropdown-item" type="button" @click="logout">Logout</button></li>
+          </ul>
+        </div>
+      </div>
+
       <div id="buttonSection">
         <select id="visitSelect" v-model="curVisit" class="btn btn-outline-primary dropdown-toggle">
           <option class="visitItem" v-for="item in visitList" :value="item" :key="item.visit_id">{{item.note + " " + item.datetime}}</option>
         </select>
         <br>
         <button type="submit" class="btn btn-primary" id="confirmBut" @click='loadVisit'>Confirm</button>
-        <button id="newVisitBut" class="btn btn-secondary" type="submit" @click="createVisit">New Visit</button>
+        <button id="newVisitBut" class="btn btn-success" type="submit" @click="createVisit">New Visit</button>
+      </div>
+
+      <div id="contactModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="contactModalLabel">Contact Us</h5>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                You can email us at (enter email here), or call us at (enter phone number here).
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" @click="closeContact">Close</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -168,7 +200,50 @@
                         }
                     }
                 });
-      }
+      },
+      contact: function() {
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#contactModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      closeContact: function() {
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#contactModal').modal('hide'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      logout: function() {
+        let url = "http://127.0.0.1:5001/user/logout";
+        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+          method: 'get',
+          credentials: "include",
+          mode: 'cors',
+          headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+              "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+              'Access-Control-Allow-Origin': '127.0.0.1:5001',
+              'Access-Control-Allow-Credentials': true,
+          }})
+          .then((response) => { 
+              this.status = response.status;
+              return response.json() 
+          })
+          .then(data => {
+            this.response = data; //update table with new data
+            if(this.status == 200) {
+                this.$router.push('/');
+            }
+          }).catch(error => {
+          if(error.response) {
+              if(this.status == 200) {
+                console.log(this.response.msg); //switch to main page here
+              } else {
+                this.$router.push('/');
+              }
+          }
+          });
+      },
     }
   }
 </script>
@@ -250,4 +325,15 @@
        margin-top: 0.5em;
        margin-left: 0.6em;
    }
+   #ralTop {
+    float: right;
+    display: inline;
+    margin-top: 0.2em;
+  }
+  #infoBut {
+    margin-left: 0.6em;
+  }
+  #logoutBut {
+    margin-left: 0.6em;
+  }
 </style>
