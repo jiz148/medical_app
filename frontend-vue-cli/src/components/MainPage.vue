@@ -488,6 +488,9 @@
         this.getDiseases();
       },
       makeEditFind: function() {
+        if(this.editFindQuestion == null) {
+          return;
+        }
         for(let i=0;i<this.currentFindings.length;i++) {
           if(this.currentFindings[i].FID == this.editFindQuestion.FID) {
             this.currentFindings[i].answer = this.editFindResp;
@@ -499,7 +502,7 @@
       },
       createNewFind: function(item) {
         this.newFindQuestion = item;
-        this.newFindResp = item.answer;
+        this.newFindResp = null;//item.answer;
         /*eslint-disable */
         //suppress all warnings between comments
         $('#newFindModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
@@ -516,6 +519,7 @@
       makeNewFind: function() {
         let ob = {};
         let id = 1;
+        if(this.newFindResp != null) {
         for(let i=0; i<this.searchedFindings.length; i++) {
           if(this.searchedFindings[i].FID == this.newFindQuestion.FID) {
             this.searchedFindings.splice(i, 1);
@@ -540,6 +544,7 @@
         ob['checked'] = true
         this.currentFindings.push(ob);
         this.closeNewFind();
+        }
       },
       getNbq: function() {
         let url = "http://127.0.0.1:5001/finding/nbq";
