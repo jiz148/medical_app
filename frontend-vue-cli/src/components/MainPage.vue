@@ -473,6 +473,15 @@
           this.loadVisit();
         }
     },
+    updated: function() { //gets called after a change in the dom
+      this.aslock += 1;
+      let asv = this.aslock;
+      setTimeout(() => { //wait x seconds before running the code in this block
+        if(asv == this.aslock) { //if aslock has not been changed then we are good to autosave
+          this.save(); //otherwise a more recent change has been made, so we should not autosave
+        }
+      }, 30000); //30 sec
+    },
     data() {
         return {
             query: "",
@@ -504,7 +513,8 @@
             newFindResp: null,
             nextBestQuestion: null,
             nbqResp: null,
-            newNodeVal: ""
+            newNodeVal: "",
+            aslock: 0
         }
     },
     methods: {
