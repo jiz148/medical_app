@@ -22,8 +22,11 @@ class TopDiseases(Resource):
 
     def post(self):
         args = finding_post_args.parse_args()
-        current_findings = args['current_findings']
+        current_findings = []#args['current_findings']
         #print(current_findings)
+        for i in args["current_findings"]:
+            if i["checked"]:
+                current_findings.append(i)
         all_diseases_frq = get_all_diseases()
         all_diseases_did = list(all_diseases_frq.keys())
         top_diseases_did = list()

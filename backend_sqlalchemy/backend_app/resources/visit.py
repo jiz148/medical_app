@@ -78,7 +78,13 @@ class Visit(Resource):
 
     def put(self):
         args = visit_put_args.parse_args()
-        visit_id, note, current_findings = args['visit_id'], args['note'], args['current_findings']
+        current_findings = []#args['current_findings']
+        #print(current_findings)
+        for i in args["current_findings"]:
+            if i["checked"]:
+                current_findings.append(i)
+        #visit_id, note, current_findings = args['visit_id'], args['note'], args['current_findings']
+        visit_id, note = args['visit_id'], args['note']
         uid = None
         try:
             uid = session['uid']
@@ -95,7 +101,7 @@ class Visit(Resource):
         db.session.commit()
 
         # add new findings
-        for i, current_finding in enumerate(current_findings):
+        for i, current_finding in enumerate(args["current_findings"]):
             fid = current_finding["FID"]
             answer = current_finding["answer"]
             # add new findings

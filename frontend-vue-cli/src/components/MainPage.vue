@@ -650,12 +650,15 @@
       },
       getNbq: function() {
         let url = "http://127.0.0.1:5001/finding/nbq";
-        let fidlist = []
-        console.log(this.currentFindings[0]);
+        let fidlist = this.currentFindings;//[]
+        /*console.log(this.currentFindings[0]);
         for(let i=0;i<this.currentFindings.length;i++) {
           if(this.currentFindings[i].checked) {
             fidlist.push(this.currentFindings[i].FID);
           }
+        }*/
+        if(fidlist.length < 1) {
+          fidlist = [{}];
         }
             fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'POST',
@@ -722,14 +725,14 @@
       },
       searchFindings: function() {
         let url = "http://127.0.0.1:5001/finding/finding_search";
-        let fidlist = []
+        let fidlist = this.currentFindings;//[]
         //console.log(this.currentFindings[0]);
-        for(let i=0;i<this.currentFindings.length;i++) {
+        /*for(let i=0;i<this.currentFindings.length;i++) {
           if(this.currentFindings[i].checked) {
             //console.log(this.currentFindings[i]);
             fidlist.push(this.currentFindings[i].FID);
           }
-        }
+        }*/
         if(fidlist.length < 1) {
           fidlist = [{}];
         }
@@ -788,14 +791,14 @@
       },
       getDiseases: async function() {
         let url = "http://127.0.0.1:5001/disease/top_diseases";
-        let fidlist = []
+        let fidlist = this.currentFindings; //[]
         //console.log(this.currentFindings[0]);
-        for(let i=0;i<this.currentFindings.length;i++) {
+        /*for(let i=0;i<this.currentFindings.length;i++) {
           if(this.currentFindings[i].checked) {
             //console.log(this.currentFindings[i]);
             fidlist.push(this.currentFindings[i]);
           }
-        }
+        }*/
         if(fidlist.length < 1) {
           fidlist = [{}];
         }
@@ -948,12 +951,16 @@
                 }
             });
         } else { //update visit
-          let chfindings = [];
+          let fidlist = this.currentFindings;//[]
+          /*console.log(this.currentFindings[0]);
           for(let i=0;i<this.currentFindings.length;i++) {
             if(this.currentFindings[i].checked) {
-              chfindings.push(this.currentFindings[i]);
+              fidlist.push(this.currentFindings[i].FID);
             }
-          } 
+          }*/
+          if(fidlist.length < 1) {
+            fidlist = [{}];
+          }
           let url = "http://127.0.0.1:5001/visit";
           await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
             method: 'PUT',
@@ -968,7 +975,7 @@
             body:  JSON.stringify({
                 'visit_id': this.curVisit.visit_id,
                 'note': this.curVisit.note,
-                'current_findings': chfindings
+                'current_findings': fidlist
             })
             })
             .then((response) => { 
