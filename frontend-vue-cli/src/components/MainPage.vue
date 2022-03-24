@@ -20,8 +20,8 @@
             <i class="bi bi-three-dots-vertical"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><button class="dropdown-item" type="button">Profile</button></li>
-            <li><button class="dropdown-item" type="button">Edit</button></li>
+            <li><button class="dropdown-item" type="button" @click='this.$router.push("/profile")'>Profile</button></li>
+            <li><button class="dropdown-item" type="button" @click='this.$router.push("/settings")'>Settings</button></li>
             <li><button class="dropdown-item" type="button" @click="contact">Contact Us</button></li>
             <li><button class="dropdown-item" type="button" @click="logout">Logout</button></li>
           </ul>
