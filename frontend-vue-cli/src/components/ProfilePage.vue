@@ -10,7 +10,7 @@
           <label for="email" class="form-label">
             Email
             <button v-if="!emailchange" type="button" class="btn btn-link" @click='emailchange=true'><i class="bi bi-pencil-square"></i></button>
-            <button v-if="emailchange" type="button" class="btn btn-link" @click='emailQuery'><i class="bi bi-check-square"></i></button>
+            <button v-if="emailchange" :disabled="querychange" type="button" class="btn btn-link" @click='emailQuery'><i class="bi bi-check-square"></i></button>
             <button v-if="emailchange" type="button" class="btn btn-link" @click='() => {emailchange=false; email = currentVals[0]}'><i class="bi bi-x-square"></i></button>
           </label>
           <input :disabled="!emailchange" type="email" class="form-control" id="email" v-model="email" placeholder="Enter email">
@@ -19,7 +19,7 @@
             <label for="username" class="form-label">
                 Username
                 <button v-if="!userchange" type="button" class="btn btn-link" @click='userchange=true'><i class="bi bi-pencil-square"></i></button>
-                <button v-if="userchange" type="button" class="btn btn-link" @click='userQuery'><i class="bi bi-check-square"></i></button>
+                <button v-if="userchange" :disabled="querychange" type="button" class="btn btn-link" @click='userQuery'><i class="bi bi-check-square"></i></button>
                 <button v-if="userchange" type="button" class="btn btn-link" @click='() => {userchange=false; username = currentVals[1]}'><i class="bi bi-x-square"></i></button> 
             </label>
             <input :disabled="!userchange" type="text" class="form-control" id="username" v-model="username" placeholder="Enter username">
@@ -28,7 +28,7 @@
             <label for="password" class="form-label">
                 Password
                 <button v-if="!passchange" type="button" class="btn btn-link" @click='passchange=true'><i class="bi bi-pencil-square"></i></button>
-                <button v-if="passchange" type="button" class="btn btn-link" @click='passQuery'><i class="bi bi-check-square"></i></button>
+                <button v-if="passchange" :disabled="querychange" type="button" class="btn btn-link" @click='passQuery'><i class="bi bi-check-square"></i></button>
                 <button v-if="passchange" type="button" class="btn btn-link" @click='() => {passchange=false; password = currentVals[2]}'><i class="bi bi-x-square"></i></button>
             </label>
             <input :disabled="!passchange" type="password" class="form-control" id="password" v-model="password" placeholder="Enter password">
@@ -41,7 +41,7 @@
           <label for="year" class="form-label">
               Birth Year
               <button v-if="!yearchange" type="button" class="btn btn-link" @click='yearchange=true'><i class="bi bi-pencil-square"></i></button>
-              <button v-if="yearchange" type="button" class="btn btn-link" @click='yearQuery'><i class="bi bi-check-square"></i></button>
+              <button v-if="yearchange" :disabled="querychange" type="button" class="btn btn-link" @click='yearQuery'><i class="bi bi-check-square"></i></button>
               <button v-if="yearchange" type="button" class="btn btn-link" @click='() => {yearchange=false; year = currentVals[3]}'><i class="bi bi-x-square"></i></button>
           </label>
           <input :disabled="!yearchange" type="number" class="form-control" id="year" v-model="year" placeholder="Enter the year you were born">
@@ -49,7 +49,7 @@
        <label class="form-check-label" id="genderlabel" for="gendergroup">
            Sex
            <button v-if="!sexchange" type="button" class="btn btn-link" @click='sexchange=true'><i class="bi bi-pencil-square"></i></button>
-           <button v-if="sexchange" type="button" class="btn btn-link" @click='sexQuery'><i class="bi bi-check-square"></i></button>
+           <button v-if="sexchange" :disabled="querychange" type="button" class="btn btn-link" @click='sexQuery'><i class="bi bi-check-square"></i></button>
            <button v-if="sexchange" type="button" class="btn btn-link" @click='() => {sexchange=false; gender = currentVals[4]}'><i class="bi bi-x-square"></i></button>
         </label>
        <div id="gendergroup">
@@ -66,7 +66,7 @@
         <label for="phone" class="form-label">
             Phone Number
             <button v-if="!numchange" type="button" class="btn btn-link" @click='numchange=true'><i class="bi bi-pencil-square"></i></button>
-            <button v-if="numchange" type="button" class="btn btn-link" @click='numQuery'><i class="bi bi-check-square"></i></button>
+            <button v-if="numchange" :disabled="querychange" type="button" class="btn btn-link" @click='numQuery'><i class="bi bi-check-square"></i></button>
             <button v-if="numchange" type="button" class="btn btn-link" @click='() => {numchange=false; phone = currentVals[5]}'><i class="bi bi-x-square"></i></button>
         </label>
         <input :disabled="!numchange" type="text" class="form-control" id="phone" v-model="phone" placeholder="Enter your phone number">
@@ -101,7 +101,8 @@
             yearchange: false,
             sexchange: false,
             numchange: false,
-            timerlock: 0
+            timerlock: 0,
+            querylock: false
         }
     },
     beforeCreate: async function() {
@@ -156,12 +157,14 @@
       },
       emailQuery: function() {
         this.showError = false;
+        this.querylock = true;
         var re =  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
         if(!re.test(this.email)) {
             this.errorMess = "Please input a valid email.";
             this.showError = true;
             this.email = this.currentVals[0]; //reset email
             this.emailchange = false;
+            this.querylock = false;
             this.timerlock += 1;
             let lock = this.timerlock;
             setTimeout(() => { 
@@ -171,18 +174,22 @@
             }, 5000);
         } else if(this.email == this.currentVals[0]) {
             this.emailchange = false; //email did not change so no need to update
+            this.querylock = false;
         } else {
             //do query
             //need error message for if username is taken (should come from the backend)
+            this.querylock = false;
         }
       },
       userQuery: function() {
         this.showError = false;
+        this.querylock = true;
         if(this.username == "" || this.username == null) {
             this.errorMess = "Please input a username.";
             this.showError = true;
             this.username = this.currentVals[1]; //reset
             this.userchange = false;
+            this.querylock = false;
             this.timerlock += 1;
             let lock = this.timerlock;
             setTimeout(() => { 
@@ -192,19 +199,23 @@
             }, 5000);
         } else if(this.username == this.currentVals[1]) {
             this.userchange = false; //no change
+            this.querylock = false;
         } else {
             //query
             //check if username is taken
+            this.querylock = false;
         }
       },
       passQuery: function() {
         this.showError = false;
+        this.querylock = true;
         if(this.password.length < 8) {
             this.errorMess = "Your password must have a minimum of 8 characters.";
             this.showError = true;
             this.password = this.currentVals[2]; //reset
             this.password2 = ""; //reset
             this.passchange = false;
+            this.querylock = false;
             this.timerlock += 1;
             let lock = this.timerlock;
             setTimeout(() => { 
@@ -218,6 +229,7 @@
             this.password = this.currentVals[2]; //reset
             this.password2 = ""; //reset
             this.passchange = false;
+            this.querylock = false;
             this.timerlock += 1;
             let lock = this.timerlock;
             setTimeout(() => { 
@@ -227,12 +239,15 @@
             }, 5000);
         } else if(this.password == this.currentVals[2]) {
             this.passchange = false; //no change
+            this.querylock = false;
         } else {
             //do query, shouldn't be any errors from backend here, other than query issues
+            this.querylock = false;
         }
       },
       yearQuery: function() {
         this.showError = false;
+        this.querylock = true;
         var today = new Date();
         var yyyy = today.getFullYear();
         if(this.year < yyyy-120 || this.year > yyyy) {
@@ -240,6 +255,7 @@
             this.showError = true;
             this.year = this.currentVals[3]; //reset
             this.yearchange = false;
+            this.querylock = false;
             this.timerlock += 1;
             let lock = this.timerlock;
             setTimeout(() => { 
@@ -252,6 +268,7 @@
             this.showError = true;
             this.year = this.currentVals[3]; //reset
             this.yearchange = false;
+            this.querylock = false;
             this.timerlock += 1;
             let lock = this.timerlock;
             setTimeout(() => { 
@@ -261,17 +278,21 @@
             }, 5000);
         } else if(this.year == this.currentVals[3]) {
             this.yearchange = false;
+            this.querylock = false;
         } else {
             //do query, shouldn't be any backend errors here
+            this.querylock = false;
         }
       },
       sexQuery: function() {
         this.showError = false;
+        this.querylock = true;
         if(this.gender == null) { //this shouldn't really happen, but just in case
             this.errorMess = "Please select your sex.";
             this.showError = true;
             this.gender = this.currentVals[4]; //reset
             this.sexchange = false;
+            this.querylock = false;
             this.timerlock += 1;
             let lock = this.timerlock;
             setTimeout(() => { 
@@ -281,15 +302,19 @@
             }, 5000);
         } else if(this.gender == this.currentVals[4]) {
             this.sexchange = false;
+            this.querylock = false;
         } else {
             //do query, shouldn't be any backend errors
+            this.querylock = false;
         }
       },
       numQuery: function() {
         this.showError = false;
+        this.querylock = true;
         var ph = /^[2-9]\d{2}[2-9]\d{2}\d{4}$/; // eslint-disable-line
         if(this.phone == this.currentVals[5]) {
             this.numchange = false;
+            this.querylock = false;
         } else {
             if(this.phone != "" && this.phone != null) {
                 let phtest = ph.test(this.phone.replace(/\D/g, ""));
@@ -298,6 +323,7 @@
                     this.showError = true;
                     this.phone = this.currentVals[5]; //reset
                     this.numchange = false;
+                    this.querylock = false;
                     this.timerlock += 1;
                     let lock = this.timerlock;
                     setTimeout(() => { 
@@ -307,6 +333,7 @@
                     }, 5000);
                 } else {
                     //do query, shouldn't be backend issues here
+                    this.querylock = false;
                 }
             }
         }
