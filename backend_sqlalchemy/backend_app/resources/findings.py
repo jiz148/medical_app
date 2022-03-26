@@ -25,6 +25,9 @@ nbq_diseases_get_args = reqparse.RequestParser()
 nbq_diseases_get_args.add_argument("top_disease_id", type=int, required=True, location='json')
 nbq_diseases_get_args.add_argument("current_findings", type=dict, required=True, location='json')
 
+findings_hash = {}
+
+
 class Finding(Resource):
     """
     TODO
@@ -187,10 +190,14 @@ def get_all_findings():
     """
     Get all findings
     """
-    all_findings = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.Title).all()
-    findings_hash = {}
-    for finding in all_findings:
-        findings_hash[finding.Name] = finding.FID
+    if not findings_hash:
+        all_findings = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.Title).all()
+        total_findings = len(all_findings)
+        for finding in all_findings:
+            findings_hash[finding.FID] = {
+                "name": finding.Name,
+                "freq": 1 / total_findings
+            }
     return findings_hash
 
 
