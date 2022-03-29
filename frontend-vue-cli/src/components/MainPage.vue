@@ -77,8 +77,8 @@
                       <td>{{item.Name}}</td>
                       <td>{{item.answer}}</td>
                       <td><button type="button" class="btn btn-link" @click="createEditFind(item)"><i class="bi bi-pencil-square"></i></button></td>
-                      <td><button type="button" class="btn btn-link" @click="deleteFind(item)"><i class="bi bi-x-square"></i></button></td>
                       <td><input class="form-check-input" type="checkbox" v-model="item.checked" @change="getDiseases"></td>
+                      <td><button type="button" class="btn btn-link" @click="deleteFind(item)"><i class="bi bi-x-square"></i></button></td>
                     </tr>
                 </tbody>
               </table>
@@ -203,7 +203,7 @@
                     </label>
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="unknown" v-model="editFindResp">
                     <label class="form-check-label" for="findEditMaybe">
-                      Not Sure
+                      Unknown
                     </label>
                   </div>
                 </div>
@@ -265,7 +265,7 @@
                       </label>
                       <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqMaybe" value="unknown" v-model="nbqResp">
                       <label class="form-check-label" for="findEditMaybe">
-                        Not Sure
+                        Unknown
                       </label>
                     </div>
                   </div>
@@ -327,7 +327,7 @@
                     </label>
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditMaybe" value="unknown" v-model="newFindResp">
                     <label class="form-check-label" for="findEditMaybe">
-                      Not Sure
+                      Unknown
                     </label>
                   </div>
                 </div>
@@ -1239,6 +1239,7 @@ option{
   }
   #resetBut {
     margin-top: 0.3em;
+    margin-right: 0.5em;
   }
   #backBut {
     margin-left: 0.5em;
