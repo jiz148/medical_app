@@ -32,6 +32,7 @@
         </select>
         <br>
         <button type="submit" class="btn btn-primary" id="confirmBut" @click='loadVisit'>Confirm</button>
+        <br>
         <button id="newVisitBut" class="btn btn-success" type="submit" @click="createVisit">New Visit</button>
       </div>
 
@@ -304,7 +305,6 @@
     margin-right: 0.6em;
     height: 2.4em;
     display: inline;
-    max-width: 11.8em;
   }
   .visitItem {
     height: 2.0em;
@@ -317,9 +317,11 @@
    #confirmBut {
        margin-top: 0.5em;
        margin-right: 0.4em;
+       width: 6em;
    }
    #newVisitBut {
        margin-top: 0.5em;
+       width: 6em;
    }
    #buttonSection {
        margin-top: 0.5em;
