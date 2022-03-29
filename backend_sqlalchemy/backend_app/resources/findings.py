@@ -112,16 +112,24 @@ class FindingsSearch(Resource):
             abort(401, msg="uid in session does not exist")'''
         args = finding_search_get_args.parse_args()
         keywords = args['keyword'].split(' ')
-        nairuti_string = ''
+        cur_findings = []
+        for i in args["current_findings"]:
+            if i["checked"]:
+                ob = {}
+                ob['Name'] = i["Name"]
+                ob['FID'] = i['FID']
+                cur_findings.append(ob)
+        #print(args["current_findings"])
+        new_string = ''
         for keyword in keywords:
-            nairuti_string += '%'+keyword+'%'
-        findings = db.session.query(FindingsModel.FID, FindingsModel.Name).filter(FindingsModel.Name.like(nairuti_string)).all()
+            new_string += '%'+keyword+'%'
+        findings = db.session.query(FindingsModel.FID, FindingsModel.Name).filter(FindingsModel.Name.like(new_string)).all()
         search_result = list()
         for finding in findings:
             f = {}
             f['FID'] = finding.FID
             f['Name'] = finding.Name
-            if f in args['current_findings']:
+            if f in cur_findings:#args['current_findings']:
                 continue
             search_result.append(f)
         max_length = 25
