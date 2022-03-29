@@ -23,7 +23,7 @@ finding_search_get_args.add_argument("current_findings", type=dict, action="appe
 
 nbq_diseases_get_args = reqparse.RequestParser()
 nbq_diseases_get_args.add_argument("top_disease_id", type=int, required=True, location='json')
-nbq_diseases_get_args.add_argument("current_findings", type=dict, required=True, location='json')
+nbq_diseases_get_args.add_argument("current_findings", type=list, required=True, location='json')
 
 findings_hash = {}
 
@@ -106,20 +106,25 @@ class FindingsSearch(Resource):
     """
 
     def post(self):
-        try:
+        '''try:
             uid = session['uid']
         except KeyError:
-            abort(401, msg="uid in session does not exist")
+            abort(401, msg="uid in session does not exist")'''
         args = finding_search_get_args.parse_args()
-        #print(args["current_findings"])
-        findings = db.session.query(FindingsModel.FID, FindingsModel.Name).filter(FindingsModel.Name.like('%'+args["keyword"]+'%')).all()
+        keywords = args['keyword'].split(' ')
+        nairuti_string = ''
+        for keyword in keywords:
+            nairuti_string += '%'+keyword+'%'
+        findings = db.session.query(FindingsModel.FID, FindingsModel.Name).filter(FindingsModel.Name.like(nairuti_string)).all()
         search_result = list()
         for finding in findings:
             f = {}
             f['FID'] = finding.FID
             f['Name'] = finding.Name
+            if f in args['current_findings']:
+                continue
             search_result.append(f)
-        max_length = 25 #dummy value
+        max_length = 25
         search_result = search_result[:max_length]
         return {'msg': "success", 'data': search_result}
 
