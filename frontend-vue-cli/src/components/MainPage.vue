@@ -163,12 +163,20 @@
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                <a v-if="editFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">{{
-                  editFindQuestion.Name
-                }}</a>
+                <a v-if="editFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">
+                  <a v-if="this.editFindQuestion.FID==3732 || this.editFindQuestion.FID==3738">
+                    Gender
+                  </a>
+                  <a v-else-if="this.editFindQuestion.FID==3731 || this.editFindQuestion.FID==3735 || this.editFindQuestion.FID==3736">
+                    Age
+                  </a>
+                  <a v-else>
+                    {{editFindQuestion.Name}}
+                  </a>
+                </a>
                 <br>
                 <div v-if="editFindQuestion!=null">
-                  <div v-if="this.editFindQuestion.FID==3732">
+                  <div v-if="this.editFindQuestion.FID==3732 || this.editFindQuestion.FID==3738">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="Male" v-model="editFindResp">
                     <label class="form-check-label" for="findEditYes">
                       Male
@@ -178,7 +186,7 @@
                       Female
                     </label>
                   </div>
-                  <div v-else-if="this.editFindQuestion.FID==3735">
+                  <div v-else-if="this.editFindQuestion.FID==3731 || this.editFindQuestion.FID==3735 || this.editFindQuestion.FID==3736">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="16 to 25" v-model="editFindResp">
                     <label class="form-check-label" for="findEditYes">
                       16 to 25
@@ -225,12 +233,20 @@
               </div>
               <div class="modal-body">
                 <div class="mb-3">
-                  <a v-if="nextBestQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">{{
-                    nextBestQuestion.Name
-                  }}</a>
+                  <a v-if="nextBestQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">
+                    <a v-if="this.nextBestQuestion.FID==3732 || this.nextBestQuestion.FID==3738">
+                      Gender
+                    </a>
+                    <a v-else-if="this.nextBestQuestion.FID==3731 || this.nextBestQuestion.FID==3735 || this.nextBestQuestion.FID==3736">
+                      Age
+                    </a>
+                    <a v-else>
+                      {{nextBestQuestion.Name}}
+                    </a>
+                  </a>
                   <br>
                   <div v-if="nextBestQuestion!=null">
-                    <div v-if="this.nextBestQuestion.FID==3732">
+                    <div v-if="this.nextBestQuestion.FID==3732 || this.nextBestQuestion.FID==3738">
                       <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqYes" value="Male" v-model="nbqResp">
                       <label class="form-check-label" for="findEditYes">
                         Male
@@ -240,7 +256,7 @@
                         Female
                       </label>
                     </div>
-                    <div v-else-if="this.nextBestQuestion.FID==3735">
+                    <div v-else-if="this.nextBestQuestion.FID==3731 || this.nextBestQuestion.FID==3735 || this.nextBestQuestion.FID==3736">
                       <input class="form-check-input" type="radio" name="flexRadioDefault" id="nbqYes" value="16 to 25" v-model="nbqResp">
                       <label class="form-check-label" for="findEditYes">
                         16 to 25
@@ -272,7 +288,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-success" @click="confirmNbq">Update</button>
+                <button type="button" :disabled="nbqResp==null" class="btn btn-success" @click="confirmNbq">Update</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeNbq">Cancel</button>
               </div>
             </div>
@@ -287,12 +303,20 @@
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                <a v-if="newFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">{{
-                  newFindQuestion.Name
-                }}</a>
+                <a v-if="newFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">
+                  <a v-if="this.newFindQuestion.FID==3732 || this.newFindQuestion.FID==3738">
+                    Gender
+                  </a>
+                  <a v-else-if="this.newFindQuestion.FID==3731 || this.newFindQuestion.FID==3735 || this.newFindQuestion.FID==3736">
+                    Age
+                  </a>
+                  <a v-else>
+                    {{newFindQuestion.Name}}
+                  </a>
+                </a>
                 <br>
                 <div v-if="newFindQuestion!=null">
-                  <div v-if="this.newFindQuestion.FID==3732">
+                  <div v-if="this.newFindQuestion.FID==3732 || this.newFindQuestion.FID==3738">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="Male" v-model="newFindResp">
                     <label class="form-check-label" for="findEditYes">
                       Male
@@ -302,7 +326,7 @@
                       Female
                     </label>
                   </div>
-                  <div v-else-if="this.newFindQuestion.FID==3735">
+                  <div v-else-if="this.newFindQuestion.FID==3731 || this.newFindQuestion.FID==3735 || this.newFindQuestion.FID==3736">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="findEditYes" value="16 to 25" v-model="newFindResp">
                     <label class="form-check-label" for="findEditYes">
                       16 to 25
@@ -334,7 +358,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-success" @click="makeNewFind">Confirm</button>
+              <button type="button" :disabled="newFindResp==null" class="btn btn-success" @click="makeNewFind">Confirm</button>
               <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeNewFind">Cancel</button>
             </div>
           </div>
@@ -568,7 +592,15 @@
       },
       createEditFind: function(item) {
         this.editFindQuestion = item;
-        this.editFindResp = item.answer;
+        //this.editFindResp = item.answer;
+        switch(item.FID) {
+          case 3732: this.editFindResp = "Male"; break;
+          case 3738: this.editFindResp = "Female"; break;
+          case 3731: this.editFindResp = "26 to 55"; break;
+          case 3735: this.editFindResp = "16 to 25"; break;
+          case 3736: this.editFindResp = "56+"; break;
+          default: this.editFindResp = item.answer; break;
+        }
         /*eslint-disable */
         //suppress all warnings between comments
         $('#editFindModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
@@ -586,11 +618,49 @@
         if(this.editFindQuestion == null) {
           return;
         }
-        for(let i=0;i<this.currentFindings.length;i++) {
-          if(this.currentFindings[i].FID == this.editFindQuestion.FID) {
-            this.currentFindings[i].answer = this.editFindResp;
-            this.closeEditFind();
-            break;
+        if(this.editFindQuestion.FID == 3732 || this.editFindQuestion.FID == 3738) { //gender
+          for(let i=0;i<this.currentFindings.length;i++) {
+            if(this.currentFindings[i].FID == 3732 || this.currentFindings[i].FID == 3738) {
+              if(this.editFindResp == "Male") {
+                this.currentFindings[i].answer = "yes";
+                this.currentFindings[i].FID = 3732;
+                this.currentFindings[i].Name = "Sex Male";
+              } else {
+                this.currentFindings[i].answer = "yes";
+                this.currentFindings[i].FID = 3738;
+                this.currentFindings[i].Name = "Sex Female";
+              }
+              this.closeEditFind();
+              break;
+            }
+          }
+        } else if(this.editFindQuestion.FID == 3731 || this.editFindQuestion.FID == 3735 || this.editFindQuestion.FID == 3736) { //age
+          for(let i=0;i<this.currentFindings.length;i++) {
+            if(this.currentFindings[i].FID == 3731 || this.currentFindings[i].FID == 3735 || this.currentFindings[i].FID == 3736) {
+              if(this.editFindResp == "16 to 25") {
+                this.currentFindings[i].answer = "yes";
+                this.currentFindings[i].FID = 3735;
+                this.currentFindings[i].Name = "Age 16 to 25";
+              } else if(this.editFindResp == "26 to 55") {
+                this.currentFindings[i].answer = "yes";
+                this.currentFindings[i].FID = 3731;
+                this.currentFindings[i].Name = "Age 26 to 55";
+              } else {
+                this.currentFindings[i].answer = "yes";
+                this.currentFindings[i].FID = 3736;
+                this.currentFindings[i].Name = "Age Gtr Than 55";
+              }
+              this.closeEditFind();
+              break;
+            }
+          }
+        } else {
+          for(let i=0;i<this.currentFindings.length;i++) {
+            if(this.currentFindings[i].FID == this.editFindQuestion.FID) {
+              this.currentFindings[i].answer = this.editFindResp;
+              this.closeEditFind();
+              break;
+            }
           }
         }
         this.closeEditFind();
@@ -615,30 +685,88 @@
         let ob = {};
         let id = 1;
         if(this.newFindResp != null) {
-        for(let i=0; i<this.searchedFindings.length; i++) {
-          if(this.searchedFindings[i].FID == this.newFindQuestion.FID) {
-            this.searchedFindings.splice(i, 1);
+          for(let i=0; i<this.searchedFindings.length; i++) {
+            if(this.searchedFindings[i].FID == this.newFindQuestion.FID) {
+              this.searchedFindings.splice(i, 1);
+            }
           }
-        }
-        console.log(this.newFindQuestion);
-        for(let i=0;i<this.currentFindings.length;i++) {
-          console.log(this.currentFindings[i]);
-          if(this.currentFindings[i].FID == this.newFindQuestion.FID) {
-            this.currentFindings[i].answer = this.newFindResp;
-            this.closeNewFind();
-            return;
+          if(this.newFindQuestion.FID == 3732 || this.newFindQuestion.FID == 3738) { //gender
+            for(let i=0;i<this.currentFindings.length;i++) {
+              if(this.currentFindings[i].FID == 3732 || this.currentFindings[i].FID == 3738) {
+                if(this.newFindResp == "Male") {
+                  this.currentFindings[i].FID = 3732;
+                  this.currentFindings[i].Name = "Sex Male";
+                } else {
+                  this.currentFindings[i].FID = 3738;
+                  this.currentFindings[i].Name = "Sex Female";
+                }
+                this.currentFindings[i].answer = "yes";//this.newFindResp;
+                this.closeNewFind();
+                return;
+              }
+            }
+          } else if(this.newFindQuestion.FID == 3731 || this.newFindQuestion.FID == 3735 || this.newFindQuestion.FID == 3736) { //age
+            for(let i=0;i<this.currentFindings.length;i++) {
+              if(this.currentFindings[i].FID == 3731 || this.currentFindings[i].FID == 3735 || this.currentFindings[i].FID == 3736) {
+                if(this.newFindResp == "16 to 25") {
+                  this.currentFindings[i].FID = 3735;
+                  this.currentFindings[i].Name = "Age 16 to 25";
+                } else if(this.newFindResp == "26 to 55") {
+                  this.currentFindings[i].FID = 3731;
+                  this.currentFindings[i].Name = "Age 26 to 55";
+                } else {
+                  this.currentFindings[i].FID = 3736;
+                  this.currentFindings[i].Name = "Age Gtr Than 55";
+                }
+                this.currentFindings[i].answer = "yes";//this.newFindResp;
+                this.closeNewFind();
+                return;
+              }
+            }
+          } else {
+            //console.log(this.newFindQuestion);
+            for(let i=0;i<this.currentFindings.length;i++) {
+              //console.log(this.currentFindings[i]);
+              if(this.currentFindings[i].FID == this.newFindQuestion.FID) {
+                this.currentFindings[i].answer = this.newFindResp;
+                this.closeNewFind();
+                return;
+              }
+            }
           }
-        }
-        if(this.currentFindings.length > 0) {
-          id =  this.currentFindings[this.currentFindings.length-1].id + 1;
-        }
-        ob['id'] = id
-        ob['FID'] = this.newFindQuestion.FID;
-        ob['answer'] = this.newFindResp;
-        ob['Name'] = this.newFindQuestion.Name; 
-        ob['checked'] = true
-        this.currentFindings.push(ob);
-        this.closeNewFind();
+          if(this.currentFindings.length > 0) {
+            id =  this.currentFindings[this.currentFindings.length-1].id + 1;
+          }
+          if(this.newFindQuestion.FID == 3732 || this.newFindQuestion.FID == 3738) {
+            if(this.newFindResp == "Male") {
+              ob.FID = 3732;
+              ob.Name = "Sex Male";
+            } else {
+              ob.FID = 3738;
+              ob.Name = "Sex Female";
+            }
+            ob['answer'] = "yes";
+          } else if(this.newFindQuestion.FID == 3731 || this.newFindQuestion.FID == 3735 || this.newFindQuestion.FID == 3736) {
+            if(this.newFindResp == "16 to 25") {
+              ob.FID = 3735;
+              ob.Name = "Age 16 to 25";
+            } else if(this.newFindResp == "26 to 55") {
+              ob.FID = 3731;
+              ob.Name = "Age 26 to 55";
+            } else {
+              ob.FID = 3736;
+              ob.Name = "Age Gtr Than 55";
+            }
+            ob.answer = "yes";//this.newFindResp;
+          } else {
+            ob['FID'] = this.newFindQuestion.FID;
+            ob['answer'] = this.newFindResp;
+            ob['Name'] = this.newFindQuestion.Name; 
+          }
+          ob['id'] = id
+          ob['checked'] = true
+          this.currentFindings.push(ob);
+          this.closeNewFind();
         }
       },
       deleteFind: function(item) {
@@ -707,6 +835,28 @@
         if(this.nbqResp != null) {
           //send request
           //get back request and update table
+          if(this.nextBestQuestion.FID == 3732 || this.nextBestQuestion.FID == 3738) { //gender
+            if(this.nbqResp == "Male") {
+              this.nextBestQuestion.FID = 3732;
+              this.nextBestQuestion.Name = "Sex Male";
+            } else if(this.nbqResp == "Female") {
+              this.nextBestQuestion.FID = 3738;
+              this.nextBestQuestion.Name = "Sex Female";
+            }
+            this.nbqResp = "yes";
+          } else if(this.nextBestQuestion.FID == 3731 || this.nextBestQuestion.FID == 3735 || this.nextBestQuestion.FID == 3736) {
+            if(this.nbqResp == "16 to 25") {
+              this.nextBestQuestion.FID = 3735;
+              this.nextBestQuestion.Name = "Age 16 to 25";
+            } else if(this.nbqResp == "26 to 55") {
+              this.nextBestQuestion.FID = 3731;
+              this.nextBestQuestion.Name = "Age 26 to 55";
+            } else {
+              this.nextBestQuestion.FID = 3736;
+              this.nextBestQuestion.Name = "Age Gtr Than 55";
+            }
+            this.nbqResp = "yes";
+          }
           this.nextBestQuestion.answer = this.nbqResp;
           this.nextBestQuestion.checked = true;
           this.currentFindings.push(this.nextBestQuestion);
