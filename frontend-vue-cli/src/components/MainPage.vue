@@ -53,11 +53,12 @@
       </div>
     </div>
     <div id="middle">
+      <button type="button" id="renameIcon" class="btn btn-link" @click="createEditNote"><i class="bi bi-pencil-square"></i></button>
       <div class="accordion accordion-flush" id="tableAccordion1">
         <div id="currentFindDiv" class="accordion-item">
           <div id="currentFindHead" class="accordion-header">
             <button id="currentFindTitle" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#currentFindBody" aria-expanded="true" aria-controls="currentFindBody">
-              Current Findings For {{curVisit.note}}
+              Current Findings For {{curVisit.note}} 
             </button>
           </div>
           <div id="currentFindBody" class="accordion-collapse collapse show" aria-labelledby="currentFindHead" data-bs-parent="#tableAccordion1">
@@ -78,7 +79,7 @@
                       <td>{{item.answer}}</td>
                       <td><button type="button" class="btn btn-link" @click="createEditFind(item)"><i class="bi bi-pencil-square"></i></button></td>
                       <td><input class="form-check-input" type="checkbox" v-model="item.checked" @change="getDiseases"></td>
-                      <td><button type="button" class="btn btn-link" @click="deleteFind(item)"><i class="bi bi-x-square"></i></button></td>
+                      <td><button type="button" class="btn btn-link" @click="createDeleteFind(item)"><i class="bi bi-x-square"></i></button></td>
                     </tr>
                 </tbody>
               </table>
@@ -97,8 +98,8 @@
           </div>
           <div id="findingsBody" class="accordion-collapse collapse show" aria-labelledby="findHead" data-bs-parent="#tableAccordion">
             <div class="accordion-body">
-              <button id="nbqBut" class="btn btn-primary" type="submit" @click="getNbq">Next Best Question</button>
               <input type="text" class="form-control" id="findSearch" v-model="findSearch" @input="searchFindings" placeholder="Search top findings">
+              <button id="nbqBut" class="btn btn-primary" type="submit" @click="getNbq"><i class="bi bi-chat-right-quote-fill"></i></button>
               <div class="findingsBBody">
               <table id="findings" class="table table-striped table-hover align-middle table-sm">
                 <thead>
@@ -112,7 +113,7 @@
                   <tr v-for="item in searchedFindings" :key="item.id" @click="createNewFind(item)">
                     <td>{{item.id}}</td>
                     <td>{{item.Name}}</td>
-                    <td><button type="button" class="btn btn-link" @click="createNewFind(item)"><i class="bi bi-arrows-angle-expand"></i></button></td>
+                    <td><button type="button" class="btn btn-link" @click="createNewFind(item)"><i class="bi bi-circle-square"></i></button></td>
                     <td><a :href="item.URL" class="button btn btn-link"><i class="bi bi-info-square"></i></a></td>
                   </tr>
                 </tbody>
@@ -165,7 +166,7 @@
               <div class="mb-3">
                 <a v-if="editFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">
                   <a v-if="this.editFindQuestion.FID==3732 || this.editFindQuestion.FID==3738">
-                    Gender
+                    Sex
                   </a>
                   <a v-else-if="this.editFindQuestion.FID==3731 || this.editFindQuestion.FID==3735 || this.editFindQuestion.FID==3736">
                     Age
@@ -235,7 +236,7 @@
                 <div class="mb-3">
                   <a v-if="nextBestQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">
                     <a v-if="this.nextBestQuestion.FID==3732 || this.nextBestQuestion.FID==3738">
-                      Gender
+                      Sex
                     </a>
                     <a v-else-if="this.nextBestQuestion.FID==3731 || this.nextBestQuestion.FID==3735 || this.nextBestQuestion.FID==3736">
                       Age
@@ -305,7 +306,7 @@
               <div class="mb-3">
                 <a v-if="newFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">
                   <a v-if="this.newFindQuestion.FID==3732 || this.newFindQuestion.FID==3738">
-                    Gender
+                    Sex
                   </a>
                   <a v-else-if="this.newFindQuestion.FID==3731 || this.newFindQuestion.FID==3735 || this.newFindQuestion.FID==3736">
                     Age
@@ -364,16 +365,44 @@
           </div>
         </div>
       </div>
+
+      <div id="deleteFindModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="deleteFindLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteFindLabel">Delete Finding</h5>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <a v-if="editFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">
+                  <a v-if="this.editFindQuestion.FID==3732 || this.editFindQuestion.FID==3738">
+                   Would you like to remove your sex?
+                  </a>
+                  <a v-else-if="this.editFindQuestion.FID==3731 || this.editFindQuestion.FID==3735 || this.editFindQuestion.FID==3736">
+                    Would you like to remove your age?
+                  </a>
+                  <a v-else>
+                    Would you like to delete {{editFindQuestion.Name}}?
+                  </a>
+                </a>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" @click="makeDeleteFind">Confirm</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeDeleteFind">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <br>
     <div id="bot">
       <div id="botButs">
         <div id="lalBot">
           <button id="saveBut" class="btn btn-primary btn-sm" type="submit" @click="save">Save</button>
-          <button id="editNameBut" class="btn btn-outline-primary btn-sm" type="submit" @click="createEditNote">Rename</button>
+          <button id="revertBut" class="btn btn-outline-primary btn-sm" type="submit" @click="getCurrentFindings">Revert</button>
         </div>
         <div id="ralBot">
-          <button id="revertBut" class="btn btn-outline-danger btn-sm" type="submit" @click="getCurrentFindings">Revert</button>
           <button id="resetBut" class="btn btn-outline-secondary btn-sm" type="submit" @click="reset">Reset</button>
           <button id="backBut" class="btn btn-secondary btn-sm" type="submit" @click="$router.go(-1)">Back</button>
         </div>
@@ -769,12 +798,28 @@
           this.closeNewFind();
         }
       },
-      deleteFind: function(item) {
+      createDeleteFind: function(item) {
+        this.editFindQuestion = item;
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#deleteFindModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+      },
+      closeDeleteFind: function() {
+        //this.editFindQuestion = null;
+        /*eslint-disable */
+        //suppress all warnings between comments
+        $('#deleteFindModal').modal('hide'); //need to do this disable because eslint doesnt understand jquery for some reason
+        /*eslint-enable */
+        this.getDiseases();
+      },
+      makeDeleteFind: function() {
         for(let i=0;i<this.currentFindings.length;i++) {
-          if(this.currentFindings[i].FID == item.FID) {
+          if(this.currentFindings[i].FID == this.editFindQuestion.FID) {
             this.currentFindings.splice(i,1);
           }
         }
+        this.closeDeleteFind();
       },
       getNbq: function() {
         let url = "http://127.0.0.1:5001/finding/nbq";
@@ -1165,8 +1210,11 @@
       },
       createEditNote: function() {
         this.newNodeVal = this.curVisit.note;
+        //document.getElementById("currentFindHead").click();
+        //document.getElementById("currentFindBody").collapse('show');
         /*eslint-disable */
         //suppress all warnings between comments
+        //setTimeout(() => {$('#currentFindBody').collapse('show');}, 400);
         $('#editNoteModal').modal('show'); //need to do this disable because eslint doesnt understand jquery for some reason
         /*eslint-enable */
       },
@@ -1337,11 +1385,11 @@ option{
     display: inline;
   }
   #findSearch {
-    max-width: 40%;
+    max-width: 80%;
     float: right;
     margin-right:1em;
     height: 2.5em;
-    margin-top:0.5em;
+    margin-top:0.35em;
   }
   #findEditYes, #findEditNo, #findEditMaybe {
     margin-right:0.5em;
@@ -1356,7 +1404,8 @@ option{
     margin-left:0.5em;
   }
   #nbqBut {
-    margin-left: 0.4em;
+    float: right;
+    margin-right: 0.4em;
     margin-top: 0.4em;
   }
   .accordion {
@@ -1382,7 +1431,6 @@ option{
   }
   #revertBut {
     margin-right: 0.5em;
-    margin-top: 0.4em;
   }
   #editNameBut {
 
@@ -1394,6 +1442,16 @@ option{
   #backBut {
     margin-left: 0.5em;
     margin-top: -0.5em;
+  }
+  #renameIcon {
+    margin-top: -5em;
+    position:relative; 
+    left: 18em; 
+    top: 4.375em;
+    z-index: 999;
+  }
+  #tableAccordion1 {
+    margin-top: -1.25em;
   }
 </style>
     
