@@ -290,7 +290,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" :disabled="nbqResp==null" class="btn btn-success" @click="confirmNbq">Update</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeNbq">Cancel</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeNbq">Cancel</button>
               </div>
             </div>
           </div>
@@ -1267,19 +1267,29 @@
   flex-direction: column;
 }
 #top {
+  flex: 1 0 auto;
   margin-top: 0.4em;
   margin-bottom: 0.4em;
 }
 #middle {
   background-color: rgb(235,236,237);
-  height: 37em;
+  flex: 0 1 47.5em;
   font-weight: normal;
   font-size: 14px;
   overflow-y: scroll;
+  padding-bottom: 1em;
 }
 #bot {
+  background-color: white;
   font-weight: normal;
   font-size: 14px;
+  position: fixed;
+  bottom:0;
+  width:100%;
+  flex: 0 0 2em;
+  z-index: 999;
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 #ralTop {
   float: right;
