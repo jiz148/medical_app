@@ -39,7 +39,10 @@ class TopDiseases(Resource):
             for finding in current_findings:
                 fid, answer = finding['FID'], finding['answer']
                 f_to_d_freq = all_stats[fid].get(key) if all_stats[fid].get(key) else 0
-                cond_p *= f_to_d_freq if answer == 'yes' else 1 - f_to_d_freq
+                if answer != 'unknown':
+                    cond_p *= \
+                        f_to_d_freq\
+                        / all_diseases[key]['freq'] if answer == 'yes' else 1 - f_to_d_freq / all_diseases[key]['freq']
             disease_results.append({
                 "DID": key,
                 "Name": all_diseases[key]['name'],
@@ -53,12 +56,12 @@ def get_all_stats():
     # print(len(g_findings_to_diseases.get(3731)) if g_findings_to_diseases.get(3731) else 'empty')
     if not g_findings_to_diseases:
         all_refs = db.session.query(StatsModel.DID, StatsModel.FID, StatsModel.Sen).all()
-        total_sen = sum([r.Sen for r in all_refs])
+        # total_sen = sum([r.Sen for r in all_refs])
 
         for ref in all_refs:
             if not g_findings_to_diseases.get(ref.FID):
                 g_findings_to_diseases[ref.FID] = {}
-            g_findings_to_diseases[ref.FID][ref.DID] = ref.Sen / total_sen
+            g_findings_to_diseases[ref.FID][ref.DID] = ref.Sen
     return g_findings_to_diseases
 
 
