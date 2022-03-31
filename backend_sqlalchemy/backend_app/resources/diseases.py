@@ -25,8 +25,8 @@ class TopDiseases(Resource):
 
     def post(self):
         args = finding_post_args.parse_args()
-        #current_findings = args['current_findings']
-        current_findings = []#args['current_findings']
+        # current_findings = args['current_findings']
+        current_findings = []  # args['current_findings']
         for i in args["current_findings"]:
             if i["checked"]:
                 current_findings.append(i)
@@ -46,7 +46,8 @@ class TopDiseases(Resource):
             disease_results.append({
                 "DID": key,
                 "Name": all_diseases[key]['name'],
-                "cond_p": cond_p
+                "cond_p": cond_p,
+                "URL": all_diseases[key]['URL']
             })
         disease_results = sorted(disease_results, key=lambda d: d['cond_p'], reverse=True)
         return {'msg': "success", 'data': disease_results[:NUM_OF_RETURNED_DISEASES]}
@@ -70,13 +71,14 @@ def get_all_diseases():
     Get all diseases
     """
     if not g_diseases:
-        all_diseases = db.session.query(DiseasesModel.DID, DiseasesModel.Name, DiseasesModel.Frq).all()
+        all_diseases = db.session.query(DiseasesModel.DID, DiseasesModel.Name, DiseasesModel.Frq, DiseasesModel.URL).all()
         total_freq = sum([d.Frq for d in all_diseases])
 
         for disease in all_diseases:
             g_diseases[disease.DID] = {
                 'name': disease.Name,
-                'freq': disease.Frq / total_freq
+                'freq': disease.Frq / total_freq,
+                'URL': disease.URL
             }
     return g_diseases
 

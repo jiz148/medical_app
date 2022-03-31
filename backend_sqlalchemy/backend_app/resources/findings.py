@@ -106,10 +106,14 @@ class FindingsSearch(Resource):
     """
 
     def post(self):
-        '''try:
+        """
+        try:
             uid = session['uid']
         except KeyError:
-            abort(401, msg="uid in session does not exist")'''
+            abort(401, msg="uid in session does not exist")
+
+        @return:
+        """
         args = finding_search_get_args.parse_args()
         keywords = args['keyword'].split(' ')
         cur_findings = []
@@ -119,17 +123,18 @@ class FindingsSearch(Resource):
                 ob['Name'] = i["Name"]
                 ob['FID'] = i['FID']
                 cur_findings.append(ob)
-        #print(args["current_findings"])
+        # print(args["current_findings"])
         new_string = ''
         for keyword in keywords:
             new_string += '%'+keyword+'%'
-        findings = db.session.query(FindingsModel.FID, FindingsModel.Name).filter(FindingsModel.Name.like(new_string)).all()
+        findings = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.URL).filter(FindingsModel.Name.like(new_string)).all()
         search_result = list()
         for finding in findings:
             f = {}
             f['FID'] = finding.FID
             f['Name'] = finding.Name
-            if f in cur_findings:#args['current_findings']:
+            f['URL'] = finding.URL
+            if f in cur_findings:  # args['current_findings']:
                 continue
             search_result.append(f)
         max_length = 25
