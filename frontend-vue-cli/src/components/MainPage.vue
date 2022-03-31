@@ -114,7 +114,7 @@
                     <td>{{item.id}}</td>
                     <td>{{item.Name}}</td>
                     <td><button type="button" class="btn btn-link" @click="createNewFind(item)"><i class="bi bi-circle-square"></i></button></td>
-                    <td><a :href="item.URL" class="button btn btn-link"><i class="bi bi-info-square"></i></a></td>
+                    <td><a v-if="item.URL!=''" :href="item.URL" target="_blank" class="button btn btn-link"><i class="bi bi-info-square"></i></a></td>
                   </tr>
                 </tbody>
               </table>
@@ -146,7 +146,7 @@
                   <tr v-for="item in matchesList" :key="item.DID">
                     <td>{{item.id}}</td>
                     <td>{{item.Name}}</td>
-                    <td><a :href="item.link" class="button btn btn-link"><i class="bi bi-info-square"></i></a></td>
+                    <td><a v-if="item.URL!=''" :href="item.URL" target="_blank" class="button btn btn-link"><i class="bi bi-info-square"></i></a></td>
                   </tr>
                 </tbody>
               </table>
