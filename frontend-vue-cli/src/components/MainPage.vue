@@ -14,8 +14,11 @@
 
       <button id="infoBut" class="btn btn-outline-secondary" @click="this.showInfo=!this.showInfo">Info</button>
       
-      <button type="button" id="" class="btn btn-link" @click="createEditNote"><i class="bi bi-pencil-square"></i></button>
-      <a style='disply: inline'>{{ curVisit.displaynote}} </a>
+      <div id="visitNameDiv">
+        <a id="visitNameA">{{ curVisit.displaynote}} </a>
+        <button type="button" id="" class="btn btn-link" @click="createEditNote"><i class="bi bi-pencil-square"></i></button>
+      </div>
+      
 
       <div id="ralTop">
         <div id="settingsDrop" class="btn-group">
@@ -509,8 +512,8 @@
                           if(li[i].visit_id == this.$route.query.visit) {
                             this.curVisit = li[i];
                             let disp = li[i].note;
-                            if(disp.length > 25) {
-                              disp = disp.substring(0,24) + "...";
+                            if(disp.length > 24) {
+                              disp = disp.substring(0,22) + "...";
                             }
                             this.curVisit['displaynote'] = disp;
                           }
@@ -1240,8 +1243,8 @@
           setTimeout(() => {this.showError = false}, 5000);
         } else {
           let disp = "";
-          if(this.newNodeVal.length > 25) {
-            disp = this.newNodeVal.substring(0,24) + "...";
+          if(this.newNodeVal.length > 24) {
+            disp = this.newNodeVal.substring(0,22) + "...";
           } else {
             disp = this.newNodeVal
           }
@@ -1480,6 +1483,18 @@ option{
   }
   #editNoteModal {
     z-index: 9999
+  }
+  #visitNameDiv {
+    position: relative;
+    top: 0.1em;
+    margin-left: 0.7em;
+    display: inline;
+  }
+  #visitNameA {
+    position: relative;
+    top: 0.1em;
+    font-size: 20px;
+    color: #0275d8;
   }
 </style>
     
