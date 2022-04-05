@@ -14,6 +14,9 @@
 
       <button id="infoBut" class="btn btn-outline-secondary" @click="this.showInfo=!this.showInfo">Info</button>
       
+      <button type="button" id="" class="btn btn-link" @click="createEditNote"><i class="bi bi-pencil-square"></i></button>
+      <div style=''>{{ curVisit.displaynote}} </div>
+
       <div id="ralTop">
         <div id="settingsDrop" class="btn-group">
           <button type="button" class="btn btn-outline-secondary dropdown-toggle caret-off" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
@@ -53,12 +56,11 @@
       </div>
     </div>
     <div id="middle">
-      <button type="button" id="renameIcon" class="btn btn-link" @click="createEditNote"><i class="bi bi-pencil-square"></i></button>
       <div class="accordion accordion-flush" id="tableAccordion1">
         <div id="currentFindDiv" class="accordion-item">
           <div id="currentFindHead" class="accordion-header">
             <button id="currentFindTitle" class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#currentFindBody" aria-expanded="true" aria-controls="currentFindBody">
-              Current Findings For {{curVisit.note}} 
+              Current Findings
             </button>
           </div>
           <div id="currentFindBody" class="accordion-collapse collapse show" aria-labelledby="currentFindHead" data-bs-parent="#tableAccordion1">
@@ -408,7 +410,9 @@
         </div>
       </div>
 
-      <div id="editNoteModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="editNoteLabel" aria-hidden="true">
+      
+      </div>
+      <div id="editNoteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editNoteLabel" aria-hidden="true" data-backdrop="false">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -428,7 +432,6 @@
             </div>
           </div>
         </div>
-      </div>
       </div>
   </div>
 </template>
@@ -505,6 +508,11 @@
                         for(let i=0;i<li.length;i++) {
                           if(li[i].visit_id == this.$route.query.visit) {
                             this.curVisit = li[i];
+                            let disp = li[i].note;
+                            if(disp.length > 25) {
+                              disp = disp.substring(0,24) + "...";
+                            }
+                            this.curVisit['displaynote'] = disp;
                           }
                         }
                     } else {
@@ -522,7 +530,7 @@
                 });
           this.loadVisit();
         } else {
-          this.curVisit = {'note': "New Visit", 'visit_id': 0, 'datetime': ""};
+          this.curVisit = {'note': "New Visit", 'displaynote': 'New Visit', 'visit_id': 0, 'datetime': ""};
           this.loadVisit();
         }
     },
@@ -546,7 +554,7 @@
             showAlert: false,
             response: {},
             status: 0,
-            curVisit: {'note': 'New Visit', 'visit_id': 0, 'datetime': ""},
+            curVisit: {'note': 'New Visit', 'displaynote': 'New Visit', 'visit_id': 0, 'datetime': ""},
             findingsList: [
               
             ],
@@ -1231,6 +1239,13 @@
           this.showError = true;
           setTimeout(() => {this.showError = false}, 5000);
         } else {
+          let disp = "";
+          if(this.newNodeVal.length > 25) {
+            disp = this.newNodeVal.substring(0,24) + "...";
+          } else {
+            disp = this.newNodeVal
+          }
+          this.curVisit.displaynote = disp;
           this.curVisit.note = this.newNodeVal;
         }
         this.closeEditNote();
@@ -1461,7 +1476,10 @@ option{
     z-index: 999;
   }
   #tableAccordion1 {
-    margin-top: -1.25em;
+    
+  }
+  #editNoteModal {
+    z-index: 9999
   }
 </style>
     

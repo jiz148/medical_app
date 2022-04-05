@@ -305,6 +305,7 @@
     margin-right: 0.6em;
     height: 2.4em;
     display: inline;
+    max-width: 80%;
   }
   .visitItem {
     height: 2.0em;
