@@ -118,7 +118,7 @@ class FindingsSearch(Resource):
         keywords = args['keyword'].split(' ')
         cur_findings = []
         for i in args["current_findings"]:
-            if i["checked"]:
+            if i and i["checked"]:
                 ob = {}
                 ob['Name'] = i["Name"]
                 ob['FID'] = i['FID']
@@ -158,7 +158,7 @@ class NextBestQuestion(Resource):
         disease_id = args["top_disease_id"]
         cur_findings = []
         for i in args["current_findings"]:
-            if i["checked"]:
+            if i and i["checked"]:
                 cur_findings.append(i)
         all_findings = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.Title).all()
         findings_hash = {}
