@@ -15,7 +15,7 @@
       <button id="infoBut" class="btn btn-outline-secondary" @click="this.showInfo=!this.showInfo">Info</button>
       
       <button type="button" id="" class="btn btn-link" @click="createEditNote"><i class="bi bi-pencil-square"></i></button>
-      <div style=''>{{ curVisit.displaynote}} </div>
+      <a style='disply: inline'>{{ curVisit.displaynote}} </a>
 
       <div id="ralTop">
         <div id="settingsDrop" class="btn-group">
