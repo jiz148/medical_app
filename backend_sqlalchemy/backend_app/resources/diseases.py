@@ -40,9 +40,10 @@ class TopDiseases(Resource):
                 fid, answer = finding['FID'], finding['answer']
                 f_to_d_freq = all_stats[fid].get(key) if all_stats[fid].get(key) else 0
                 if answer != 'unknown':
-                    cond_p *= \
-                        f_to_d_freq\
-                        / all_diseases[key]['freq'] if answer == 'yes' else 1 - f_to_d_freq / all_diseases[key]['freq']
+                    if answer == 'yes':
+                        cond_p *= f_to_d_freq / all_diseases[key]['freq']
+                    else:
+                        cond_p *= 1 - f_to_d_freq / all_diseases[key]['freq']
             disease_results.append({
                 "DID": key,
                 "Name": all_diseases[key]['name'],
@@ -72,12 +73,12 @@ def get_all_diseases():
     """
     if not g_diseases:
         all_diseases = db.session.query(DiseasesModel.DID, DiseasesModel.Name, DiseasesModel.Frq, DiseasesModel.URL).all()
-        total_freq = sum([d.Frq for d in all_diseases])
+        # total_freq = sum([d.Frq for d in all_diseases])
 
         for disease in all_diseases:
             g_diseases[disease.DID] = {
                 'name': disease.Name,
-                'freq': disease.Frq / total_freq,
+                'freq': disease.Frq,
                 'URL': disease.URL
             }
     return g_diseases
