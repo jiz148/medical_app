@@ -5,7 +5,9 @@ from backend_sqlalchemy.backend_app.models.user import UserModel
 import json
 import random
 from flask import session
+from backend_sqlalchemy.backend_app.models.stats import StatsModel
 from flask_restful import Resource, reqparse, fields, marshal_with, abort
+from backend_sqlalchemy.backend_app.resources.diseases import get_all_stats
 
 from backend_sqlalchemy.backend_app.models.visit import VisitModel
 visit_to_finding_get_args = reqparse.RequestParser()
@@ -150,33 +152,50 @@ class NextBestQuestion(Resource):
     """
 
     def post(self):
-        try:
+        '''try:
             uid = session['uid']
         except KeyError:
-            abort(401, msg="uid in session does not exist")
+            abort(401, msg="uid in session does not exist")'''
         args = nbq_diseases_get_args.parse_args()
         disease_id = args["top_disease_id"]
         cur_findings = []
         for i in args["current_findings"]:
-            if i and i["checked"]:
-                cur_findings.append(i)
+            if i:#if i and i["checked"]:
+                cur_findings.append(i["FID"])
         all_findings = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.Title).all()
         findings_hash = {}
         for finding in all_findings:
-            findings_hash[finding.Name] = finding.FID
-        finding_names = list(findings_hash.keys())
-        while 1:
+            findings_hash[finding.FID] = finding.Name
+        finding_ids = list(findings_hash.keys())
+        '''while 1:
             i = random.randint(0, len(finding_names))
             finding_name = finding_names[i]
-            if findings_hash[finding_name] in cur_findings:#args["current_findings"]:
+            if findings_hash[finding_name] in cur_findings:
                 continue
             else:
                 break
         finding = dict()
         finding["Name"] = finding_names[i]
-        finding["FID"] = findings_hash[finding_names[i]]
+        finding["FID"] = findings_hash[finding_names[i]]'''
+        all_stats = get_all_stats()
+        disease_stats = []
+        for stat in all_stats:
+            if stat[0] == disease_id and stat[1] not in cur_findings:
+                disease_stats.append(stat)
+        nbq_fid = 0
+        nbq_value = -1
+        for stat in disease_stats:
+            if stat[2] > nbq_value:
+                nbq_value = stat[2]
+                nbq_fid = stat[1]
+        finding_details = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.URL).filter(
+            FindingsModel.FID == nbq_fid).first()
 
-        return {'msg': "success", 'data': finding}
+        nbq_finding = dict()
+        nbq_finding['FID'] = finding_details['FID']
+        nbq_finding['Name'] = finding_details['Name']
+        nbq_finding['URL'] = finding_details['URL']
+        return {'msg': "success", 'data': nbq_finding}
 
 
 class TopFindings(Resource):
@@ -217,6 +236,17 @@ def get_all_findings():
                 "freq": 1 / total_findings
             }
     return findings_hash
+
+
+def get_all_stats():
+    all_stats = []
+    if not all_stats:
+        all_stats_query = db.session.query(StatsModel.DID, StatsModel.FID, StatsModel.Sen).all()
+        for stat in all_stats_query:
+            all_stats.append((stat.DID, stat.FID, stat.Sen))
+    return all_stats
+
+
 
 
 

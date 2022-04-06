@@ -4,7 +4,6 @@ from flask_restful import Resource, reqparse
 
 from backend_sqlalchemy.backend_app.models.diseases import DiseasesModel
 from backend_sqlalchemy.backend_app.models.stats import StatsModel
-from backend_sqlalchemy.backend_app.resources.findings import get_all_findings
 from backend_sqlalchemy.backend_app.db import db
 
 finding_post_args = reqparse.RequestParser()
