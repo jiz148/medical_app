@@ -6,7 +6,44 @@
       </div>
     </div>
     <div id="formElements">
-       <button id="backBut" class="btn btn-secondary" type="submit" @click="$router.go(-1)">Back</button>
+      <label class="form-check-label" id="asboollabel" for="autosavegroup">
+          Autosaving
+      </label>
+      <div id="autosavegroup">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="asyes" id="asyes" value="yes" v-model="autosavebool">
+          <label class="form-check-label" for="asyes">Yes</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="asno" id="asno" value="no" v-model="autosavebool">
+          <label class="form-check-label" for="asno">No</label>
+        </div>
+       </div>
+       <div class="mb-3" v-if="autosavebool == 'yes'">
+          <label for="astime" class="form-label">Time Between Autosaves in Seconds</label>
+          <input type="number" class="form-control" id="astime" v-model="astime">
+        </div>
+        <label class="form-check-label" id="tablelabel" for="tablegroup">
+          Tables
+        </label>
+        <div id="tablegroup">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="tableex" id="tableex" value="expanded" v-model="tablebool">
+            <label class="form-check-label" for="tableex">Expanded</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="tableco" id="tableco" value="collapsed" v-model="tablebool">
+            <label class="form-check-label" for="tableco">Collapsed</label>
+          </div>
+          </div>
+        <div class="mb-3">
+          <label for="numcolumns" class="form-label">
+            Max Number of Columns Per Table
+          </label>
+          <input type="number" class="form-control" id="numcolumns" v-model="numcolumns">
+      </div>
+      <button id="saveBut" class="btn btn-primary" type="submit" @click="save">Save</button>
+      <button id="backBut" class="btn btn-secondary" type="submit" @click="$router.go(-1)">Back</button>
     </div>
   </div>
 </template>
@@ -18,23 +55,22 @@
     data() {
         return {
             query: "",
-            username: "",
-            password: "",
-            password2: "",
-            email: "",
-            year: null,
-            gender: null,
-            phone: "",
             showError: false,
             errorMess: "",
             response: {},
             switchpage: false,
-            status: 0
+            status: 0,
+            autosavebool: 'yes',
+            astime: 30,
+            tablebool: 'expanded',
+            numcolumns: 20,
+            currentVals: [],
+            timerlock: 0,
         }
     },
-    beforeCreate: function() {
+    beforeCreate: async function() {
         let url = "http://127.0.0.1:5001/user/sessiondata";
-        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+        await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
             method: 'get',
             credentials: "include",
             mode: 'cors',
@@ -70,102 +106,71 @@
                 }
             }
             });
+            this.getInfo();
     },
     methods: {
-      register() { //keeps track of which database to query
-        this.showError = false;
-        var re =  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
-        var ph = /^[2-9]\d{2}[2-9]\d{2}\d{4}$/; // eslint-disable-line
-        var today = new Date();
-        var yyyy = today.getFullYear();
-        let phtest = true
-        if(this.phone != "") {
-          phtest = ph.test(this.phone.replace(/\D/g, ""))
-        }
-        if(!re.test(this.email)) {
-            this.errorMess = "Please input a valid email.";
-            this.showError = true;
-        } else if(this.username == "") {
-            this.errorMess = "Please input a username.";
-            this.showError = true;
-        } else if(this.password.length < 8) {
-          console.log("sanity check");
-            this.errorMess = "Your password must have a minimum of 8 characters.";
-            this.showError = true;
-        } else if(this.password != this.password2) {
-            this.errorMess = "The passwords do not match.";
-            this.showError = true;
-        }  else if(this.year < yyyy-120 || this.year > yyyy) {
-            this.errorMess = "Please input a valid year.";
-            this.showError = true;
-        } else if(yyyy - this.year < 16) {
-            this.errorMess = "You must be at least 16 years old to register.";
-            this.showError = true;
-        } else if(this.gender == null) {
-            this.errorMess = "Please select your sex.";
-            this.showError = true;
-        } else if(this.phone != "" && !phtest) {
-          this.errorMess = "Invalid phone number.";
+      getInfo: function() {
+          //perform query to get user data; for now just use dummy values
+          this.autosavebool = "yes";
+          this.astime = 30;
+          this.tablebool = "expanded";
+          this.numcolumns = 20;
+          this.currentVals = [this.autosavebool, this.astime, this.tablebool, this.numcolumns];
+      },
+      save: function() {
+        if(this.astime == null || this.astime < 1) {
+          this.errorMess = "Please enter a time greater than 0 seconds.";
           this.showError = true;
-        } else { //should also sanitize input for sql injection, but we can worry about that later
-            this.showError = false;
-            this.performQuery();
+          this.reset();
+          this.timerlock += 1;
+          let lock = this.timerlock;
+          setTimeout(() => { 
+            if(this.timerlock == lock) {
+              this.showError = false;
+            }
+          }, 5000);
+        } else if(this.astime > 86400) {
+          this.errorMess = "Please enter a time less than 1 day.";
+          this.showError = true;
+          this.reset();
+          this.timerlock += 1;
+          let lock = this.timerlock;
+          setTimeout(() => { 
+            if(this.timerlock == lock) {
+              this.showError = false;
+            }
+          }, 5000);
+        } else if(this.numcolumns == null || this.numcolumns < 1) {
+          this.errorMess = "Please display at least 1 column.";
+          this.showError = true;
+          this.reset();
+          this.timerlock += 1;
+          let lock = this.timerlock;
+          setTimeout(() => { 
+            if(this.timerlock == lock) {
+              this.showError = false;
+            }
+          }, 5000);
+        } else if(this.numcolumns > 100) {
+          this.errorMess = "Please display 100 or less columns.";
+          this.showError = true;
+          this.reset();
+          this.timerlock += 1;
+          let lock = this.timerlock;
+          setTimeout(() => { 
+            if(this.timerlock == lock) {
+              this.showError = false;
+            }
+          }, 5000);
+        } else {
+          //perform query
         }
       },
-      performQuery() {
-        document.getElementById("submitBut").disabled = true; //stop queries from happening
-        var url = "http://127.0.0.1:5001/user/register";
-        let data = {
-            'email': this.email,
-            'username': this.username,
-            'password': this.password,
-            'birth_year': this.year,
-            'gender': this.gender
-          }
-        if(this.phone != null) {
-          data['phone'] = this.phone;
-        }
-        fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
-                method: 'POST',
-                credentials: "include",
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
-                    'Access-Control-Allow-Credentials': true,
-                },
-                body:  JSON.stringify(data)
-                })
-                .then((response) => { 
-                    this.status = response.status;
-                    return response.json() 
-                })
-                .then(data => {
-                    this.response = data; 
-                    if(this.status == 201) {
-                      this.$router.push('/login');
-                    } else {
-                      this.errorMess = this.response.msg;
-                      this.showError = true;
-                    }
-                    }).catch(error => {
-                    if(error.response) {
-                      if(this.status == 409) {
-                        this.errorMess = error.response.data.msg;
-                        this.showError = true;
-                      }
-                    }
-                    document.getElementById("submitBut").disabled = false; //allow queries to start again
-                    this.username = "";
-                    this.password = "";
-                    this.password2 = "";
-                    this.email = "";
-                    this.year = null;
-                    this.gender = "male";
-                    this.phone = "";
-                });
-          document.getElementById("submitBut").disabled = false; //allow queries to start again
+      reset: function() {
+        this.autosavebool = this.currentVals[0];
+        this.astime = this.currentVals[1];
+        this.tablebool = this.currentVals[2];
+        this.numcolumns = this.currentVals[3];
       }
     }
   }
@@ -186,14 +191,17 @@
   #submitBut {
     margin-top: 0.5em;
   }
-  #gendergroup {
-    margin-bottom:0.6em;
-    margin-left: 0.2em;
-  }
-  #year {
-    margin-bottom: -0.2em;
-  }
   #backBut {
     margin-top: 0.3em;
+  }
+  #autosavegroup {
+    margin-bottom: 0.6em;
+    font-size: 17px;
+    color: rgb(108,117,125);
+  }
+  #tablegroup {
+    margin-bottom: 0.6em;
+    font-size: 17px;
+    color: rgb(108,117,125);
   }
 </style>
