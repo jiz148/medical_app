@@ -11,8 +11,6 @@
           {{ alertMess }}
         </div>
       </div>
-
-      <button id="infoBut" class="btn btn-outline-secondary" @click="this.showInfo=!this.showInfo">Info</button>
       
       <div id="visitNameDiv">
         <a id="visitNameA">{{ curVisit.displaynote}} </a>
@@ -21,6 +19,7 @@
       
 
       <div id="ralTop">
+        <button id="infoBut" class="btn btn-outline-secondary" @click="this.showInfo=!this.showInfo"><i class="bi bi-info-lg"></i></button>
         <div id="settingsDrop" class="btn-group">
           <button type="button" class="btn btn-outline-secondary dropdown-toggle caret-off" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-three-dots-vertical"></i>
@@ -381,13 +380,16 @@
               <div class="mb-3">
                 <a v-if="editFindQuestion!=null" style="font-size: 16px; font-weight: bold; margin-left: 0.4em;">
                   <a v-if="this.editFindQuestion.FID==3732 || this.editFindQuestion.FID==3738">
-                   Would you like to remove your sex?
+                   <a style='font-weight: normal'>Would you like to remove your </a>
+                   sex?
                   </a>
                   <a v-else-if="this.editFindQuestion.FID==3731 || this.editFindQuestion.FID==3735 || this.editFindQuestion.FID==3736">
-                    Would you like to remove your age?
+                   <a style='font-weight: normal'> Would you like to remove your </a>
+                    age?
                   </a>
                   <a v-else>
-                    Would you like to delete {{editFindQuestion.Name}}?
+                   <a style='font-weight: normal'> Would you like to delete </a>
+                    {{editFindQuestion.Name}}?
                   </a>
                 </a>
               </div>
@@ -1314,7 +1316,7 @@
   display: inline;
 }
 #infoBut {
-  margin-left: 0.6em;
+  margin-right: 0.6em;
 }
 #logoutBut {
   margin-left: 0.6em;
@@ -1487,7 +1489,7 @@ option{
   #visitNameDiv {
     position: relative;
     top: 0.1em;
-    margin-left: 0.7em;
+    margin-left: 1.8em;
     display: inline;
   }
   #visitNameA {
