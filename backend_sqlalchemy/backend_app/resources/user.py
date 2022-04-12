@@ -38,6 +38,12 @@ user_change_password_put_args = reqparse.RequestParser()
 user_change_password_put_args.add_argument("token", type=str, required=True)
 user_change_password_put_args.add_argument("new_password", type=str, required=True)
 
+user_profile_post_args = reqparse.RequestParser()
+user_profile_post_args.add_argument("birth_year", type=int, required=True)
+user_profile_post_args.add_argument("gender", type=str, required=True)
+user_profile_post_args.add_argument("phone", type=str, required=True)
+
+
 resource_field = {
     'uid': fields.Integer,
     'username': fields.String,
@@ -190,3 +196,18 @@ class UserProfile(Resource):
             "phone": user.phone
         }
         return {'msg': 'success', 'data': data}, 200
+
+    def post(self):
+        args = user_profile_post_args.parse_args()
+        birth_year, gender, phone = args['birth_year'], args['gender'], args['phone']
+
+        uid = None
+        try:
+            uid = session['uid']
+        except KeyError:
+            abort(401, msg="uid in session does not exist")
+
+        user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
+        user.birth_year, user.gender, user.phone = birth_year, gender, phone
+        db.session.commit()
+        return {'msg': 'success'}, 200
