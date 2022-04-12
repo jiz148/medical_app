@@ -181,7 +181,7 @@ class UserProfile(Resource):
             uid = session['uid']
         except KeyError:
             abort(401, msg="uid in session does not exist")
-        user = db.session.query(UserModel.uid == uid).first()
+        user = db.session.query(UserModel).filter(UserModel.uid == uid).first()
         data = {
             "username": user.username,
             "email": user.email,

@@ -136,14 +136,46 @@
         this.getInfo();
     },
     methods: {
-      getInfo: function() {
+      getInfo: async function() {
           //perform query to get user data; for now just use dummy values
-          this.username = "user";
-          this.password = "password";
-          this.email = "ken_erickson@yahoo.com";
-          this.year = 2000;
-          this.gender = "male";
-          this.currentVals = [this.email, this.username, this.password, this.year, this.gender, this.phone];
+          let url = 'http://127.0.0.1:5001/user/profile';
+          await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+            method: 'get',
+            credentials: "include",
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                'Access-Control-Allow-Credentials': true,
+            }})
+            .then((response) => { 
+                this.status = response.status;
+                return response.json() 
+            })
+            .then(data => {
+            this.response = data; //update table with new data
+            if(this.status == 200) {
+                console.log('test');
+                this.username = data.data.username;
+                this.password = "password";
+                this.email = data.data.email;
+                this.year = data.data.birth_year;
+                this.gender = data.data.gender;
+                this.phone = data.data.phone;
+                this.currentVals = [this.email, this.username, this.password, this.year, this.gender, this.phone];
+            } else {
+                this.currentVals = [null, null, null, null, null, null];
+            }
+            }).catch(error => {
+            if(error.response) {
+                if(this.status == 200) {
+                console.log(this.response.msg); //switch to main page here
+                } else {
+                this.$router.push('/');
+                }
+            }
+            });
       },
       sendQuery: function() {
         let proceed = 0;
