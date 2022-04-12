@@ -587,7 +587,7 @@
     margin-left: -0.1em;
   }
   #saveBut {
-    margin-top: 0.3em;
+    margin-top: 0.6em;
   }
   #alert {
     color: rgb(40, 190, 90);

@@ -514,8 +514,8 @@
                           if(li[i].visit_id == this.$route.query.visit) {
                             this.curVisit = li[i];
                             let disp = li[i].note;
-                            if(disp.length > 24) {
-                              disp = disp.substring(0,22) + "...";
+                            if(disp.length > 20) {
+                              disp = disp.substring(0,17) + "...";
                             }
                             this.curVisit['displaynote'] = disp;
                           }
@@ -1245,8 +1245,8 @@
           setTimeout(() => {this.showError = false}, 5000);
         } else {
           let disp = "";
-          if(this.newNodeVal.length > 24) {
-            disp = this.newNodeVal.substring(0,22) + "...";
+          if(this.newNodeVal.length > 20) {
+            disp = this.newNodeVal.substring(0,17) + "...";
           } else {
             disp = this.newNodeVal
           }
@@ -1454,9 +1454,10 @@ option{
   #ralBot {
     float: right;
     margin-right: 0.6em;
-    margin-top: -0.35em;
+    margin-top: 0.3em;
   }
   #saveBut {
+    margin-bottom: 0.6em;
     margin-right: 0.5em;
   }
   #revertBut {
