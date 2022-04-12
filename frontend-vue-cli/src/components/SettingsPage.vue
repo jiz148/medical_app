@@ -60,12 +60,13 @@
             response: {},
             switchpage: false,
             status: 0,
-            autosavebool: 'yes',
-            astime: 30,
-            tablebool: 'expanded',
-            numcolumns: 20,
+            autosavebool: null,
+            astime: null,
+            tablebool: null,
+            numcolumns: null,
             currentVals: [],
             timerlock: 0,
+            settings: {}
         }
     },
     beforeCreate: async function() {
@@ -87,6 +88,12 @@
             .then(data => {
             this.response = data; //update table with new data
             if(this.status == 200) {
+                this.settings = require('../settings.json');
+                this.autosavebool = this.settings.autosaving;
+                this.astime = this.settings.astime;
+                this.tablebool = this.settings.tables;
+                this.numcolumns = this.settings.maxcolumns;
+                this.currentVals = [this.autosavebool, this.astime, this.tablebool, this.numcolumns];
                 if(this.response.accepted == null) {
                     this.$router.push('/');
                 }
@@ -106,17 +113,8 @@
                 }
             }
             });
-            this.getInfo();
     },
     methods: {
-      getInfo: function() {
-          //perform query to get user data; for now just use dummy values
-          this.autosavebool = "yes";
-          this.astime = 30;
-          this.tablebool = "expanded";
-          this.numcolumns = 20;
-          this.currentVals = [this.autosavebool, this.astime, this.tablebool, this.numcolumns];
-      },
       save: function() {
         if(this.astime == null || this.astime < 1) {
           this.errorMess = "Please enter a time greater than 0 seconds.";
@@ -163,7 +161,16 @@
             }
           }, 5000);
         } else {
-          //perform query
+          const fs = require('browserify-fs');
+          let json = {};
+          json['autosaving'] = this.autosavebool;
+          json['astime'] = this.astime;
+          json['tables'] = this.tablebool;
+          json['maxcolumns'] = this.numcolumns;
+          json = JSON.stringify(json);
+          console.log(json);
+          fs.writeFile('../settings.json', json);
+          console.log("writing");
         }
       },
       reset: function() {
