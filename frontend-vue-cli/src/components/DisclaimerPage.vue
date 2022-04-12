@@ -3,6 +3,11 @@
     <div id="dischead">
       Disclaimer
     </div>
+    <div id="alert" class="card" v-show="showAlert">
+      <div class="card-body">
+        {{ alertMess }}
+      </div>
+    </div>
     <div id="error" class="card" v-show="showError">
       <div class="card-body">
         {{ errorMess }}
@@ -22,15 +27,28 @@ TO THE FULL EXTENT PERMISSIBLE UNDER THE APPLICABLE LAW, ISMARTSOFT INC SHALL NO
 <script>
 export default { //controls form input
     name: 'DisclaimerPage',
-    props: {},
+    props: {
+        msg: String
+    },
     data() {
       return {
         showError: false,
         errorMess: "",
+        alertMess: "",
+        showAlert: false
       }
     },
     beforeCreate: function() {
         
+    },
+    created: function() {
+        this.alertMess = this.$route.query.msg;
+        if(this.alertMess) {
+            this.showAlert = true;
+        }
+        setTimeout(() => { 
+          this.showAlert = false;
+        }, 5000);
     },
     methods: {
         goregister() {
@@ -99,6 +117,13 @@ export default { //controls form input
   }
   #error {
     color: rgb(255, 10, 67);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+  }
+  #alert {
+    color: rgb(40, 190, 90);
     margin-top: 0.2em;
     margin-bottom: 0.2em;
     margin-left: 0.6em;

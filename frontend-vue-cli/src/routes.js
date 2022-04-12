@@ -10,7 +10,7 @@ import SettingsPage from './components/SettingsPage';
 
 const routes = [
     {path: '/login', component: LoginPage, props: true},
-    {path: '/', component: DisclaimerPage},
+    {path: '/', component: DisclaimerPage, props: true},
     {path: '/register', component: RegisterPage},
     {path: '/visit', component: VisitPage},
     {path: '/main', component: MainPage},
