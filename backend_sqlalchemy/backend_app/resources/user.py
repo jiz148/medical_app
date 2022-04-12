@@ -171,3 +171,22 @@ class UserChangePassword(Resource):
         user.new_password_encrypted(new_password)
         db.session.commit()
         return {'msg': 'success'}, 200
+
+
+class UserProfile(Resource):
+
+    def get(self):
+        uid = None
+        try:
+            uid = session['uid']
+        except KeyError:
+            abort(401, msg="uid in session does not exist")
+        user = db.session.query(UserModel.uid == uid).first()
+        data = {
+            "username": user.username,
+            "email": user.email,
+            "birth_year": user.birth_year,
+            "gender": user.gender,
+            "phone": user.phone
+        }
+        return {'msg': 'success', 'data': data}, 200

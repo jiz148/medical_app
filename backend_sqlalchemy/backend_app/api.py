@@ -7,7 +7,8 @@ from backend_sqlalchemy.backend_app.resources.user import \
     UserChangePassword, \
     UserData, \
     UserLogout, \
-    UserDisclaimer
+    UserDisclaimer, \
+    UserProfile
 from backend_sqlalchemy.backend_app.resources.findings import \
     Finding, \
     NextBestQuestion, \
@@ -35,6 +36,7 @@ api.add_resource(FindingsSearch, '/finding/finding_search')
 api.add_resource(NextBestQuestion, '/finding/nbq')
 api.add_resource(TopFindings, '/finding/top_findings')
 api.add_resource(TopDiseases, '/disease/top_diseases')
+api.add_resource(UserProfile, '/user/profile')
 
 
 if __name__ == "__main__":
