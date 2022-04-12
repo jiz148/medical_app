@@ -5,6 +5,11 @@
         {{ errorMess }}
       </div>
     </div>
+    <div id="alert" class="card" v-show="showAlert">
+      <div class="card-body">
+        {{ alertMess }}
+      </div>
+    </div>
     <div id="formElements">
         <div class="mb-3">
           <label for="email" class="form-label">
@@ -17,17 +22,6 @@
                 Username
             </label>
             <input :disabled="!userchange" type="text" class="form-control" id="username" v-model="username" placeholder="Enter username">
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">
-                Password
-                <button v-if="!passchange" type="button" class="btn btn-link" @click='this.$router.push("/forget")'><i class="bi bi-pencil-square"></i></button>
-            </label>
-            <input :disabled="!passchange" type="password" class="form-control" id="password" v-model="password" placeholder="Enter password">
-        </div>
-        <div class="mb-3" v-if="passchange">
-          <label for="password2" class="form-label">Confirm Password</label>
-          <input type="password" class="form-control" id="password2" v-model="password2" placeholder="Re-type password">
         </div>
         <div class="mb-3" id="yeardiv">
           <label for="year" class="form-label">
@@ -61,6 +55,7 @@
         <input :disabled="!numchange" type="text" class="form-control" id="phone" v-model="phone" placeholder="Enter your phone number">
       </div>
         <button :disabled="!yearchange && !sexchange && !numchange" id="saveBut" class="btn btn-primary" type="submit" @click="sendQuery">Save</button>
+        <button id="changePassBut" class="btn btn-success" type="submit" @click="changePassEmail">Change Password</button>
         <button id="backBut" class="btn btn-secondary" type="submit" @click="$router.go(-1)">Back</button>
     </div>
   </div>
@@ -82,6 +77,8 @@
             phone: null,
             showError: false,
             errorMess: "",
+            showAlert: false,
+            alertMess: "",
             response: {},
             status: 0,
             currentVals: null,
@@ -177,7 +174,66 @@
             }
             });
       },
-      sendQuery: function() {
+      changePassEmail: async function() {
+          document.getElementById("changePassBut").disabled = true; //stop queries from happening
+          let url = "http://127.0.0.1:5001/user/forget_password";
+          this.showAlert = false;
+           await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+                method: 'POST',
+                credentials: "include",
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Credentials': true,
+                },
+                body:  JSON.stringify({
+                  'email': this.email
+                })
+                })
+                .then((response) => { 
+                    this.status = response.status;
+                    return response.json() 
+                })
+                .then(data => {
+                    this.response = data; 
+                    if(this.status == 200) {
+                      this.alertMess = "An email with a password reset link has been sent to " + this.email + ". If you do not see the email check you spam folder as well.";
+                      this.showAlert = true;
+                      setTimeout(() => { 
+                        this.showAlert = false;
+                      }, 10000);
+                    } else {
+                      this.errorMess = this.response.msg;
+                      this.showError = true;
+                      this.timerlock += 1;
+                        let lock = this.timerlock;
+                        setTimeout(() => { 
+                          if(this.timerlock == lock) {
+                            this.showError = false
+                          }
+                        }, 5000);
+                    }
+                    }).catch(error => {
+                    if(error.response) {
+                        if(this.status == 401 || this.status == 500) {
+                            this.errorMess = error.response.data.msg;
+                            this.showError = true;
+                            this.timerlock += 1;
+                            let lock = this.timerlock;
+                            setTimeout(() => { 
+                              if(this.timerlock == lock) {
+                                this.showError = false
+                              }
+                            }, 5000);
+                        }
+                    }
+                    document.getElementById("changePassBut").disabled = false; //allow queries to start again
+                });
+            document.getElementById("changePassBut").disabled = false; //allow queries to start again
+      },
+      sendQuery: async function() {
         let proceed = 0;
         let num = 0;
         if(this.yearchange) {
@@ -234,11 +290,73 @@
             this.phone = this.currentVals[5]; //reset
             return false;
         } else { //some values actually changed, do a query to update
-          //remember to update the current vals list in the query
-
-          this.yearchange = false;
-          this.sexchange = false;
-          this.numchange = false;
+          let url = 'http://127.0.0.1:5001/user/profile';
+          let data = {'birth_year': this.year, 'gender': this.gender, 'phone': this.phone}
+          await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
+            method: 'post',
+            credentials: "include",
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
+                'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                'Access-Control-Allow-Credentials': true,
+            },
+            body:  JSON.stringify(data)})
+            .then((response) => { 
+                this.status = response.status;
+                return response.json() 
+            })
+            .then(data => {
+            this.response = data; //update table with new data
+            if(this.status == 200) {
+                this.alertMess = "Changes saved.";
+                this.showAlert = true;
+                setTimeout(() => { 
+                  this.showAlert = false;
+                }, 3000);
+                this.yearchange = false;
+                this.sexchange = false;
+                this.numchange = false;
+            } else {
+                this.errorMess = "Saving failed.";
+                this.showError = true;
+                this.timerlock += 1;
+                let lock = this.timerlock;
+                setTimeout(() => { 
+                  if(this.timerlock == lock) {
+                    this.showError = false
+                  }
+                }, 5000);
+                this.yearchange = false;
+                this.year = this.currentVals[3]; //reset
+                this.sexchange = false;
+                this.gender = this.currentVals[4]; //reset
+                this.numchange = false;
+                this.phone = this.currentVals[5]; //reset
+            }
+            }).catch(error => {
+            if(error.response) {
+                if(this.status == 200) {
+                console.log(this.response.msg); //switch to main page here
+                } 
+                this.errorMess = "Saving failed.";
+                this.showError = true;
+                this.timerlock += 1;
+                let lock = this.timerlock;
+                setTimeout(() => { 
+                  if(this.timerlock == lock) {
+                    this.showError = false
+                  }
+                }, 5000);
+                this.yearchange = false;
+                this.year = this.currentVals[3]; //reset
+                this.sexchange = false;
+                this.gender = this.currentVals[4]; //reset
+                this.numchange = false;
+                this.phone = this.currentVals[5]; //reset 
+            }
+            });
           return true;
         }
       },
@@ -470,5 +588,16 @@
   }
   #saveBut {
     margin-top: 0.3em;
+  }
+  #alert {
+    color: rgb(40, 190, 90);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+  }
+  #changePassBut {
+    margin-top: 0.3em;
+    margin-right: 0.6em;
   }
 </style>
