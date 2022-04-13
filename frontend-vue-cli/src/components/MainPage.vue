@@ -1415,7 +1415,7 @@ option{
     display: inline;
   }
   #findSearch {
-    max-width: 80%;
+    max-width: 77%;
     float: right;
     margin-right:1em;
     height: 2.5em;
