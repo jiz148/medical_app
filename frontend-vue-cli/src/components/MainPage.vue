@@ -971,6 +971,10 @@
                         this.searchedFindings = data.data;
                         for(let i=0;i<this.searchedFindings.length;i++) {
                           this.searchedFindings[i]['id'] = id;
+                          console.log(this.searchedFindings[i]['URL']);
+                          if(this.searchedFindings[i]['URL'] != "") {
+                            this.searchedFindings[i]['URL'] = "https://www.saedsayad.com/winnbq/" + this.searchedFindings[i]['URL'];
+                          }
                           id += 1;
                         }
                     } else {
