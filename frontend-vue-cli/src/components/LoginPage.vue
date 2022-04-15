@@ -53,7 +53,7 @@ export default { //controls form input
         }
     },
     beforeCreate: function() {
-        let url = "http://127.0.0.1:5001/user/sessiondata";
+        let url = "http://jinchispace.com:5001/user/sessiondata";
         fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
         method: 'get',
         credentials: "include",
@@ -61,15 +61,17 @@ export default { //controls form input
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-            'Access-Control-Allow-Origin': '127.0.0.1:5001',
+            'Access-Control-Allow-Origin': 'jinchispace.com:5001',
             'Access-Control-Allow-Credentials': true,
         }})
         .then((response) => { 
+            console.log(response);
             this.status = response.status;
             return response.json() 
         })
         .then(data => {
           console.log(this.status);
+          console.log(data);
           this.response = data; //update table with new data
           if(this.status == 200) {
               if(this.response.accepted == null) {
@@ -111,7 +113,7 @@ export default { //controls form input
         },
         performQuery() {
             document.getElementById("submitBut").disabled = true; //stop queries from happening
-            let url = "http://127.0.0.1:5001/user/login";
+            let url = "http://jinchispace.com:5001/user/login";
             fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'POST',
                 credentials: "include",
@@ -119,7 +121,7 @@ export default { //controls form input
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                     'Access-Control-Allow-Credentials': true,
                 },
                 body:  JSON.stringify({

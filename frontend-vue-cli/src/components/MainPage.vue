@@ -452,7 +452,7 @@
     },
     beforeCreate: async function () {
       //console.log(this.$route.query.visit);
-      let url = "http://127.0.0.1:5001/user/sessiondata";
+      let url = "http://jinchispace.com:5001/user/sessiondata";
       await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
         method: 'get',
         credentials: "include",
@@ -460,7 +460,7 @@
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-            'Access-Control-Allow-Origin': '127.0.0.1:5001',
+            'Access-Control-Allow-Origin': 'jinchispace.com:5001',
             'Access-Control-Allow-Credentials': true,
         }})
         .then((response) => { 
@@ -490,7 +490,7 @@
         }
         });
         if(this.$route.query.visit > 0) {
-          url = "http://127.0.0.1:5001/visit";
+          url = "http://jinchispace.com:5001/visit";
           await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'GET',
                 credentials: "include",
@@ -498,7 +498,7 @@
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                     'Access-Control-Allow-Credentials': true,
                 }
                 })
@@ -585,7 +585,7 @@
     },
     methods: {
       logout: function() {
-        let url = "http://127.0.0.1:5001/user/logout";
+        let url = "http://jinchispace.com:5001/user/logout";
         fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
           method: 'get',
           credentials: "include",
@@ -593,7 +593,7 @@
           headers: {
               'Content-Type': 'application/json;charset=UTF-8',
               "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-              'Access-Control-Allow-Origin': '127.0.0.1:5001',
+              'Access-Control-Allow-Origin': 'jinchispace.com:5001',
               'Access-Control-Allow-Credentials': true,
           }})
           .then((response) => { 
@@ -835,7 +835,7 @@
         this.closeDeleteFind();
       },
       getNbq: function() {
-        let url = "http://127.0.0.1:5001/finding/nbq";
+        let url = "http://jinchispace.com:5001/finding/nbq";
         let fidlist = this.currentFindings;//[]
         /*console.log(this.currentFindings[0]);
         for(let i=0;i<this.currentFindings.length;i++) {
@@ -853,7 +853,7 @@
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                     'Access-Control-Allow-Credentials': true,
                 },
                 body: JSON.stringify({
@@ -932,7 +932,7 @@
         /*eslint-enable */
       },
       searchFindings: function() {
-        let url = "http://127.0.0.1:5001/finding/finding_search";
+        let url = "http://jinchispace.com:5001/finding/finding_search";
         let fidlist = this.currentFindings;//[]
         //console.log(this.currentFindings[0]);
         /*for(let i=0;i<this.currentFindings.length;i++) {
@@ -951,7 +951,7 @@
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                     'Access-Control-Allow-Credentials': true,
                 },
                 body: JSON.stringify({
@@ -1002,7 +1002,7 @@
         this.show = !this.show;
       },
       getDiseases: async function() {
-        let url = "http://127.0.0.1:5001/disease/top_diseases";
+        let url = "http://jinchispace.com:5001/disease/top_diseases";
         let fidlist = this.currentFindings; //[]
         //console.log(this.currentFindings[0]);
         /*for(let i=0;i<this.currentFindings.length;i++) {
@@ -1022,7 +1022,7 @@
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                     'Access-Control-Allow-Credentials': true,
                 },
                 body: JSON.stringify({
@@ -1062,7 +1062,7 @@
               return;
       },
       getCurrentFindings: function() {
-        let url = "http://127.0.0.1:5001/finding";
+        let url = "http://jinchispace.com:5001/finding";
             fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'POST',
                 credentials: "include",
@@ -1070,7 +1070,7 @@
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                     'Access-Control-Allow-Credentials': true,
                 },
                 body: JSON.stringify({
@@ -1124,7 +1124,7 @@
         let suc = false;
         //do query, probably as async await
         if(this.curVisit.visit_id == 0) { //new visit, create visit
-          let url = "http://127.0.0.1:5001/visit";
+          let url = "http://jinchispace.com:5001/visit";
           await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
             method: 'POST',
             credentials: "include",
@@ -1132,7 +1132,7 @@
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                 'Access-Control-Allow-Credentials': true,
             },
             body:  JSON.stringify({
@@ -1173,7 +1173,7 @@
           if(fidlist.length < 1) {
             fidlist = [{}];
           }
-          let url = "http://127.0.0.1:5001/visit";
+          let url = "http://jinchispace.com:5001/visit";
           await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
             method: 'PUT',
             credentials: "include",
@@ -1181,7 +1181,7 @@
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                 'Access-Control-Allow-Credentials': true,
             },
             body:  JSON.stringify({

@@ -63,7 +63,7 @@
     props: {
     },
     beforeCreate: async function () {
-      let url = "http://127.0.0.1:5001/user/sessiondata";
+      let url = "http://jinchispace.com:5001/user/sessiondata";
       await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
         method: 'get',
         credentials: "include",
@@ -71,7 +71,7 @@
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-            'Access-Control-Allow-Origin': '127.0.0.1:5001',
+            'Access-Control-Allow-Origin': 'jinchispace.com:5001',
             'Access-Control-Allow-Credentials': true,
         }})
         .then((response) => { 
@@ -100,7 +100,7 @@
             }
         }
         });
-        url = "http://127.0.0.1:5001/visit";
+        url = "http://jinchispace.com:5001/visit";
         fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'GET',
                 credentials: "include",
@@ -108,7 +108,7 @@
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                     'Access-Control-Allow-Credentials': true,
                 }
                 })
@@ -165,7 +165,7 @@
         }
       },
       createVisit: function() {
-        let url = "http://127.0.0.1:5001/visit";
+        let url = "http://jinchispace.com:5001/visit";
         fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'POST',
                 credentials: "include",
@@ -173,7 +173,7 @@
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                     'Access-Control-Allow-Credentials': true,
                 },
                 body:  JSON.stringify({
@@ -215,7 +215,7 @@
         /*eslint-enable */
       },
       logout: function() {
-        let url = "http://127.0.0.1:5001/user/logout";
+        let url = "http://jinchispace.com:5001/user/logout";
         fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
           method: 'get',
           credentials: "include",
@@ -223,7 +223,7 @@
           headers: {
               'Content-Type': 'application/json;charset=UTF-8',
               "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-              'Access-Control-Allow-Origin': '127.0.0.1:5001',
+              'Access-Control-Allow-Origin': 'jinchispace.com:5001',
               'Access-Control-Allow-Credentials': true,
           }})
           .then((response) => { 
