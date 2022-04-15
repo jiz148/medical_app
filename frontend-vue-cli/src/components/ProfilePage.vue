@@ -93,7 +93,7 @@
         }
     },
     beforeCreate: async function() {
-        let url = "http://127.0.0.1:5001/user/sessiondata";
+        let url = "http://jinchispace.com:5001/user/sessiondata";
         await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
             method: 'get',
             credentials: "include",
@@ -101,7 +101,7 @@
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                 'Access-Control-Allow-Credentials': true,
             }})
             .then((response) => { 
@@ -135,7 +135,7 @@
     methods: {
       getInfo: async function() {
           //perform query to get user data; for now just use dummy values
-          let url = 'http://127.0.0.1:5001/user/profile';
+          let url = 'http://jinchispace.com:5001/user/profile';
           await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
             method: 'get',
             credentials: "include",
@@ -143,7 +143,7 @@
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                 'Access-Control-Allow-Credentials': true,
             }})
             .then((response) => { 
@@ -176,7 +176,7 @@
       },
       changePassEmail: async function() {
           document.getElementById("changePassBut").disabled = true; //stop queries from happening
-          let url = "http://127.0.0.1:5001/user/forget_password";
+          let url = "http://jinchispace.com:5001/user/forget_password";
           this.showAlert = false;
            await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
                 method: 'POST',
@@ -185,7 +185,7 @@
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                    'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                    'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                     'Access-Control-Allow-Credentials': true,
                 },
                 body:  JSON.stringify({
@@ -290,7 +290,7 @@
             this.phone = this.currentVals[5]; //reset
             return false;
         } else { //some values actually changed, do a query to update
-          let url = 'http://127.0.0.1:5001/user/profile';
+          let url = 'http://jinchispace.com:5001/user/profile';
           let data = {'birth_year': this.year, 'gender': this.gender, 'phone': this.phone}
           await fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
             method: 'post',
@@ -299,7 +299,7 @@
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                 'Access-Control-Allow-Credentials': true,
             },
             body:  JSON.stringify(data)})

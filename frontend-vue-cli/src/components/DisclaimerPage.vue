@@ -52,7 +52,7 @@ export default { //controls form input
     },
     methods: {
         goregister() {
-            let url = "http://127.0.0.1:5001/disclaimer";
+            let url = "http://jinchispace.com:5001/disclaimer";
             fetch(url, { //executes the query with a promise to get around asynchronous javascript behavior
             method: 'get',
             credentials: "include",
@@ -60,7 +60,7 @@ export default { //controls form input
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 "Set-Cookie": "test=value; Path=/; Secure; SameSite=None;",
-                'Access-Control-Allow-Origin': '127.0.0.1:5001',
+                'Access-Control-Allow-Origin': 'jinchispace.com:5001',
                 'Access-Control-Allow-Credentials': true,
             }})
             .then((response) => { 
