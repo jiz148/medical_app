@@ -10,11 +10,29 @@ from flask.json import JSONEncoder
 
 app = Flask(__name__)
 
+
+def manage_sensitive(name):
+    v1 = os.getenv(name)
+
+    secret_fpath = f'/run/secrets/{name}'
+    existence = os.path.exists(secret_fpath)
+
+    if v1 is not None:
+        return v1
+
+    if existence:
+        v2 = open(secret_fpath).read().rstrip('\n')
+        return v2
+
+    if all([v1 is None, not existence]):
+        return KeyError(f'{name}')
+
+
 # CORS
 CORS(app, supports_credentials=True)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/WinNBQ.db3'
-app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
+app.config['SECRET_KEY'] = manage_sensitive('FLASK_SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 db = SQLAlchemy(app)
 

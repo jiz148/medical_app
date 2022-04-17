@@ -9,13 +9,14 @@ from flask_cors import cross_origin
 from backend_sqlalchemy.backend_app.models.user import UserModel
 from backend_sqlalchemy.backend_app.db import db
 from backend_sqlalchemy.backend_app.db import app
+from backend_sqlalchemy.backend_app.db import manage_sensitive
 from backend_sqlalchemy.backend_app.common.send_email import send_email
 
 from backend_sqlalchemy.backend_app.common.contents import FORGET_MY_PASSWORD_SUBJECT, FORGET_MY_PASSWORD_CONTENT
 
 TOKEN_EXP_TIME = 900
 TECHNICAL_EMAIL = 'medical_care_555@outlook.com'
-EMAIL_PASS = os.getenv('MD_EMAIL_PASS')
+EMAIL_PASS = manage_sensitive('MD_EMAIL_PASS')
 SMTP_SERVER = 'smtp.office365.com'
 SMTP_PORT = 587
 

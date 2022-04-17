@@ -1,9 +1,16 @@
 version: '2.2'
 services:
     web:
-        tty: true
         build: .
         ports:
             - "5001:5001"
         volumes:
             - .:/backend_sqlalchemy
+        secrets:
+            - FLASK_SECRET_KEY
+            - MD_EMAIL_ADDRESS
+secrets:
+    FLASK_SECRET_KEY:
+        external: true
+    MD_EMAIL_ADDRESS:
+        external: true
