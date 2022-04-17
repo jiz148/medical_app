@@ -8,7 +8,7 @@ services:
             - .:/backend_sqlalchemy
         secrets:
             - FLASK_SECRET_KEY
-            - MD_EMAIL_ADDRESS
+            - MD_EMAIL_PASS
 secrets:
     FLASK_SECRET_KEY:
         external: true
