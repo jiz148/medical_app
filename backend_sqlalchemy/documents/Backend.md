@@ -14,6 +14,16 @@
   * [User Endpoints](#user-endpoints)
 * [Models](#models)
   * [UserModel](#usermodel)
+  * [CategoriesModel](#categoriesmodel)
+  * [DiseasesModel](#diseasemodel)
+  * [FindingsModel](#findingsmodel)
+  * [Findingsrel](#findingsrel)
+  * [StatsModel](#statsmodel)
+  * [subCategories](#subcategories)
+  * [VisitModel](#visitmodel)
+  * [VisitToFindingModel](#visittofinding)
+  
+  
 
 
 <a id="launch"></a>
@@ -131,3 +141,143 @@ CREATE TABLE VisitToFinding
   * type: int
 * phone: 
   * type: string
+  
+
+<a id="categoriesmodel"></a>
+### CategoriesModel
+> mapped from Categories table
+
+#### Attributes
+* CID: primary key
+  * type: int
+* title: 
+  * type: numeric
+* Description:
+  * type: text
+  
+
+
+<a id="diseasesmodel"></a>
+### DiseasesModel
+> mapped from Diseases table
+
+#### Attributes
+* DID: primary key, unique
+  * type: int
+* Name: unique, not null 
+  * type: text
+* Title: 
+  * type: text
+* Frq: 
+  * type: int
+* Original_Frq: 
+  * type: int
+* URL:
+  * type: text
+  
+<a id="findingsmodel"></a>
+### FindingsModel
+> mapped from Findings table
+
+#### Attributes
+* FID: primary key, not null, unique
+  * type: int
+* Name: 
+  * type: text
+* Type: 
+  * type: int
+* Title: 
+  * type: text
+* Description: 
+  * type: text
+* URL: 
+  * type: text
+  
+<a id="findingsrel"></a>
+### FindingsRel
+> mapped from FindingsRel table
+
+#### Attributes
+* FID1: primary key, unique
+  * type: int
+* FID2: primary key, unique
+  * type: int
+* X1: 
+  * type: int
+* X2:
+  * type: int
+  
+<a id="statsmodel"></a>
+### StatsModel
+> mapped from Stats table
+
+#### Attributes
+* SID: primary key, unique
+  * type: int
+* DID: unique
+  * type: int
+* FID: unique
+  * type: int
+* Sen:
+  * type: real
+* Spe: 
+  * type: real
+* RO:
+  * type: real
+  
+<a id="subcategories"></a>
+### subcategories
+> mapped from Subcategories table
+
+#### Attributes
+* SCID: primary key,not null, unique
+  * type: int
+* CID: 
+  * type: int
+* Title: 
+  * type: real
+* Description: 
+  * type: text
+* Rank:
+  * type: int
+  
+* Exclusive:
+  * type: real
+  
+<a id="visitmodel"></a>
+### visitModel
+> mapped from visit table
+
+#### Attributes
+* visit_id: primary key
+  * type: int
+* datetime: not null
+  * type: text
+* node: 
+  * type: string
+* uid: not null
+  * type: int
+  
+
+<a id="visittofindingmodel"></a>
+### VisitToFindingModel
+> mapped from VisitToFinding table
+
+#### Attributes
+* answer: 
+  * type: string
+  
+* position: 
+  * type: int
+  
+* visit_id: primary key
+  * type: int
+
+* FID: 
+  * type: int
+  
+  
+
+  
+  
+  
