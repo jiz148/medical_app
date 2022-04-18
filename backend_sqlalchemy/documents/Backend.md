@@ -240,7 +240,6 @@ CREATE TABLE VisitToFinding
   * type: text
 * Rank:
   * type: int
-  
 * Exclusive:
   * type: real
   
@@ -266,13 +265,10 @@ CREATE TABLE VisitToFinding
 #### Attributes
 * answer: 
   * type: string
-  
 * position: 
   * type: int
-  
 * visit_id: primary key
   * type: int
-
 * FID: 
   * type: int
   
