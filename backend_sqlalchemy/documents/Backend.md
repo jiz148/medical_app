@@ -120,6 +120,43 @@ CREATE TABLE VisitToFinding
     * exception: {msg: "..."}, status 404
 
 
+<a id="diseases-endpoints"></a>
+### Diseases Endpoints
+> [endpoint resource](../backend_app/resources/diseases.py)
+* post "disease/top_diseases"
+  * success: {msg: "success", data: {dictionary} }
+
+<a id="findings-endpoints"></a>
+### Findings Endpoints
+> [endpoint resource](../backend_app/resources/findings.py)
+* post "finding"
+  * success: {"msg": "success", "data": answer_name_url}, status 200
+  * exception: {msg: "..."}, status 401
+* put "finding"
+  * success: {"msg": "success"}, status 200
+  * exception: {msg: "..."}, status 401
+* post: "finding/finding_search"
+  * success: {'msg': "success", 'data': search_result}
+* post: "/finding/nbq"
+  * success: {'msg': "success", 'data': nbq_finding}
+* get: "/finding/top_findings"
+  * success: {'msg': "success", 'data': top_findings}
+> 
+<a id="visit-endpoints"></a>
+### Visit Endpoints
+> [endpoint resource](../backend_app/resources/visit.py)
+* get: "visit"
+  * success: {'msg': 'success', 'result': result_json}, status 200
+  * exception: {msg: "..."}, status 401
+* post: "visit"
+  * success: {'msg': 'success', 'visit_id': visit_id}
+  * exception: {msg: "..."}, status 401
+* put: "visit"
+  * success: {'msg': 'success'}
+  * exception: {msg: "..."}, status 401
+
+> 
+> 
 <a id="models"></a>
 ## Models
 
