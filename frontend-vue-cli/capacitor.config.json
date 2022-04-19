@@ -1,0 +1,6 @@
+{
+  "appId": "com.Medisys.app",
+  "appName": "Medisys",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

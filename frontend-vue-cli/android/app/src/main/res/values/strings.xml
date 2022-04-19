@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Medisys</string>
+    <string name="title_activity_main">Medisys</string>
+    <string name="package_name">com.Medisys.app</string>
+    <string name="custom_url_scheme">com.Medisys.app</string>
+</resources>
