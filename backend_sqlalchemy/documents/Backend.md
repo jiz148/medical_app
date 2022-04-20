@@ -72,8 +72,8 @@
 0. copy the database from developer to `backend_sqlalchemy/backend_app/data`
 1. `$ cd backend_sqlalchemy`
 2. Adding secrets by `docker swarm init`
-   1. `echo "~~~" | docker secret create FLASK_SECRET_KEY` replace ~~~ by the flask secret key
-   2. `echo "~~~" | docker secret create MD_EMAIL_PASS` replace ~~~ by the email address
+   1. `echo "~~~" | docker secret create FLASK_SECRET_KEY -` replace ~~~ by the flask secret key
+   2. `echo "~~~" | docker secret create MD_EMAIL_PASS -` replace ~~~ by the email address
 3. `docker-compose build`
 4. `docker stack deploy --compose-file=docker-compose.yml md_backend`
 
