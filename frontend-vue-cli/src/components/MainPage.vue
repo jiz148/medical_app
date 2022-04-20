@@ -26,7 +26,7 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><button class="dropdown-item" type="button" @click='this.$router.push("/profile")'>Profile</button></li>
-            <li><button class="dropdown-item" type="button" @click='this.$router.push("/settings")'>Settings</button></li>
+            
             <li><button class="dropdown-item" type="button" @click="contact">Contact Us</button></li>
             <li><button class="dropdown-item" type="button" @click="logout">Logout</button></li>
           </ul>
@@ -41,7 +41,7 @@
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                You can email us at (enter email here), or call us at (enter phone number here).
+                If you have any questions or concerns, please email us at MedisysApp@gmail.com.
               </div>
             </div>
             <div class="modal-footer">
