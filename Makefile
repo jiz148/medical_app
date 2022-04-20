@@ -15,3 +15,7 @@ run:
 	@echo
 	sudo docker stack deploy --compose-file=docker-compose.yml md_backend
 	@echo "- DONE: $@"
+
+build:
+	@read -p "tag? : " TAG \
+	&& echo "tag : $${TAG}"
