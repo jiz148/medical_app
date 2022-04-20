@@ -5,8 +5,9 @@
 
 ## Contents
 
-* [Launch Server](#launch)
+* [Deployment](#deployment)
   * [Development Server](#development)
+  * [Production Server](#production)
 * [Database](#db)
   * [Erd](#erd)
   * [Table Creation Sql](#sql)
@@ -35,8 +36,8 @@
   
 
 
-<a id="launch"></a>
-## Launch Server
+<a id="deployment"></a>
+## Deployment
 
 <a id="development"></a>
 ### Development Server
@@ -56,6 +57,25 @@
    1. the SMTP email password
    2. the flask secret key
 6. `$ python run.py`
+
+
+<a id="production"></a>
+### Production Server
+
+> Production server is hosted by docker containers.
+> Therefore please have the latest version of docker and docker-compose installed in the server
+> Unlike the development server, the sensitive keys are managed by docker secretes
+> Functions to manage sensitive keys can be found in [db-config file](../backend_app/db.py).
+
+#### Steps
+
+0. copy the database from developer to `backend_sqlalchemy/backend_app/data`
+1. `$ cd backend_sqlalchemy`
+2. Adding secrets by `docker swarm init`
+   1. `echo "~~~" | docker secret create FLASK_SECRET_KEY` replace ~~~ by the flask secret key
+   2. `echo "~~~" | docker secret create MD_EMAIL_PASS` replace ~~~ by the email address
+3. `docker-compose build`
+4. `docker stack deploy --compose-file=docker-compose.yml md_backend`
 
 
 <a id="db"></a>
