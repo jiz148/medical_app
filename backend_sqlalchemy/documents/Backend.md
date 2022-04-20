@@ -67,6 +67,16 @@
 > Unlike the development server, the sensitive keys are managed by docker secretes
 > Functions to manage sensitive keys can be found in [db-config file](../backend_app/db.py).
 
+
+#### Run by Makefile
+> Right now it only supports running in the server for first time
+> If secret already exists, use `docker secret ls` and `docker secret rm` to remove the secrets
+> and retry
+
+0. copy the database from developer to `backend_sqlalchemy/backend_app/data`
+1. `$ cd backend_sqlalchemy`
+2. `make run`
+
 #### Steps
 
 0. copy the database from developer to `backend_sqlalchemy/backend_app/data`
@@ -77,6 +87,11 @@
 3. `docker-compose build`
 4. `docker stack deploy --compose-file=docker-compose.yml md_backend`
 
+
+#### Stop the server
+
+* `docker service ls` and `docker service rm` to remove server
+* `docker images` and `docker rmi` to remove image if applicable
 
 <a id="db"></a>
 ## Database
