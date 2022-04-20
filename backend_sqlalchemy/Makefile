@@ -11,7 +11,7 @@ run:
 	@read -p "Please enter MD_EMAIL_PASS: " MD_EMAIL_PASS \
 	&& echo "$${MD_EMAIL_PASS}" | docker secret create MD_EMAIL_PASS -
 	@echo
-	sudo docker-compose build
+	docker-compose build
 	@echo
-	sudo docker stack deploy --compose-file=docker-compose.yml md_backend
+	docker stack deploy --compose-file=docker-compose.yml md_backend
 	@echo "- DONE: $@"
