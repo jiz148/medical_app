@@ -26,6 +26,11 @@
   * [VisitModel](#visitmodel)
   * [VisitToFindingModel](#visittofinding)
 * [Algorithms](#algorithms)
+  * [get_all_stats](#get_all_stats)
+  * [get_all_diseases](#get_all_diseases)
+  * [get_all_findings](#get_all_findings)
+  * [get_stats](#get_stats)
+  * [_get_fids_from_year_and_gender](#_get_fids_from_year_and_gender)
   
   
 
