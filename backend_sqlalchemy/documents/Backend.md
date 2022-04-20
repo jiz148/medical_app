@@ -22,6 +22,7 @@
   * [subCategories](#subcategories)
   * [VisitModel](#visitmodel)
   * [VisitToFindingModel](#visittofinding)
+* [Algorithms](#algorithms)
   
   
 
@@ -309,8 +310,41 @@ CREATE TABLE VisitToFinding
 * FID: 
   * type: int
   
-  
+<a id="algorithms"></a>
+## Algorithms
 
-  
-  
+<a id="get_all_stats"></a>
+### get_all_stats():
+> mapped from resources/diseases.py
+  * Queries the Stats Table 
+  * Looks for DID associated with that FID
+  * creates a dictionary containing FID
+  * Each FID contains a dictionary, containing DID and a corresponding sensitivity for all FIDs
+
+ 
+<a id="get_all_diseases"></a>
+### get_all_diseases():
+> mapped from resources/diseases.py 
+  * Queries the Diseases table
+  * Creates a dictionary containing DID as key and a corresponding dictionary for each DID containing name,freq,URL as value
+
+<a id="get_all_findings"></a>
+### get_all_findings():
+> mapped from resources/findings.py 
+  * Queries the findings table
+  * Creates a dictionary, with FID as the key and a corresponding dictionary for each FID containing name and frequency as value
+
+<a id="get_stats"></a>
+### get_stats():
+> mapped from resources/stats.py   
+* Queries the Stats table
+* Creates a dictionary, with FID and DID as key and corresponding sensitivity as value
+
+<a id="_get_fids_from_year_and_gender"></a>
+### _get_fids_from_year_and_gender():
+> mapped from resources/visit.py   
+* Gets current date and time
+* Gets FID based on the year/age of the user
+* Gets FID based on the gender of the user
+* Returns year's and gender's FID
   
