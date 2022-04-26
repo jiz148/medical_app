@@ -1,3 +1,5 @@
+import flask
+from flask import request
 from flask_restful import Api
 
 from backend_sqlalchemy.backend_app.resources.user import \
@@ -37,6 +39,12 @@ api.add_resource(NextBestQuestion, '/finding/nbq')
 api.add_resource(TopFindings, '/finding/top_findings')
 api.add_resource(TopDiseases, '/disease/top_diseases')
 api.add_resource(UserProfile, '/user/profile')
+
+
+@app.route('/newpass', methods=['GET'])
+def home():
+    token = request.args.get('token')
+    return flask.render_template('change_password.html', token=token)
 
 
 if __name__ == "__main__":
