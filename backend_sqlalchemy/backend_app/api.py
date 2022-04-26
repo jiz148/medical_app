@@ -42,7 +42,7 @@ api.add_resource(UserProfile, '/user/profile')
 
 
 @app.route('/newpass', methods=['GET'])
-def home():
+def change_password():
     token = request.args.get('token')
     return flask.render_template('change_password.html', token=token)
 
