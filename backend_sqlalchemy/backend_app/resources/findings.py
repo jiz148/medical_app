@@ -189,15 +189,23 @@ class NextBestQuestion(Resource):
         nbq_fid = 0
         nbq_value = -1
         for stat in disease_stats:
+            if _is_age(stat[1]):
+                flag = False
+                for fid in cur_findings:
+                    if _is_age(fid):
+                        flag = True
+                        break
+                if flag:
+                    continue
+            if _is_gender(stat[1]):
+                flag = False
+                for fid in cur_findings:
+                    if _is_gender(fid):
+                        flag = True
+                        break
+                if flag:
+                    continue
             if stat[2] > nbq_value and findings_type[stat[1]] <= int(len(cur_findings)) / 6 + 1:
-                if _is_age(stat[1]):
-                    for fid in cur_findings:
-                        if _is_age(fid):
-                            continue
-                if _is_gender(stat[1]):
-                    for fid in cur_findings:
-                        if _is_gender(fid):
-                            continue
                 nbq_value = stat[2]
                 nbq_fid = stat[1]
         finding_details = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.URL).filter(
