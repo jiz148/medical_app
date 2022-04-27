@@ -27,8 +27,10 @@ nbq_diseases_get_args = reqparse.RequestParser()
 nbq_diseases_get_args.add_argument("top_disease_id", type=int, required=True, location='json')
 nbq_diseases_get_args.add_argument("current_findings", type=list, required=True, location='json')
 
+# static sharing memories
 findings_hash = {}
 findings_type = {}
+all_stats = {}
 
 
 class Finding(Resource):
@@ -259,7 +261,7 @@ def get_all_findings():
 
 
 def get_all_stats():
-    all_stats = []
+    global all_stats
     if not all_stats:
         all_stats_query = db.session.query(StatsModel.DID, StatsModel.FID, StatsModel.Sen).all()
         for stat in all_stats_query:
