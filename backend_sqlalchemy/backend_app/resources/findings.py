@@ -168,7 +168,7 @@ class NextBestQuestion(Resource):
             all_findings = db.session.query(FindingsModel.FID,
                                             FindingsModel.Type).all()
             for finding in all_findings:
-                findings_type[finding.FID] = {finding.Type}
+                findings_type[finding.FID] = finding.Type
         # finding_ids = list(findings_hash.keys())
         '''while 1:
             i = random.randint(0, len(finding_names))
