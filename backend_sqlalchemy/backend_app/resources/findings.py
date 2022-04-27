@@ -28,6 +28,7 @@ nbq_diseases_get_args.add_argument("top_disease_id", type=int, required=True, lo
 nbq_diseases_get_args.add_argument("current_findings", type=list, required=True, location='json')
 
 findings_hash = {}
+findings_type = {}
 
 
 class Finding(Resource):
@@ -156,17 +157,19 @@ class NextBestQuestion(Resource):
             uid = session['uid']
         except KeyError:
             abort(401, msg="uid in session does not exist")'''
+        global findings_type
         args = nbq_diseases_get_args.parse_args()
         disease_id = args["top_disease_id"]
         cur_findings = []
         for i in args["current_findings"]:
             if i:#if i and i["checked"]:
                 cur_findings.append(i["FID"])
-        all_findings = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.Title).all()
-        findings_hash = {}
-        for finding in all_findings:
-            findings_hash[finding.FID] = finding.Name
-        finding_ids = list(findings_hash.keys())
+        if not findings_type:
+            all_findings = db.session.query(FindingsModel.FID,
+                                            FindingsModel.Type).all()
+            for finding in all_findings:
+                findings_type[finding.FID] = {finding.Type}
+        # finding_ids = list(findings_hash.keys())
         '''while 1:
             i = random.randint(0, len(finding_names))
             finding_name = finding_names[i]
@@ -185,7 +188,7 @@ class NextBestQuestion(Resource):
         nbq_fid = 0
         nbq_value = -1
         for stat in disease_stats:
-            if stat[2] > nbq_value:
+            if stat[2] > nbq_value and findings_type[stat[1]] <= int(len(cur_findings)) / 6 + 1:
                 nbq_value = stat[2]
                 nbq_fid = stat[1]
         finding_details = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.URL).filter(
