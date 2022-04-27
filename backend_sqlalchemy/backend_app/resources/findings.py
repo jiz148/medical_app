@@ -30,7 +30,7 @@ nbq_diseases_get_args.add_argument("current_findings", type=list, required=True,
 # static sharing memories
 findings_hash = {}
 findings_type = {}
-all_stats = {}
+all_stats = []
 
 
 class Finding(Resource):
