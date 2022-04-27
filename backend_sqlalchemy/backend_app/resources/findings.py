@@ -184,11 +184,20 @@ class NextBestQuestion(Resource):
         disease_stats = []
         for stat in all_stats:
             if stat[0] == disease_id and stat[1] not in cur_findings:
+
                 disease_stats.append(stat)
         nbq_fid = 0
         nbq_value = -1
         for stat in disease_stats:
             if stat[2] > nbq_value and findings_type[stat[1]] <= int(len(cur_findings)) / 6 + 1:
+                if _is_age(stat[1]):
+                    for fid in cur_findings:
+                        if _is_age(fid):
+                            continue
+                if _is_gender(stat[1]):
+                    for fid in cur_findings:
+                        if _is_gender(fid):
+                            continue
                 nbq_value = stat[2]
                 nbq_fid = stat[1]
         finding_details = db.session.query(FindingsModel.FID, FindingsModel.Name, FindingsModel.URL).filter(
@@ -250,6 +259,9 @@ def get_all_stats():
     return all_stats
 
 
+def _is_age(fid):
+    return True if fid in [3731, 3735, 3736] else False
 
 
-
+def _is_gender(fid):
+    return True if fid in [3732, 3738] else False
