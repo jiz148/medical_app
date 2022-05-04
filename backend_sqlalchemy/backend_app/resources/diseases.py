@@ -47,7 +47,7 @@ class TopDiseases(Resource):
                 "DID": key,
                 "Name": all_diseases[key]['name'],
                 "cond_p": round(cond_p, 2),
-                "URL": (all_diseases[key]['URL'] + ';;').split(';')[0]
+                "URL": all_diseases[key]['URL']
             })
         disease_results = sorted(disease_results, key=lambda d: d['cond_p'], reverse=True)
         return {'msg': "success", 'data': disease_results[:NUM_OF_RETURNED_DISEASES]}
